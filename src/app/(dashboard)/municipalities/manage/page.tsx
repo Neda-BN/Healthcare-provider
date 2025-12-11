@@ -629,9 +629,10 @@ export default function ManageMunicipalitiesPage() {
                         setEmailModalView('list')
                         resetUploadForm()
                       }}
-                      className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors"
+                      className="p-2 bg-surface-100 hover:bg-surface-200 rounded-lg transition-colors border border-surface-200"
+                      title="Go back"
                     >
-                      <ArrowLeft className="w-5 h-5 text-surface-600" />
+                      <ArrowLeft className="w-5 h-5 text-surface-700" />
                     </button>
                   )}
                   <div>
@@ -646,7 +647,7 @@ export default function ManageMunicipalitiesPage() {
                 {emailModalView === 'list' && (
                   <button
                     onClick={() => setEmailModalView('upload')}
-                    className="btn-primary btn-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                   >
                     <Upload className="w-4 h-4" />
                     Upload Emails
@@ -670,12 +671,12 @@ export default function ManageMunicipalitiesPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-surface-50 rounded-lg">
+                    <div className="text-center py-12 bg-surface-50 rounded-lg border-2 border-dashed border-surface-200">
                       <Users className="w-12 h-12 text-surface-300 mx-auto mb-4" />
                       <p className="text-surface-600 mb-4">No email recipients yet</p>
                       <button 
                         onClick={() => setEmailModalView('upload')} 
-                        className="btn-primary btn-sm"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                       >
                         <Upload className="w-4 h-4" />
                         Upload Email List
@@ -684,7 +685,10 @@ export default function ManageMunicipalitiesPage() {
                   )}
 
                   <div className="flex justify-end mt-6 pt-4 border-t border-surface-200">
-                    <button onClick={closeEmailsModal} className="btn-secondary">
+                    <button 
+                      onClick={closeEmailsModal} 
+                      className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                    >
                       Close
                     </button>
                   </div>
@@ -694,7 +698,11 @@ export default function ManageMunicipalitiesPage() {
                 <>
                   {!parsedEmails ? (
                     <div className="space-y-4">
-                      <div className="border-2 border-dashed border-surface-300 rounded-xl p-8 text-center hover:border-primary-400 transition-colors">
+                      {/* File Upload Drop Zone */}
+                      <label 
+                        htmlFor="file-upload" 
+                        className="block border-2 border-dashed border-primary-300 bg-primary-50/50 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-primary-50 transition-all cursor-pointer group"
+                      >
                         <input
                           ref={fileInputRef}
                           type="file"
@@ -703,35 +711,39 @@ export default function ManageMunicipalitiesPage() {
                           className="hidden"
                           id="file-upload"
                         />
-                        <label htmlFor="file-upload" className="cursor-pointer">
-                          <div className="flex justify-center mb-4">
-                            <div className="p-4 bg-primary-50 rounded-full">
-                              <Upload className="w-8 h-8 text-primary-600" />
-                            </div>
+                        <div className="flex justify-center mb-4">
+                          <div className="p-4 bg-primary-100 rounded-full group-hover:bg-primary-200 transition-colors">
+                            <Upload className="w-8 h-8 text-primary-600" />
                           </div>
-                          <p className="text-surface-900 font-medium mb-1">Click to upload a file</p>
-                          <p className="text-sm text-surface-500">or drag and drop</p>
-                        </label>
-                      </div>
+                        </div>
+                        <p className="text-primary-900 font-semibold mb-1 group-hover:text-primary-700">Click to upload a file</p>
+                        <p className="text-sm text-primary-600">CSV, XLSX, or TXT files supported</p>
+                      </label>
 
+                      {/* Selected File */}
                       {uploadFile && (
-                        <div className="flex items-center justify-between p-3 bg-surface-50 rounded-lg">
+                        <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                           <div className="flex items-center gap-3">
-                            {uploadFile.name.endsWith('.csv') && <FileSpreadsheet className="w-5 h-5 text-green-600" />}
-                            {(uploadFile.name.endsWith('.xlsx') || uploadFile.name.endsWith('.xls')) && <FileSpreadsheet className="w-5 h-5 text-blue-600" />}
-                            {uploadFile.name.endsWith('.txt') && <FileText className="w-5 h-5 text-surface-600" />}
+                            {uploadFile.name.endsWith('.csv') && <FileSpreadsheet className="w-6 h-6 text-green-600" />}
+                            {(uploadFile.name.endsWith('.xlsx') || uploadFile.name.endsWith('.xls')) && <FileSpreadsheet className="w-6 h-6 text-blue-600" />}
+                            {uploadFile.name.endsWith('.txt') && <FileText className="w-6 h-6 text-surface-600" />}
                             <div>
                               <p className="font-medium text-surface-900">{uploadFile.name}</p>
                               <p className="text-xs text-surface-500">{(uploadFile.size / 1024).toFixed(1)} KB</p>
                             </div>
                           </div>
-                          <button onClick={resetUploadForm} className="p-1 hover:bg-surface-200 rounded">
-                            <X className="w-4 h-4 text-surface-500" />
+                          <button 
+                            onClick={resetUploadForm} 
+                            className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                            title="Remove file"
+                          >
+                            <X className="w-5 h-5" />
                           </button>
                         </div>
                       )}
 
-                      <div className="bg-surface-50 rounded-lg p-4">
+                      {/* Supported Formats Info */}
+                      <div className="bg-surface-50 rounded-lg p-4 border border-surface-200">
                         <h4 className="font-medium text-surface-900 mb-2">Supported Formats</h4>
                         <ul className="text-sm text-surface-600 space-y-1">
                           <li>• <strong>CSV</strong> - Comma-separated values</li>
@@ -743,20 +755,21 @@ export default function ManageMunicipalitiesPage() {
                         </p>
                       </div>
 
+                      {/* Action Buttons */}
                       <div className="flex justify-end gap-3 pt-4 border-t border-surface-200">
                         <button 
                           onClick={() => {
                             setEmailModalView('list')
                             resetUploadForm()
                           }} 
-                          className="btn-secondary"
+                          className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={handleFileUpload}
                           disabled={!uploadFile || uploadParsing}
-                          className="btn-primary"
+                          className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {uploadParsing ? 'Parsing...' : 'Parse File'}
                         </button>
@@ -820,7 +833,7 @@ export default function ManageMunicipalitiesPage() {
                             setUploadFile(null)
                             if (fileInputRef.current) fileInputRef.current.value = ''
                           }}
-                          className="btn-secondary"
+                          className="px-4 py-2 text-primary-600 font-medium rounded-lg hover:bg-primary-50 transition-colors border border-primary-200"
                         >
                           Upload Different File
                         </button>
@@ -830,14 +843,14 @@ export default function ManageMunicipalitiesPage() {
                               setEmailModalView('list')
                               resetUploadForm()
                             }} 
-                            className="btn-secondary"
+                            className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
                           >
                             Cancel
                           </button>
                           <button
                             onClick={handleSaveEmails}
                             disabled={uploadSaving}
-                            className="btn-primary"
+                            className="px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {uploadSaving ? 'Saving...' : `Save ${parsedEmails.count} Emails`}
                           </button>
