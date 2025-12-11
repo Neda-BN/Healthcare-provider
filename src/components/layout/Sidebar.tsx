@@ -6,24 +6,26 @@ import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
-  FileEdit,
-  Building2,
   FileText,
   Users,
   Settings,
   HelpCircle,
   LogOut,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ClipboardList,
+  Building2,
   BarChart3,
-  PlusCircle,
-  UserCog,
   Heart,
-  Database,
   PanelLeftClose,
   PanelLeft,
+  Send,
+  ClipboardList,
+  FileBarChart,
+  UserCog,
+  FolderOpen,
+  PenSquare,
+  List,
+  ScrollText,
+  GitCompare,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -32,8 +34,10 @@ interface NavItem {
   href?: string
   icon: React.ElementType
   children?: NavItem[]
+  adminOnly?: boolean
 }
 
+// Improved navigation structure with logical hierarchy
 const navigation: NavItem[] = [
   {
     name: 'Dashboard',
@@ -41,35 +45,39 @@ const navigation: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    name: 'New internal survey',
-    icon: FileEdit,
+    name: 'Surveys',
+    icon: ClipboardList,
     children: [
-      { name: 'Question builder', href: '/surveys/builder', icon: PlusCircle },
+      { name: 'Create New', href: '/surveys/builder', icon: PenSquare },
+      { name: 'Send Survey', href: '/surveys/send', icon: Send },
+      { name: 'All Surveys', href: '/municipalities/report', icon: List },
     ],
   },
   {
     name: 'Municipalities',
     icon: Building2,
     children: [
-      { name: 'Framework agreement', href: '/municipalities/framework', icon: FileText },
-      { name: 'Placement', href: '/municipalities/placement', icon: ClipboardList },
-      { name: 'Report', href: '/municipalities/report', icon: FileText },
-      { name: 'Analyse', href: '/analyse', icon: BarChart3 },
+      { name: 'Overview', href: '/municipalities', icon: FolderOpen },
+      { name: 'Agreements', href: '/municipalities/framework', icon: ScrollText },
+      { name: 'Placements', href: '/municipalities/placement', icon: FileText },
     ],
   },
   {
-    name: 'System owner',
-    icon: UserCog,
+    name: 'Analysis',
+    icon: BarChart3,
     children: [
-      { name: 'Admin', href: '/admin/users', icon: Users },
-      { name: 'Caregiver', href: '/admin/caregivers', icon: Heart },
-      { name: 'Master data', href: '/admin/master-data', icon: Database },
+      { name: 'Reports', href: '/reports', icon: FileBarChart },
+      { name: 'Compare', href: '/analyse', icon: GitCompare },
     ],
   },
   {
-    name: 'Settings',
-    href: '/settings',
-    icon: Settings,
+    name: 'Administration',
+    icon: UserCog,
+    adminOnly: true,
+    children: [
+      { name: 'Users', href: '/admin/users', icon: Users },
+      { name: 'Settings', href: '/settings', icon: Settings },
+    ],
   },
 ]
 
@@ -78,9 +86,16 @@ interface SidebarProps {
   onClose?: () => void
   collapsed?: boolean
   onToggleCollapse?: () => void
+  userRole?: 'ADMIN' | 'CAREGIVER'
 }
 
-export default function Sidebar({ className = '', onClose, collapsed = false, onToggleCollapse }: SidebarProps) {
+export default function Sidebar({ 
+  className = '', 
+  onClose, 
+  collapsed = false, 
+  onToggleCollapse,
+  userRole = 'CAREGIVER'
+}: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
@@ -91,14 +106,16 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
     )
   }
 
-  // Only highlight when explicitly navigating, not by default
-  const isActive = (href: string) => {
-    // Don't highlight dashboard by default on initial load
-    if (href === '/dashboard' && pathname === '/dashboard') {
-      return false
+  // Check if current path is within item's children
+  const isItemActive = (item: NavItem): boolean => {
+    if (item.href && pathname === item.href) return true
+    if (item.children) {
+      return item.children.some(child => child.href && pathname.startsWith(child.href!))
     }
-    return pathname === href
+    return false
   }
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
   const handleLogout = async () => {
     try {
@@ -111,10 +128,17 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
     }
   }
 
+  // Filter navigation based on user role
+  const filteredNavigation = navigation.filter(item => {
+    if (item.adminOnly && userRole !== 'ADMIN') return false
+    return true
+  })
+
   const NavItemComponent = ({ item, depth = 0 }: { item: NavItem; depth?: number }) => {
     const hasChildren = item.children && item.children.length > 0
     const isExpanded = expandedItems.includes(item.name)
     const active = item.href ? isActive(item.href) : false
+    const hasActiveChild = isItemActive(item)
 
     const handleClick = () => {
       if (hasChildren) {
@@ -133,23 +157,29 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
               <div
                 className={`
                   flex items-center justify-center p-2 rounded-lg cursor-pointer transition-all duration-150
-                  ${active 
+                  ${active || hasActiveChild
                     ? 'bg-primary-50 text-primary-700' 
                     : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700'
                   }
                 `}
                 title={item.name}
               >
-                <item.icon className={`w-4 h-4 ${active ? 'text-primary-600' : ''}`} />
+                <item.icon className={`w-4 h-4 ${active || hasActiveChild ? 'text-primary-600' : ''}`} />
               </div>
             </Link>
           ) : (
             <div
-              className="flex items-center justify-center p-2 rounded-lg cursor-pointer text-surface-500 hover:bg-surface-100 hover:text-surface-700 transition-all duration-150"
+              className={`
+                flex items-center justify-center p-2 rounded-lg cursor-pointer transition-all duration-150
+                ${hasActiveChild
+                  ? 'bg-primary-50 text-primary-700' 
+                  : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700'
+                }
+              `}
               onClick={handleClick}
               title={item.name}
             >
-              <item.icon className="w-4 h-4" />
+              <item.icon className={`w-4 h-4 ${hasActiveChild ? 'text-primary-600' : ''}`} />
             </div>
           )}
           {/* Tooltip */}
@@ -167,12 +197,14 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
           ${depth > 0 ? 'ml-3 pl-5 text-xs' : 'text-[13px]'}
           ${active 
             ? 'bg-primary-50 text-primary-700 font-medium' 
-            : 'text-surface-600 hover:bg-surface-100 hover:text-surface-800'
+            : hasActiveChild && depth === 0
+              ? 'text-primary-700'
+              : 'text-surface-600 hover:bg-surface-100 hover:text-surface-800'
           }
         `}
         onClick={handleClick}
       >
-        <item.icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-primary-600' : ''}`} />
+        <item.icon className={`w-4 h-4 flex-shrink-0 ${active || hasActiveChild ? 'text-primary-600' : ''}`} />
         <span className="flex-1">{item.name}</span>
         {hasChildren && (
           <motion.div
@@ -252,7 +284,7 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
 
       {/* Navigation */}
       <nav className={`flex-1 ${collapsed ? 'px-2' : 'px-3'} py-2 space-y-0.5 overflow-y-auto`}>
-        {navigation.map((item) => (
+        {filteredNavigation.map((item) => (
           <NavItemComponent key={item.name} item={item} />
         ))}
       </nav>
@@ -265,14 +297,14 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
               href="/help"
               className="flex items-center justify-center p-2 rounded-lg text-surface-500 hover:bg-surface-100 hover:text-surface-700 transition-colors"
               onClick={onClose}
-              title="Help and support"
+              title="Help & Support"
             >
               <HelpCircle className="w-4 h-4" />
             </Link>
             <button
               onClick={handleLogout}
               className="flex items-center justify-center p-2 rounded-lg text-surface-500 hover:bg-accent-50 hover:text-accent-600 transition-colors w-full"
-              title="Logout"
+              title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -285,14 +317,14 @@ export default function Sidebar({ className = '', onClose, collapsed = false, on
               onClick={onClose}
             >
               <HelpCircle className="w-4 h-4" />
-              <span>Help and support</span>
+              <span>Help & Support</span>
             </Link>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-surface-600 hover:bg-accent-50 hover:text-accent-600 transition-colors w-full"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>Sign Out</span>
             </button>
           </>
         )}

@@ -203,19 +203,19 @@ export default function TopBar({
                   <ol className="space-y-2 text-sm text-surface-600">
                     <li className="flex gap-3">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">1</span>
-                      <span>Select a municipality from the dropdown above</span>
+                      <span>Go to <strong>Surveys → Create New</strong> to build a survey</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">2</span>
-                      <span>Navigate to "New internal survey" → "Question builder" to create surveys</span>
+                      <span>Use <strong>Surveys → Send Survey</strong> to email it to municipalities</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">3</span>
-                      <span>Click "Send Survey" to email the survey to municipality contacts</span>
+                      <span>View responses in <strong>Analysis → Reports</strong></span>
                     </li>
                     <li className="flex gap-3">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">4</span>
-                      <span>View responses in the Dashboard or use Analyse to compare results</span>
+                      <span>Compare municipalities in <strong>Analysis → Compare</strong></span>
                     </li>
                   </ol>
                 </div>
@@ -223,14 +223,23 @@ export default function TopBar({
                 <div className="pt-4 border-t border-surface-200">
                   <h3 className="font-medium text-surface-900 mb-2">Need more help?</h3>
                   <p className="text-sm text-surface-600 mb-3">
-                    Contact our support team for assistance with the system.
+                    Visit the Help & Support page or contact our support team.
                   </p>
-                  <a
-                    href="mailto:support@healthcare-provider.se"
-                    className="btn-secondary btn-sm inline-flex"
-                  >
-                    Contact Support
-                  </a>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/help"
+                      className="btn-primary btn-sm inline-flex"
+                      onClick={() => setHelpModalOpen(false)}
+                    >
+                      Help Center
+                    </Link>
+                    <a
+                      href="mailto:support@healthcare-provider.se"
+                      className="btn-secondary btn-sm inline-flex"
+                    >
+                      Contact Support
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>

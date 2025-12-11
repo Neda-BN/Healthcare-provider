@@ -2,41 +2,78 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import {
   HelpCircle,
   Book,
   Mail,
   MessageSquare,
-  FileText,
   Video,
   ChevronDown,
-  ExternalLink,
+  ClipboardList,
+  Building2,
+  BarChart3,
+  Send,
+  PenSquare,
 } from 'lucide-react'
 
 const faqs = [
   {
     question: 'How do I create a new survey?',
-    answer: 'Navigate to "New internal survey" → "Question builder" in the sidebar. You can create a new template or modify the existing one. Once ready, click "Send Survey" in the top bar to email it to municipalities.',
+    answer: 'Go to Surveys → Create New in the sidebar to open the Question Builder. You can create a new template or modify the existing one. Add questions, set their types (rating, yes/no, text), and organize them by categories.',
+  },
+  {
+    question: 'How do I send a survey?',
+    answer: 'Navigate to Surveys → Send Survey. Select the survey template, choose municipalities and recipients, then click Send. Recipients will receive an email with instructions to reply with their answers.',
   },
   {
     question: 'How do municipalities respond to surveys?',
-    answer: 'Municipalities can respond directly by replying to the survey email. They should format their answers as "Q4: 8" or "Q5a: 7" etc. The system will automatically parse these responses. Alternatively, they can provide free-text comments.',
+    answer: 'Municipalities respond by replying to the survey email. They format answers as "Q4: 8" or "Q5a: 7". The system automatically parses these responses. Alternatively, they can provide free-text comments.',
   },
   {
     question: 'How is the response rate calculated?',
-    answer: 'Response rate = (Number of completed surveys / Total surveys sent) × 100. A survey is considered "completed" when at least 50% of the questions have been answered.',
+    answer: 'Response rate = (Completed surveys / Total sent) × 100. A survey is "completed" when at least 50% of questions have been answered.',
   },
   {
     question: 'Can I compare multiple municipalities?',
-    answer: 'Yes! Go to "Municipalities" → "Analyse" to access the comparison tool. You can select 2-4 municipalities and compare their scores across all categories, with visual charts and delta calculations.',
+    answer: 'Yes! Go to Analysis → Compare to access the comparison tool. Select 2-4 municipalities and compare scores across all categories with visual charts and delta calculations.',
   },
   {
     question: 'How do I export survey data?',
-    answer: 'From the Analyse page, click "Export CSV" to download comparison data. For individual survey results, visit the survey detail page and use the export options there.',
+    answer: 'From the Analysis → Reports page, click "Export CSV" to download all survey data. For comparison exports, visit Analysis → Compare and use the export button there.',
   },
   {
     question: 'What do the rating scores mean?',
-    answer: 'Ratings are on a 1-10 scale where 1 = very poor and 10 = excellent. Scores 8+ are considered strengths, 6-7 are average, and below 6 indicate areas needing improvement.',
+    answer: 'Ratings are 1-10 where 1 = very poor and 10 = excellent. Scores 8+ are strengths (green), 6-7 average (amber), below 6 need improvement (red).',
+  },
+]
+
+const navigationGuide = [
+  {
+    icon: ClipboardList,
+    title: 'Surveys',
+    items: [
+      { name: 'Create New', desc: 'Build survey templates with the question builder' },
+      { name: 'Send Survey', desc: 'Email surveys to municipality contacts' },
+      { name: 'All Surveys', desc: 'View all sent surveys and their status' },
+    ],
+  },
+  {
+    icon: Building2,
+    title: 'Municipalities',
+    items: [
+      { name: 'Overview', desc: 'List of all municipalities and placements' },
+      { name: 'Agreements', desc: 'Framework agreements with municipalities' },
+      { name: 'Placements', desc: 'Care placements per municipality' },
+    ],
+  },
+  {
+    icon: BarChart3,
+    title: 'Analysis',
+    items: [
+      { name: 'Reports', desc: 'Monthly and individual survey reports' },
+      { name: 'Compare', desc: 'Compare scores across municipalities' },
+    ],
   },
 ]
 
@@ -52,72 +89,109 @@ export default function HelpPage() {
         </div>
         <h1 className="text-3xl font-display font-bold text-surface-900">Help & Support</h1>
         <p className="text-surface-500 mt-2 max-w-xl mx-auto">
-          Find answers to common questions and learn how to get the most out of the survey system.
+          Learn how to navigate the system and get the most out of your surveys.
         </p>
       </div>
 
-      {/* Quick Links */}
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          { icon: Book, label: 'User Guide', href: '#guide' },
-          { icon: Video, label: 'Video Tutorials', href: '#tutorials' },
-          { icon: Mail, label: 'Contact Support', href: 'mailto:support@healthcare-provider.se' },
-        ].map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className="card-hover flex items-center gap-4 group"
-          >
-            <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
-              <item.icon className="w-6 h-6 text-primary-600" />
-            </div>
-            <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
-              {item.label}
-            </span>
-          </a>
-        ))}
+        <Link href="/surveys/builder" className="card-hover flex items-center gap-4 group">
+          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
+            <PenSquare className="w-6 h-6 text-primary-600" />
+          </div>
+          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+            Create Survey
+          </span>
+        </Link>
+        <Link href="/surveys/send" className="card-hover flex items-center gap-4 group">
+          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
+            <Send className="w-6 h-6 text-primary-600" />
+          </div>
+          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+            Send Survey
+          </span>
+        </Link>
+        <a
+          href="mailto:support@healthcare-provider.se"
+          className="card-hover flex items-center gap-4 group"
+        >
+          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
+            <Mail className="w-6 h-6 text-primary-600" />
+          </div>
+          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+            Contact Support
+          </span>
+        </a>
       </div>
 
-      {/* Getting Started Guide */}
+      {/* Navigation Guide */}
       <div className="card" id="guide">
-        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">Getting Started</h2>
-        <div className="space-y-6">
+        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">Navigation Guide</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {navigationGuide.map((section) => (
+            <div key={section.title} className="space-y-3">
+              <div className="flex items-center gap-2">
+                <section.icon className="w-5 h-5 text-primary-600" />
+                <h3 className="font-semibold text-surface-900">{section.title}</h3>
+              </div>
+              <ul className="space-y-2">
+                {section.items.map((item) => (
+                  <li key={item.name} className="text-sm">
+                    <span className="font-medium text-surface-700">{item.name}</span>
+                    <p className="text-surface-500">{item.desc}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Getting Started */}
+      <div className="card">
+        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">Quick Start</h2>
+        <div className="space-y-4">
           {[
             {
               step: 1,
-              title: 'Select a Municipality',
-              description: 'Use the dropdown in the top bar to select which municipality you want to work with. This filters the dashboard to show only that municipality\'s data.',
+              title: 'Create a Survey',
+              description: 'Go to Surveys → Create New to build your questionnaire with the Question Builder.',
+              link: '/surveys/builder',
             },
             {
               step: 2,
-              title: 'Review or Create a Survey Template',
-              description: 'Go to "New internal survey" → "Question builder" to view or modify survey questions. The default template includes all Nordic Care Index questions.',
+              title: 'Send to Municipalities',
+              description: 'Navigate to Surveys → Send Survey, select recipients, and send the survey.',
+              link: '/surveys/send',
             },
             {
               step: 3,
-              title: 'Send a Survey',
-              description: 'Click "Send Survey" in the top bar or navigate to the send page. Select municipalities and recipients, then send the survey via email.',
+              title: 'View Results',
+              description: 'Check Analysis → Reports for survey results and scores.',
+              link: '/reports',
             },
             {
               step: 4,
-              title: 'Collect Responses',
-              description: 'Recipients reply directly to the email with their ratings. The system automatically parses responses like "Q4: 8" and updates the dashboard.',
-            },
-            {
-              step: 5,
-              title: 'Analyze Results',
-              description: 'View individual municipality dashboards or use the Analyse tool to compare multiple municipalities side by side.',
+              title: 'Compare Performance',
+              description: 'Use Analysis → Compare to benchmark municipalities against each other.',
+              link: '/analyse',
             },
           ].map((item) => (
-            <div key={item.step} className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
+            <Link
+              key={item.step}
+              href={item.link}
+              className="flex gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-50 transition-colors group"
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold group-hover:bg-primary-200 transition-colors">
                 {item.step}
               </div>
               <div>
-                <h3 className="font-semibold text-surface-900">{item.title}</h3>
-                <p className="text-surface-600 mt-1">{item.description}</p>
+                <h3 className="font-semibold text-surface-900 group-hover:text-primary-600 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-surface-600 text-sm mt-0.5">{item.description}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -169,8 +243,8 @@ export default function HelpPage() {
               <MessageSquare className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="text-xl font-display font-bold">Need more help?</h3>
-              <p className="text-primary-100">Our support team is here to assist you.</p>
+              <h3 className="text-xl font-display font-bold">Still need help?</h3>
+              <p className="text-primary-100">Our support team is ready to assist.</p>
             </div>
           </div>
           <a
@@ -185,4 +259,3 @@ export default function HelpPage() {
     </div>
   )
 }
-

@@ -53,6 +53,7 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
         <Sidebar 
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          userRole={user.role}
         />
       </aside>
 
@@ -80,7 +81,7 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
               >
                 <X className="w-4 h-4 text-surface-600" />
               </button>
-              <Sidebar onClose={() => setSidebarOpen(false)} />
+              <Sidebar onClose={() => setSidebarOpen(false)} userRole={user.role} />
             </motion.aside>
           </>
         )}
