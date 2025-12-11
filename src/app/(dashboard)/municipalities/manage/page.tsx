@@ -389,15 +389,15 @@ export default function ManageMunicipalitiesPage() {
       {/* Municipalities Table */}
       <div className="card overflow-hidden p-0">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead>
               <tr className="bg-surface-50 border-b border-surface-200">
-                <th className="w-10 px-3 py-3 text-left font-medium text-surface-600"></th>
-                <th className="px-4 py-3 text-left font-medium text-surface-600">Municipality</th>
-                <th className="w-40 px-4 py-3 text-center font-medium text-surface-600">Email Recipients</th>
-                <th className="w-24 px-4 py-3 text-center font-medium text-surface-600">Surveys</th>
-                <th className="w-28 px-4 py-3 text-center font-medium text-surface-600">Placements</th>
-                <th className="w-32 px-4 py-3 text-right font-medium text-surface-600">Actions</th>
+                <th className="w-12 px-3 py-3 text-left font-medium text-surface-600"></th>
+                <th className="w-[30%] px-4 py-3 text-left font-medium text-surface-600">Municipality</th>
+                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600">Email Recipients</th>
+                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600">Surveys</th>
+                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600">Placements</th>
+                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -411,7 +411,7 @@ export default function ManageMunicipalitiesPage() {
                 filteredMunicipalities.map((municipality) => (
                   <>
                     <tr key={municipality.id} className="group border-b border-surface-100 last:border-b-0 hover:bg-surface-50/50">
-                      <td className="w-10 px-3 py-3">
+                      <td className="w-12 px-3 py-3">
                         <button
                           onClick={() => toggleExpanded(municipality.id)}
                           className="p-1 hover:bg-surface-100 rounded transition-colors"
@@ -423,20 +423,20 @@ export default function ManageMunicipalitiesPage() {
                           )}
                         </button>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="w-[30%] px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-primary-50 rounded-lg">
+                          <div className="p-2 bg-primary-50 rounded-lg flex-shrink-0">
                             <Building2 className="w-5 h-5 text-primary-600" />
                           </div>
-                          <div>
-                            <div className="font-medium text-surface-900">{municipality.name}</div>
+                          <div className="min-w-0">
+                            <div className="font-medium text-surface-900 truncate">{municipality.name}</div>
                             {municipality.description && (
-                              <div className="text-sm text-surface-500">{municipality.description}</div>
+                              <div className="text-sm text-surface-500 truncate">{municipality.description}</div>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="w-40 px-4 py-3 text-center">
+                      <td className="w-[20%] px-4 py-3 text-center">
                         <button
                           onClick={() => openEmailsModal(municipality)}
                           className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-100 hover:bg-surface-200 rounded-full text-sm font-medium text-surface-700 transition-colors"
@@ -445,10 +445,10 @@ export default function ManageMunicipalitiesPage() {
                           {municipality._count.emails}
                         </button>
                       </td>
-                      <td className="w-24 px-4 py-3 text-center text-surface-600">{municipality._count.surveys}</td>
-                      <td className="w-28 px-4 py-3 text-center text-surface-600">{municipality._count.placements}</td>
-                      <td className="w-32 px-4 py-3">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <td className="w-[15%] px-4 py-3 text-center text-surface-600">{municipality._count.surveys}</td>
+                      <td className="w-[15%] px-4 py-3 text-center text-surface-600">{municipality._count.placements}</td>
+                      <td className="w-[20%] px-4 py-3">
+                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => openEmailsModal(municipality, true)}
                             className="p-2 hover:bg-primary-50 rounded-lg transition-colors"
