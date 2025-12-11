@@ -28,6 +28,8 @@ A complete web application for healthcare providers to create and manage municip
 - **Survey Management**: Create, edit, and send surveys to municipality contacts
 - **Question Builder**: Drag-and-drop interface to create survey templates
 - **Email Integration**: Send surveys via email and parse replies automatically
+- **Municipality Management**: Create municipalities and manage email recipient lists
+- **Email List Upload**: Upload CSV, XLSX, or TXT files with email recipients
 - **Dashboards**: Real-time analytics with charts and statistics
 - **Municipality Comparison**: Compare performance across multiple municipalities
 - **Export**: CSV export for survey data
@@ -218,10 +220,66 @@ The main dashboard shows:
 3. Click on any municipality to see their dashboard
 
 ### Comparing Municipalities
-1. Go to **Municipalities** → **Analyse** in the sidebar
+1. Go to **Analysis** → **Compare** in the sidebar
 2. Select 2-4 municipalities to compare
 3. View side-by-side charts and statistics
 4. Click **Export CSV** to download data
+
+### Managing Municipalities (Admin Only)
+1. Go to **Municipalities** → **Manage** in the sidebar
+2. Click **Add Municipality** to create a new one
+3. Enter the municipality name and optional description
+4. Click **Create Municipality**
+
+### Uploading Email Recipients
+1. Go to **Municipalities** → **Manage**
+2. Find the municipality in the list
+3. Click the **Upload** icon (↑) next to it
+4. Select a file (CSV, XLSX, or TXT)
+5. The system will automatically extract valid email addresses
+6. Review the preview and click **Save**
+
+#### Supported File Formats
+- **CSV**: Comma-separated values with emails in any column
+- **XLSX/XLS**: Excel files with emails in any column/sheet
+- **TXT**: Plain text with one email per line or mixed content
+
+#### Example File Structures
+
+**CSV Example (emails.csv)**:
+```csv
+Name,Email,Department
+John Doe,john.doe@municipality.se,Social Services
+Jane Smith,jane.smith@municipality.se,Healthcare
+```
+
+**TXT Example (emails.txt)**:
+```
+contact@municipality.se
+healthcare@municipality.se
+social@municipality.se
+```
+
+**Excel Example**: Any spreadsheet with email addresses in one or more columns.
+
+The system will:
+- Automatically detect email addresses in any column
+- Remove duplicates
+- Trim whitespace
+- Validate email format
+- Show you a preview before saving
+
+### Sending Surveys with Email Lists
+1. Go to **Surveys** → **Send Survey**
+2. Select municipalities (the email count is shown next to each)
+3. Click on **Recipients** to expand and see all loaded emails
+4. Optionally add or remove individual emails
+5. Click **Send** to send to all recipients
+
+When multiple municipalities are selected:
+- Email lists are automatically merged
+- Duplicates are removed
+- Total count is displayed
 
 ### Question Builder
 1. Go to **New internal survey** → **Question builder**

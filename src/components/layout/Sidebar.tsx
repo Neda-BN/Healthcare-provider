@@ -26,6 +26,8 @@ import {
   List,
   ScrollText,
   GitCompare,
+  Mail,
+  Cog,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -58,6 +60,7 @@ const navigation: NavItem[] = [
     icon: Building2,
     children: [
       { name: 'Overview', href: '/municipalities', icon: FolderOpen },
+      { name: 'Manage', href: '/municipalities/manage', icon: Cog, adminOnly: true },
       { name: 'Agreements', href: '/municipalities/framework', icon: ScrollText },
       { name: 'Placements', href: '/municipalities/placement', icon: FileText },
     ],
@@ -129,13 +132,20 @@ export default function Sidebar({
   }
 
   // Filter navigation based on user role
-  const filteredNavigation = navigation.filter(item => {
-    if (item.adminOnly && userRole !== 'ADMIN') return false
-    return true
-  })
+  const filterNavItems = (items: NavItem[]): NavItem[] => {
+    return items
+      .filter(item => !(item.adminOnly && userRole !== 'ADMIN'))
+      .map(item => ({
+        ...item,
+        children: item.children ? filterNavItems(item.children) : undefined
+      }))
+  }
+
+  const filteredNavigation = filterNavItems(navigation)
 
   const NavItemComponent = ({ item, depth = 0 }: { item: NavItem; depth?: number }) => {
-    const hasChildren = item.children && item.children.length > 0
+    const filteredChildren = item.children?.filter(child => !(child.adminOnly && userRole !== 'ADMIN'))
+    const hasChildren = filteredChildren && filteredChildren.length > 0
     const isExpanded = expandedItems.includes(item.name)
     const active = item.href ? isActive(item.href) : false
     const hasActiveChild = isItemActive(item)
@@ -235,7 +245,7 @@ export default function Sidebar({
               className="overflow-hidden"
             >
               <div className="mt-0.5 space-y-0.5 border-l border-surface-200 ml-4">
-                {item.children!.map((child) => (
+                {filteredChildren!.map((child) => (
                   <NavItemComponent key={child.name} item={child} depth={depth + 1} />
                 ))}
               </div>

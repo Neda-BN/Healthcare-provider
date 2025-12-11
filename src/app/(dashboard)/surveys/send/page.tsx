@@ -5,7 +5,11 @@ async function getData() {
   const [municipalities, templates] = await Promise.all([
     prisma.municipality.findMany({
       where: { active: true },
-      select: { id: true, name: true, contactEmail: true },
+      include: {
+        _count: {
+          select: { emails: true }
+        }
+      },
       orderBy: { name: 'asc' },
     }),
     prisma.surveyTemplate.findMany({

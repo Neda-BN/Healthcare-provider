@@ -40,6 +40,7 @@ model User {
 model Municipality {
   id              String   @id @default(uuid())
   name            String
+  description     String?
   organizationNumber String?
   contactEmail    String?
   contactPhone    String?
@@ -59,8 +60,25 @@ model Municipality {
   // Relations
   surveys         Survey[]
   placements      Placement[]
+  emails          MunicipalityEmail[]
 
   @@index([name])
+}
+
+// ==========================================
+// MUNICIPALITY EMAIL RECIPIENTS
+// ==========================================
+
+model MunicipalityEmail {
+  id             String   @id @default(uuid())
+  municipalityId String
+  municipality   Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
+  email          String
+  createdAt      DateTime @default(now())
+
+  @@unique([municipalityId, email]) // Prevent duplicate emails per municipality
+  @@index([municipalityId])
+  @@index([email])
 }
 
 // ==========================================

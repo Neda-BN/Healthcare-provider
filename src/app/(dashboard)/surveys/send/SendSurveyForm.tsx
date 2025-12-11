@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Send,
   Building2,
@@ -13,6 +13,10 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  Trash2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -20,6 +24,9 @@ interface Municipality {
   id: string
   name: string
   contactEmail: string | null
+  _count?: {
+    emails: number
+  }
 }
 
 interface Template {
@@ -47,21 +54,100 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
     templates.find((t) => t.isDefault)?.id || templates[0]?.id || ''
   )
   const [title, setTitle] = useState('')
+  
+  // Email management
+  const [municipalityEmails, setMunicipalityEmails] = useState<Record<string, string[]>>({})
+  const [loadingEmails, setLoadingEmails] = useState<Record<string, boolean>>({})
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([])
   const [additionalEmails, setAdditionalEmails] = useState<string[]>([])
   const [newEmail, setNewEmail] = useState('')
+  const [showEmailList, setShowEmailList] = useState(false)
+  
   const [parseReplies, setParseReplies] = useState(true)
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message: string; surveyIds?: string[] } | null>(null)
 
-  const handleAddEmail = () => {
-    if (newEmail && !additionalEmails.includes(newEmail)) {
-      setAdditionalEmails([...additionalEmails, newEmail])
-      setNewEmail('')
+  // Fetch emails for a municipality
+  const fetchMunicipalityEmails = async (municipalityId: string) => {
+    if (municipalityEmails[municipalityId]) return // Already fetched
+
+    setLoadingEmails(prev => ({ ...prev, [municipalityId]: true }))
+    try {
+      const res = await fetch(`/api/municipalities/${municipalityId}/emails`, {
+        credentials: 'include'
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const emails = data.map((e: { email: string }) => e.email)
+        setMunicipalityEmails(prev => ({ ...prev, [municipalityId]: emails }))
+      }
+    } catch (error) {
+      console.error('Error fetching emails:', error)
+    } finally {
+      setLoadingEmails(prev => ({ ...prev, [municipalityId]: false }))
     }
   }
 
+  // Fetch emails when municipalities are selected
+  useEffect(() => {
+    selectedMunicipalities.forEach(id => {
+      fetchMunicipalityEmails(id)
+    })
+  }, [selectedMunicipalities])
+
+  // Update selected emails when municipality emails are loaded
+  useEffect(() => {
+    const allEmails = new Set<string>()
+    selectedMunicipalities.forEach(id => {
+      const emails = municipalityEmails[id] || []
+      emails.forEach(email => allEmails.add(email))
+    })
+    // Add additional emails
+    additionalEmails.forEach(email => allEmails.add(email))
+    setSelectedEmails(Array.from(allEmails).sort())
+  }, [selectedMunicipalities, municipalityEmails, additionalEmails])
+
+  // Get total email count for a municipality
+  const getMunicipalityEmailCount = (m: Municipality): number => {
+    if (municipalityEmails[m.id]) {
+      return municipalityEmails[m.id].length
+    }
+    return m._count?.emails || 0
+  }
+
+  // Handle municipality selection
+  const handleMunicipalityToggle = (municipalityId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedMunicipalities([...selectedMunicipalities, municipalityId])
+    } else {
+      setSelectedMunicipalities(selectedMunicipalities.filter((id) => id !== municipalityId))
+    }
+  }
+
+  // Add additional email
+  const handleAddEmail = () => {
+    const email = newEmail.trim().toLowerCase()
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!additionalEmails.includes(email) && !selectedEmails.includes(email)) {
+        setAdditionalEmails([...additionalEmails, email])
+        setNewEmail('')
+      } else {
+        toast.error('Email already in the list')
+      }
+    } else {
+      toast.error('Please enter a valid email address')
+    }
+  }
+
+  // Remove email from selected list
   const handleRemoveEmail = (email: string) => {
-    setAdditionalEmails(additionalEmails.filter((e) => e !== email))
+    // If it's an additional email, remove from there
+    if (additionalEmails.includes(email)) {
+      setAdditionalEmails(additionalEmails.filter((e) => e !== email))
+    } else {
+      // Otherwise, we need to track removed emails
+      setSelectedEmails(selectedEmails.filter((e) => e !== email))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,6 +158,10 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
     }
     if (!selectedTemplate) {
       toast.error('Please select a survey template')
+      return
+    }
+    if (selectedEmails.length === 0) {
+      toast.error('No recipients selected. Add email addresses or upload emails for the municipalities.')
       return
     }
 
@@ -86,7 +176,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
           municipalityIds: selectedMunicipalities,
           templateId: selectedTemplate,
           title: title || `Survey - ${new Date().toLocaleDateString('sv-SE')}`,
-          additionalEmails,
+          recipientEmails: selectedEmails,
           parseReplies,
         }),
       })
@@ -99,8 +189,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
 
       setResult({
         success: true,
-        message: `Successfully sent ${data.surveys.length} survey(s)!`,
-        surveyIds: data.surveys.map((s: any) => s.id),
+        message: `Successfully sent ${data.surveys.length} survey(s) to ${selectedEmails.length} recipients!`,
+        surveyIds: data.surveys.map((s: { id: string }) => s.id),
       })
       toast.success('Surveys sent successfully!')
     } catch (error) {
@@ -113,6 +203,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
       setSending(false)
     }
   }
+
+  const isLoadingAnyEmails = Object.values(loadingEmails).some(v => v)
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -208,36 +300,147 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
               Select Municipalities
             </h3>
             <div className="space-y-2">
-              {municipalities.map((m) => (
-                <label
-                  key={m.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                    selectedMunicipalities.includes(m.id)
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-surface-200 hover:border-surface-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedMunicipalities.includes(m.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedMunicipalities([...selectedMunicipalities, m.id])
-                        } else {
-                          setSelectedMunicipalities(selectedMunicipalities.filter((id) => id !== m.id))
-                        }
-                      }}
-                      className="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <span className="font-medium text-surface-900">{m.name}</span>
-                  </div>
-                  {m.contactEmail && (
-                    <span className="text-sm text-surface-500">{m.contactEmail}</span>
-                  )}
-                </label>
-              ))}
+              {municipalities.map((m) => {
+                const emailCount = getMunicipalityEmailCount(m)
+                const isLoading = loadingEmails[m.id]
+                const isSelected = selectedMunicipalities.includes(m.id)
+                
+                return (
+                  <label
+                    key={m.id}
+                    className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                      isSelected
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-surface-200 hover:border-surface-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => handleMunicipalityToggle(m.id, e.target.checked)}
+                        className="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+                      />
+                      <span className="font-medium text-surface-900">{m.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin text-surface-400" />
+                      ) : (
+                        <span className={`flex items-center gap-1 text-sm ${emailCount > 0 ? 'text-primary-600' : 'text-surface-400'}`}>
+                          <Mail className="w-4 h-4" />
+                          {emailCount} {emailCount === 1 ? 'email' : 'emails'}
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                )
+              })}
             </div>
+          </div>
+
+          {/* Recipients Section */}
+          <div className="card">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => setShowEmailList(!showEmailList)}
+            >
+              <h3 className="text-lg font-semibold text-surface-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary-600" />
+                Recipients
+                {selectedEmails.length > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                    {selectedEmails.length} {selectedEmails.length === 1 ? 'email' : 'emails'} loaded
+                  </span>
+                )}
+              </h3>
+              <button type="button" className="p-1 hover:bg-surface-100 rounded">
+                {showEmailList ? <ChevronUp className="w-5 h-5 text-surface-500" /> : <ChevronDown className="w-5 h-5 text-surface-500" />}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showEmailList && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 space-y-4">
+                    {/* Add email input */}
+                    <div>
+                      <label className="label">Add Additional Email</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          value={newEmail}
+                          onChange={(e) => setNewEmail(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddEmail())}
+                          className="input flex-1"
+                          placeholder="additional@email.com"
+                        />
+                        <button type="button" onClick={handleAddEmail} className="btn-secondary">
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Email list */}
+                    {selectedEmails.length > 0 ? (
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="label mb-0">Email List ({selectedEmails.length})</label>
+                          <p className="text-xs text-surface-500">Click × to remove an email</p>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto bg-surface-50 rounded-lg p-3">
+                          <div className="flex flex-wrap gap-2">
+                            {selectedEmails.map((email) => (
+                              <span
+                                key={email}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm ${
+                                  additionalEmails.includes(email)
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-white border border-surface-200 text-surface-700'
+                                }`}
+                              >
+                                {email}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveEmail(email)}
+                                  className="p-0.5 hover:bg-surface-200 rounded-full"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 bg-surface-50 rounded-lg">
+                        <Users className="w-10 h-10 text-surface-300 mx-auto mb-2" />
+                        <p className="text-surface-500 text-sm">
+                          {selectedMunicipalities.length === 0
+                            ? 'Select municipalities above to load email recipients'
+                            : isLoadingAnyEmails
+                            ? 'Loading email recipients...'
+                            : 'No email recipients found. Upload emails for the selected municipalities or add them manually.'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Summary when collapsed */}
+            {!showEmailList && selectedEmails.length === 0 && selectedMunicipalities.length > 0 && (
+              <p className="text-sm text-amber-600 mt-2 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                No email recipients. Click to add emails manually.
+              </p>
+            )}
           </div>
 
           {/* Survey Details */}
@@ -257,42 +460,6 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                   className="input"
                   placeholder={`Survey - ${new Date().toLocaleDateString('sv-SE')}`}
                 />
-              </div>
-
-              <div>
-                <label className="label">Additional Recipients (optional)</label>
-                <div className="flex gap-2 mb-2">
-                  <input
-                    type="email"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddEmail())}
-                    className="input flex-1"
-                    placeholder="additional@email.com"
-                  />
-                  <button type="button" onClick={handleAddEmail} className="btn-secondary">
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-                {additionalEmails.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {additionalEmails.map((email) => (
-                      <span
-                        key={email}
-                        className="flex items-center gap-1 px-3 py-1 bg-surface-100 rounded-full text-sm"
-                      >
-                        {email}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveEmail(email)}
-                          className="p-0.5 hover:bg-surface-200 rounded-full"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -317,7 +484,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
             </button>
             <button
               type="submit"
-              disabled={sending || selectedMunicipalities.length === 0}
+              disabled={sending || selectedMunicipalities.length === 0 || selectedEmails.length === 0}
               className="btn-primary"
             >
               {sending ? (
@@ -328,7 +495,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  Send Survey ({selectedMunicipalities.length})
+                  Send to {selectedEmails.length} {selectedEmails.length === 1 ? 'Recipient' : 'Recipients'}
                 </>
               )}
             </button>
@@ -338,4 +505,3 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
     </div>
   )
 }
-
