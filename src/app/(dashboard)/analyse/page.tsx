@@ -22,7 +22,7 @@ async function getAnalysisData() {
     orderBy: { orderIndex: 'asc' },
   })
 
-  const categories = [...new Set(questions.map((q) => q.category).filter(Boolean))]
+  const categories = Array.from(new Set(questions.map((q) => q.category).filter(Boolean))) as string[]
 
   // Calculate stats for each municipality
   const municipalityData = municipalities.map((m) => {

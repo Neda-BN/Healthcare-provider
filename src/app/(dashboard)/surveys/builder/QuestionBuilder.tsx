@@ -136,7 +136,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
   }
 
   // Group questions by category
-  const categories = [...new Set(template.questions.map((q) => q.category))].filter(Boolean)
+  const categories = Array.from(new Set(template.questions.map((q) => q.category))).filter(Boolean) as string[]
 
   return (
     <div className="space-y-6">
@@ -421,7 +421,7 @@ function PreviewModal({
   template: Template
   onClose: () => void
 }) {
-  const categories = [...new Set(template.questions.map((q) => q.category))].filter(Boolean)
+  const categories = Array.from(new Set(template.questions.map((q) => q.category))).filter(Boolean) as string[]
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
