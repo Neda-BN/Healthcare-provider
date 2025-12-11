@@ -26,6 +26,8 @@ interface Municipality {
   id: string
   name: string
   description: string | null
+  organizationNumber: string | null
+  businessType: string | null
   contactEmail: string | null
   _count: {
     emails: number
@@ -60,9 +62,17 @@ export default function ManageMunicipalitiesPage() {
   
   // Form states
   const [formName, setFormName] = useState('')
-  const [formDescription, setFormDescription] = useState('')
-  const [formEmail, setFormEmail] = useState('')
+  const [formOrgNumber, setFormOrgNumber] = useState('')
+  const [formBusinessType, setFormBusinessType] = useState('')
   const [formSaving, setFormSaving] = useState(false)
+  
+  // Business type options
+  const businessTypeOptions = [
+    { value: 'HVB', label: 'HVB' },
+    { value: 'LSS', label: 'LSS' },
+    { value: 'SUPPORTIVE_HOUSING', label: 'Supportive housing' },
+    { value: 'ELDERLY_CARE', label: 'Elderly care' },
+  ]
   
   // Upload states
   const [uploadFile, setUploadFile] = useState<File | null>(null)
@@ -118,8 +128,8 @@ export default function ManageMunicipalitiesPage() {
         credentials: 'include',
         body: JSON.stringify({
           name: formName,
-          description: formDescription,
-          contactEmail: formEmail,
+          organizationNumber: formOrgNumber,
+          businessType: formBusinessType,
         }),
       })
 
@@ -154,8 +164,8 @@ export default function ManageMunicipalitiesPage() {
         credentials: 'include',
         body: JSON.stringify({
           name: formName,
-          description: formDescription,
-          contactEmail: formEmail,
+          organizationNumber: formOrgNumber,
+          businessType: formBusinessType,
         }),
       })
 
@@ -300,8 +310,8 @@ export default function ManageMunicipalitiesPage() {
   const openEditModal = (municipality: Municipality) => {
     setSelectedMunicipality(municipality)
     setFormName(municipality.name)
-    setFormDescription(municipality.description || '')
-    setFormEmail(municipality.contactEmail || '')
+    setFormOrgNumber(municipality.organizationNumber || '')
+    setFormBusinessType(municipality.businessType || '')
     setShowEditModal(true)
   }
 
@@ -324,8 +334,8 @@ export default function ManageMunicipalitiesPage() {
   // Reset form
   const resetForm = () => {
     setFormName('')
-    setFormDescription('')
-    setFormEmail('')
+    setFormOrgNumber('')
+    setFormBusinessType('')
     setSelectedMunicipality(null)
   }
 
@@ -521,42 +531,54 @@ export default function ManageMunicipalitiesPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-1">
-                    Municipality Name <span className="text-accent-500">*</span>
+                    Name <span className="text-accent-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     className="input w-full"
-                    placeholder="e.g., Stockholm Municipality"
+                    placeholder="e.g., Nordic Care AB"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Description</label>
-                  <textarea
-                    value={formDescription}
-                    onChange={(e) => setFormDescription(e.target.value)}
-                    className="input w-full"
-                    rows={2}
-                    placeholder="Optional description..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Contact Email</label>
+                  <label className="block text-sm font-medium text-surface-700 mb-1">Organization Number</label>
                   <input
-                    type="email"
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
+                    type="text"
+                    value={formOrgNumber}
+                    onChange={(e) => setFormOrgNumber(e.target.value)}
                     className="input w-full"
-                    placeholder="contact@municipality.se"
+                    placeholder="e.g., 556123-4567"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-surface-700 mb-1">Business Type</label>
+                  <select
+                    value={formBusinessType}
+                    onChange={(e) => setFormBusinessType(e.target.value)}
+                    className="input w-full"
+                  >
+                    <option value="">Select business type...</option>
+                    {businessTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200">
-                <button onClick={() => { setShowCreateModal(false); resetForm() }} className="btn-secondary">
+                <button 
+                  onClick={() => { setShowCreateModal(false); resetForm() }} 
+                  className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                >
                   Cancel
                 </button>
-                <button onClick={handleCreate} disabled={formSaving} className="btn-primary">
+                <button 
+                  onClick={handleCreate} 
+                  disabled={formSaving} 
+                  className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
+                >
                   {formSaving ? 'Creating...' : 'Create Municipality'}
                 </button>
               </div>
@@ -574,7 +596,7 @@ export default function ManageMunicipalitiesPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-surface-700 mb-1">
-                    Municipality Name <span className="text-accent-500">*</span>
+                    Name <span className="text-accent-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -584,29 +606,43 @@ export default function ManageMunicipalitiesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Description</label>
-                  <textarea
-                    value={formDescription}
-                    onChange={(e) => setFormDescription(e.target.value)}
+                  <label className="block text-sm font-medium text-surface-700 mb-1">Organization Number</label>
+                  <input
+                    type="text"
+                    value={formOrgNumber}
+                    onChange={(e) => setFormOrgNumber(e.target.value)}
                     className="input w-full"
-                    rows={2}
+                    placeholder="e.g., 556123-4567"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Contact Email</label>
-                  <input
-                    type="email"
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
+                  <label className="block text-sm font-medium text-surface-700 mb-1">Business Type</label>
+                  <select
+                    value={formBusinessType}
+                    onChange={(e) => setFormBusinessType(e.target.value)}
                     className="input w-full"
-                  />
+                  >
+                    <option value="">Select business type...</option>
+                    {businessTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200">
-                <button onClick={() => { setShowEditModal(false); resetForm() }} className="btn-secondary">
+                <button 
+                  onClick={() => { setShowEditModal(false); resetForm() }} 
+                  className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                >
                   Cancel
                 </button>
-                <button onClick={handleUpdate} disabled={formSaving} className="btn-primary">
+                <button 
+                  onClick={handleUpdate} 
+                  disabled={formSaving} 
+                  className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
+                >
                   {formSaving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>

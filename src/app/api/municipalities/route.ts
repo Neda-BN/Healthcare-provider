@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, description, organizationNumber, contactEmail, contactPhone, address, city, postalCode, notes } = body
+    const { name, description, organizationNumber, businessType, contactEmail, contactPhone, address, city, postalCode, notes } = body
 
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Municipality name is required' }, { status: 400 })
@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         description: description?.trim() || null,
         organizationNumber: organizationNumber?.trim() || null,
+        businessType: businessType?.trim() || null,
         contactEmail: contactEmail?.trim() || null,
         contactPhone: contactPhone?.trim() || null,
         address: address?.trim() || null,

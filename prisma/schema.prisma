@@ -42,6 +42,7 @@ model Municipality {
   name            String
   description     String?
   organizationNumber String?
+  businessType    String?  // HVB, LSS, SUPPORTIVE_HOUSING, ELDERLY_CARE
   contactEmail    String?
   contactPhone    String?
   address         String?

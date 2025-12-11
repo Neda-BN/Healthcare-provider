@@ -56,7 +56,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { name, description, organizationNumber, contactEmail, contactPhone, address, city, postalCode, notes, active } = body
+    const { name, description, organizationNumber, businessType, contactEmail, contactPhone, address, city, postalCode, notes, active } = body
 
     if (name !== undefined && !name.trim()) {
       return NextResponse.json({ error: 'Municipality name cannot be empty' }, { status: 400 })
@@ -68,6 +68,7 @@ export async function PUT(
         ...(name !== undefined && { name: name.trim() }),
         ...(description !== undefined && { description: description?.trim() || null }),
         ...(organizationNumber !== undefined && { organizationNumber: organizationNumber?.trim() || null }),
+        ...(businessType !== undefined && { businessType: businessType?.trim() || null }),
         ...(contactEmail !== undefined && { contactEmail: contactEmail?.trim() || null }),
         ...(contactPhone !== undefined && { contactPhone: contactPhone?.trim() || null }),
         ...(address !== undefined && { address: address?.trim() || null }),
