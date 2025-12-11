@@ -270,16 +270,21 @@ export default function ManageMunicipalitiesPage() {
       if (res.ok) {
         const data = await res.json()
         toast.success(`Saved ${data.added} emails. Total: ${data.total}`)
+        
+        // Update the municipalities list immediately to reflect the new email count
+        await fetchMunicipalities()
+        
         // Refresh emails and go back to list view
         await fetchMunicipalityEmails(selectedMunicipality.id)
-        // Update the municipality count in state
+        
+        // Update the selected municipality count in state
         setSelectedMunicipality(prev => prev ? {
           ...prev,
           _count: { ...prev._count, emails: data.total }
         } : null)
+        
         resetUploadForm()
         setEmailModalView('list')
-        fetchMunicipalities()
       } else {
         const data = await res.json()
         toast.error(data.error || 'Failed to save emails')
@@ -328,6 +333,8 @@ export default function ManageMunicipalitiesPage() {
     setShowEmailsModal(false)
     setMunicipalityEmails([])
     setEmailModalView('list')
+    // Refresh municipalities list to ensure email counts are up to date
+    fetchMunicipalities()
     resetUploadForm()
   }
 
