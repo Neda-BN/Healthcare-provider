@@ -28,8 +28,8 @@ export default async function CaregiversPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">Caregivers</h1>
-        <p className="text-surface-500 mt-1">View and manage caregiver accounts</p>
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Caregivers</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">View and manage caregiver accounts</p>
       </div>
 
       <div className="grid gap-4">
@@ -37,12 +37,12 @@ export default async function CaregiversPage() {
           <div key={caregiver.id} className="card">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary-100 rounded-xl">
-                  <Heart className="w-6 h-6 text-primary-600" />
+                <div className="p-3 bg-primary-100 dark:bg-dark-primary/20 rounded-xl">
+                  <Heart className="w-6 h-6 text-primary-600 dark:text-dark-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-surface-900">{caregiver.name}</h3>
-                  <div className="flex items-center gap-3 mt-1 text-sm text-surface-500">
+                  <h3 className="font-semibold text-surface-900 dark:text-dark-text">{caregiver.name}</h3>
+                  <div className="flex items-center gap-3 mt-1 text-sm text-surface-500 dark:text-dark-text-muted">
                     <span className="flex items-center gap-1">
                       <Mail className="w-3 h-3" />
                       {caregiver.email}
@@ -55,14 +55,14 @@ export default async function CaregiversPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-primary-600">{caregiver.surveys.length}</div>
-                <div className="text-xs text-surface-500">Surveys created</div>
+                <div className="text-2xl font-bold text-primary-600 dark:text-dark-primary">{caregiver.surveys.length}</div>
+                <div className="text-xs text-surface-500 dark:text-dark-text-muted">Surveys created</div>
               </div>
             </div>
 
             {caregiver.surveys.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-surface-200">
-                <p className="text-sm font-medium text-surface-700 mb-2">Recent Surveys</p>
+              <div className="mt-4 pt-4 border-t border-surface-200 dark:border-dark-border">
+                <p className="text-sm font-medium text-surface-700 dark:text-dark-text mb-2">Recent Surveys</p>
                 <div className="flex flex-wrap gap-2">
                   {caregiver.surveys.map((survey) => (
                     <span key={survey.id} className="badge-neutral flex items-center gap-1">
@@ -79,11 +79,10 @@ export default async function CaregiversPage() {
 
       {caregivers.length === 0 && (
         <div className="card text-center py-12">
-          <Heart className="w-12 h-12 mx-auto text-surface-300 mb-4" />
-          <p className="text-surface-500">No caregivers found.</p>
+          <Heart className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
+          <p className="text-surface-500 dark:text-dark-text-muted">No caregivers found.</p>
         </div>
       )}
     </div>
   )
 }
-

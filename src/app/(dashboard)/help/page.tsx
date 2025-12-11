@@ -84,11 +84,11 @@ export default function HelpPage() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex p-4 bg-primary-100 rounded-2xl mb-4">
-          <HelpCircle className="w-12 h-12 text-primary-600" />
+        <div className="inline-flex p-4 bg-primary-100 dark:bg-dark-primary/20 rounded-2xl mb-4">
+          <HelpCircle className="w-12 h-12 text-primary-600 dark:text-dark-primary" />
         </div>
-        <h1 className="text-3xl font-display font-bold text-surface-900">Help & Support</h1>
-        <p className="text-surface-500 mt-2 max-w-xl mx-auto">
+        <h1 className="text-3xl font-display font-bold text-surface-900 dark:text-dark-text">Help & Support</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-2 max-w-xl mx-auto">
           Learn how to navigate the system and get the most out of your surveys.
         </p>
       </div>
@@ -96,18 +96,18 @@ export default function HelpPage() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Link href="/surveys/builder" className="card-hover flex items-center gap-4 group">
-          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
-            <PenSquare className="w-6 h-6 text-primary-600" />
+          <div className="p-3 bg-primary-50 dark:bg-dark-primary/20 rounded-xl group-hover:bg-primary-100 dark:group-hover:bg-dark-primary/30 transition-colors">
+            <PenSquare className="w-6 h-6 text-primary-600 dark:text-dark-primary" />
           </div>
-          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+          <span className="font-medium text-surface-900 dark:text-dark-text group-hover:text-primary-600 dark:group-hover:text-dark-primary transition-colors">
             Create Survey
           </span>
         </Link>
         <Link href="/surveys/send" className="card-hover flex items-center gap-4 group">
-          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
-            <Send className="w-6 h-6 text-primary-600" />
+          <div className="p-3 bg-primary-50 dark:bg-dark-primary/20 rounded-xl group-hover:bg-primary-100 dark:group-hover:bg-dark-primary/30 transition-colors">
+            <Send className="w-6 h-6 text-primary-600 dark:text-dark-primary" />
           </div>
-          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+          <span className="font-medium text-surface-900 dark:text-dark-text group-hover:text-primary-600 dark:group-hover:text-dark-primary transition-colors">
             Send Survey
           </span>
         </Link>
@@ -115,10 +115,10 @@ export default function HelpPage() {
           href="mailto:support@healthcare-provider.se"
           className="card-hover flex items-center gap-4 group"
         >
-          <div className="p-3 bg-primary-50 rounded-xl group-hover:bg-primary-100 transition-colors">
-            <Mail className="w-6 h-6 text-primary-600" />
+          <div className="p-3 bg-primary-50 dark:bg-dark-primary/20 rounded-xl group-hover:bg-primary-100 dark:group-hover:bg-dark-primary/30 transition-colors">
+            <Mail className="w-6 h-6 text-primary-600 dark:text-dark-primary" />
           </div>
-          <span className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">
+          <span className="font-medium text-surface-900 dark:text-dark-text group-hover:text-primary-600 dark:group-hover:text-dark-primary transition-colors">
             Contact Support
           </span>
         </a>
@@ -126,19 +126,19 @@ export default function HelpPage() {
 
       {/* Navigation Guide */}
       <div className="card" id="guide">
-        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">Navigation Guide</h2>
+        <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text mb-6">Navigation Guide</h2>
         <div className="grid gap-6 md:grid-cols-3">
           {navigationGuide.map((section) => (
             <div key={section.title} className="space-y-3">
               <div className="flex items-center gap-2">
-                <section.icon className="w-5 h-5 text-primary-600" />
-                <h3 className="font-semibold text-surface-900">{section.title}</h3>
+                <section.icon className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
+                <h3 className="font-semibold text-surface-900 dark:text-dark-text">{section.title}</h3>
               </div>
               <ul className="space-y-2">
                 {section.items.map((item) => (
                   <li key={item.name} className="text-sm">
-                    <span className="font-medium text-surface-700">{item.name}</span>
-                    <p className="text-surface-500">{item.desc}</p>
+                    <span className="font-medium text-surface-700 dark:text-dark-text">{item.name}</span>
+                    <p className="text-surface-500 dark:text-dark-text-muted">{item.desc}</p>
                   </li>
                 ))}
               </ul>
@@ -149,7 +149,7 @@ export default function HelpPage() {
 
       {/* Getting Started */}
       <div className="card">
-        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">Quick Start</h2>
+        <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text mb-6">Quick Start</h2>
         <div className="space-y-4">
           {[
             {
@@ -180,16 +180,16 @@ export default function HelpPage() {
             <Link
               key={item.step}
               href={item.link}
-              className="flex gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-50 transition-colors group"
+              className="flex gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-50 dark:hover:bg-dark-surface-light transition-colors group"
             >
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold group-hover:bg-primary-200 transition-colors">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 dark:bg-dark-primary/20 text-primary-700 dark:text-dark-primary flex items-center justify-center font-bold group-hover:bg-primary-200 dark:group-hover:bg-dark-primary/30 transition-colors">
                 {item.step}
               </div>
               <div>
-                <h3 className="font-semibold text-surface-900 group-hover:text-primary-600 transition-colors">
+                <h3 className="font-semibold text-surface-900 dark:text-dark-text group-hover:text-primary-600 dark:group-hover:text-dark-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-surface-600 text-sm mt-0.5">{item.description}</p>
+                <p className="text-surface-600 dark:text-dark-text-muted text-sm mt-0.5">{item.description}</p>
               </div>
             </Link>
           ))}
@@ -198,25 +198,25 @@ export default function HelpPage() {
 
       {/* FAQ Section */}
       <div className="card">
-        <h2 className="text-xl font-display font-bold text-surface-900 mb-6">
+        <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text mb-6">
           Frequently Asked Questions
         </h2>
         <div className="space-y-3">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border border-surface-200 rounded-lg overflow-hidden"
+              className="border border-surface-200 dark:border-dark-border rounded-lg overflow-hidden"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-50 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-50 dark:hover:bg-dark-surface-light transition-colors"
               >
-                <span className="font-medium text-surface-900">{faq.question}</span>
+                <span className="font-medium text-surface-900 dark:text-dark-text">{faq.question}</span>
                 <motion.div
                   animate={{ rotate: openFaq === index ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <ChevronDown className="w-5 h-5 text-surface-400" />
+                  <ChevronDown className="w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
                 </motion.div>
               </button>
               <motion.div
@@ -228,7 +228,7 @@ export default function HelpPage() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <p className="p-4 pt-0 text-surface-600">{faq.answer}</p>
+                <p className="p-4 pt-0 text-surface-600 dark:text-dark-text-muted">{faq.answer}</p>
               </motion.div>
             </div>
           ))}
@@ -236,20 +236,20 @@ export default function HelpPage() {
       </div>
 
       {/* Contact Support */}
-      <div className="card bg-gradient-to-br from-primary-500 to-primary-700 text-white">
+      <div className="card bg-gradient-to-br from-primary-500 to-primary-700 dark:from-dark-primary dark:to-dark-primary-hover text-white dark:text-dark-primary-text">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/20 rounded-xl">
+            <div className="p-3 bg-white/20 dark:bg-dark-bg/30 rounded-xl">
               <MessageSquare className="w-8 h-8" />
             </div>
             <div>
               <h3 className="text-xl font-display font-bold">Still need help?</h3>
-              <p className="text-primary-100">Our support team is ready to assist.</p>
+              <p className="text-primary-100 dark:text-dark-text-muted">Our support team is ready to assist.</p>
             </div>
           </div>
           <a
             href="mailto:support@healthcare-provider.se"
-            className="btn bg-white text-primary-700 hover:bg-primary-50"
+            className="btn bg-white dark:bg-dark-bg text-primary-700 dark:text-dark-primary hover:bg-primary-50 dark:hover:bg-dark-surface"
           >
             <Mail className="w-4 h-4" />
             Contact Support

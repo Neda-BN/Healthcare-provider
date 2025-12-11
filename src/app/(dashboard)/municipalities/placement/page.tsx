@@ -45,17 +45,17 @@ export default async function PlacementPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">Placements</h1>
-          <p className="text-surface-500 mt-1">View all care placements across municipalities</p>
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Placements</h1>
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">View all care placements across municipalities</p>
         </div>
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500" />
-            <span>Active: {placements.filter((p) => p.status === 'ACTIVE').length}</span>
+            <span className="text-surface-700 dark:text-dark-text">Active: {placements.filter((p) => p.status === 'ACTIVE').length}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-blue-500" />
-            <span>Completed: {placements.filter((p) => p.status === 'COMPLETED').length}</span>
+            <span className="text-surface-700 dark:text-dark-text">Completed: {placements.filter((p) => p.status === 'COMPLETED').length}</span>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default async function PlacementPage() {
                 <td className="font-mono text-sm">{placement.placementNumber || '-'}</td>
                 <td>
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-primary-600" />
+                    <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
                     {placement.municipality.name}
                   </div>
                 </td>
@@ -104,8 +104,8 @@ export default async function PlacementPage() {
 
       {placements.length === 0 && (
         <div className="card text-center py-12">
-          <Users className="w-12 h-12 mx-auto text-surface-300 mb-4" />
-          <p className="text-surface-500">No placements found.</p>
+          <Users className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
+          <p className="text-surface-500 dark:text-dark-text-muted">No placements found.</p>
         </div>
       )}
     </div>

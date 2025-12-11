@@ -47,8 +47,8 @@ export default async function MasterDataPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">Master Data</h1>
-        <p className="text-surface-500 mt-1">System data overview and configuration</p>
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Master Data</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">System data overview and configuration</p>
       </div>
 
       {/* Stats Grid */}
@@ -62,9 +62,9 @@ export default async function MasterDataPage() {
           { label: 'Users', value: stats.userCount, icon: Users },
         ].map((stat) => (
           <div key={stat.label} className="card text-center">
-            <stat.icon className="w-5 h-5 mx-auto text-primary-600 mb-2" />
-            <div className="text-2xl font-bold text-surface-900">{stat.value}</div>
-            <div className="text-xs text-surface-500">{stat.label}</div>
+            <stat.icon className="w-5 h-5 mx-auto text-primary-600 dark:text-dark-primary mb-2" />
+            <div className="text-2xl font-bold text-surface-900 dark:text-dark-text">{stat.value}</div>
+            <div className="text-xs text-surface-500 dark:text-dark-text-muted">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -72,8 +72,8 @@ export default async function MasterDataPage() {
       {/* System Settings */}
       <div className="card">
         <div className="flex items-center gap-3 mb-6">
-          <Database className="w-5 h-5 text-primary-600" />
-          <h2 className="text-lg font-semibold text-surface-900">System Settings</h2>
+          <Database className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">System Settings</h2>
         </div>
 
         <div className="table-container">
@@ -101,19 +101,19 @@ export default async function MasterDataPage() {
       </div>
 
       {/* Database Info */}
-      <div className="card bg-surface-50">
-        <h3 className="font-semibold text-surface-900 mb-3">Database Information</h3>
+      <div className="card bg-surface-50 dark:bg-dark-surface-light">
+        <h3 className="font-semibold text-surface-900 dark:text-dark-text mb-3">Database Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-surface-500">Provider:</span>
-            <span className="ml-2 font-mono">SQLite (demo)</span>
+            <span className="text-surface-500 dark:text-dark-text-muted">Provider:</span>
+            <span className="ml-2 font-mono text-surface-700 dark:text-dark-text">SQLite (demo)</span>
           </div>
           <div>
-            <span className="text-surface-500">Location:</span>
-            <span className="ml-2 font-mono">prisma/dev.db</span>
+            <span className="text-surface-500 dark:text-dark-text-muted">Location:</span>
+            <span className="ml-2 font-mono text-surface-700 dark:text-dark-text">prisma/dev.db</span>
           </div>
         </div>
-        <p className="mt-3 text-xs text-surface-500">
+        <p className="mt-3 text-xs text-surface-500 dark:text-dark-text-muted">
           For production, update DATABASE_URL in .env to use PostgreSQL.
         </p>
       </div>

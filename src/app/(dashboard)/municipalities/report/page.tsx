@@ -40,8 +40,8 @@ export default async function ReportPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">Reports</h1>
-          <p className="text-surface-500 mt-1">View and export survey reports</p>
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Reports</h1>
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">View and export survey reports</p>
         </div>
         <Link href="/api/export/csv" className="btn-primary">
           <Download className="w-4 h-4" />
@@ -54,12 +54,12 @@ export default async function ReportPage() {
           <div key={report.id} className="card-hover">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary-50 rounded-xl">
-                  <FileText className="w-6 h-6 text-primary-600" />
+                <div className="p-3 bg-primary-50 dark:bg-dark-primary/20 rounded-xl">
+                  <FileText className="w-6 h-6 text-primary-600 dark:text-dark-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-surface-900">{report.title}</h3>
-                  <div className="flex items-center gap-4 mt-1 text-sm text-surface-500">
+                  <h3 className="font-semibold text-surface-900 dark:text-dark-text">{report.title}</h3>
+                  <div className="flex items-center gap-4 mt-1 text-sm text-surface-500 dark:text-dark-text-muted">
                     <span className="flex items-center gap-1">
                       <Building2 className="w-3 h-3" />
                       {report.municipality}
@@ -79,8 +79,8 @@ export default async function ReportPage() {
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-primary-600">{report.avgScore}</div>
-                  <div className="text-xs text-surface-500">Avg Score</div>
+                  <div className="text-2xl font-bold text-primary-600 dark:text-dark-primary">{report.avgScore}</div>
+                  <div className="text-xs text-surface-500 dark:text-dark-text-muted">Avg Score</div>
                 </div>
                 <Link
                   href={`/surveys/${report.id}`}
@@ -96,11 +96,10 @@ export default async function ReportPage() {
 
       {reports.length === 0 && (
         <div className="card text-center py-12">
-          <FileText className="w-12 h-12 mx-auto text-surface-300 mb-4" />
-          <p className="text-surface-500">No completed surveys yet.</p>
+          <FileText className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
+          <p className="text-surface-500 dark:text-dark-text-muted">No completed surveys yet.</p>
         </div>
       )}
     </div>
   )
 }
-

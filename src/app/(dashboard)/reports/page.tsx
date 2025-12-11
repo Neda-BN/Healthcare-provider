@@ -99,8 +99,8 @@ export default async function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">Reports</h1>
-          <p className="text-surface-500 mt-1">Survey results and performance reports</p>
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Reports</h1>
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">Survey results and performance reports</p>
         </div>
         <div className="flex gap-2">
           <Link href="/api/export/csv" className="btn-secondary btn-sm">
@@ -113,32 +113,32 @@ export default async function ReportsPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card text-center">
-          <FileBarChart className="w-5 h-5 mx-auto text-primary-600 mb-2" />
-          <div className="text-2xl font-bold text-surface-900">{summary.totalSurveys}</div>
-          <div className="text-xs text-surface-500">Total Surveys</div>
+          <FileBarChart className="w-5 h-5 mx-auto text-primary-600 dark:text-dark-primary mb-2" />
+          <div className="text-2xl font-bold text-surface-900 dark:text-dark-text">{summary.totalSurveys}</div>
+          <div className="text-xs text-surface-500 dark:text-dark-text-muted">Total Surveys</div>
         </div>
         <div className="card text-center">
-          <TrendingUp className="w-5 h-5 mx-auto text-primary-600 mb-2" />
-          <div className="text-2xl font-bold text-surface-900">{summary.totalResponses}</div>
-          <div className="text-xs text-surface-500">Total Responses</div>
+          <TrendingUp className="w-5 h-5 mx-auto text-primary-600 dark:text-dark-primary mb-2" />
+          <div className="text-2xl font-bold text-surface-900 dark:text-dark-text">{summary.totalResponses}</div>
+          <div className="text-xs text-surface-500 dark:text-dark-text-muted">Total Responses</div>
         </div>
         <div className="card text-center">
-          <div className="w-5 h-5 mx-auto text-primary-600 mb-2 font-bold">Ø</div>
-          <div className="text-2xl font-bold text-primary-600">{summary.overallAvg}/10</div>
-          <div className="text-xs text-surface-500">Overall Average</div>
+          <div className="w-5 h-5 mx-auto text-primary-600 dark:text-dark-primary mb-2 font-bold">Ø</div>
+          <div className="text-2xl font-bold text-primary-600 dark:text-dark-primary">{summary.overallAvg}/10</div>
+          <div className="text-xs text-surface-500 dark:text-dark-text-muted">Overall Average</div>
         </div>
         <div className="card text-center">
-          <Building2 className="w-5 h-5 mx-auto text-primary-600 mb-2" />
-          <div className="text-2xl font-bold text-surface-900">{summary.municipalityCount}</div>
-          <div className="text-xs text-surface-500">Municipalities</div>
+          <Building2 className="w-5 h-5 mx-auto text-primary-600 dark:text-dark-primary mb-2" />
+          <div className="text-2xl font-bold text-surface-900 dark:text-dark-text">{summary.municipalityCount}</div>
+          <div className="text-xs text-surface-500 dark:text-dark-text-muted">Municipalities</div>
         </div>
       </div>
 
       {/* Monthly Reports */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-surface-900">Monthly Overview</h2>
-          <Calendar className="w-5 h-5 text-surface-400" />
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">Monthly Overview</h2>
+          <Calendar className="w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
         </div>
         
         {monthlyReports.length > 0 ? (
@@ -161,14 +161,14 @@ export default async function ReportsPage() {
                   })
                   return (
                     <tr key={report.month}>
-                      <td className="font-medium">{monthName}</td>
-                      <td className="text-center">{report.count}</td>
-                      <td className="text-center">{report.municipalityCount}</td>
+                      <td className="font-medium text-surface-900 dark:text-dark-text">{monthName}</td>
+                      <td className="text-center text-surface-700 dark:text-dark-text">{report.count}</td>
+                      <td className="text-center text-surface-700 dark:text-dark-text">{report.municipalityCount}</td>
                       <td className="text-center">
                         <span className={`font-medium ${
-                          report.avgScore >= 8 ? 'text-green-600' :
-                          report.avgScore >= 6 ? 'text-amber-600' :
-                          'text-accent-600'
+                          report.avgScore >= 8 ? 'text-green-600 dark:text-green-400' :
+                          report.avgScore >= 6 ? 'text-amber-600 dark:text-amber-400' :
+                          'text-accent-600 dark:text-accent-400'
                         }`}>
                           {report.avgScore}
                         </span>
@@ -180,15 +180,15 @@ export default async function ReportsPage() {
             </table>
           </div>
         ) : (
-          <p className="text-center text-surface-500 py-8">No completed surveys yet</p>
+          <p className="text-center text-surface-500 dark:text-dark-text-muted py-8">No completed surveys yet</p>
         )}
       </div>
 
       {/* Recent Surveys */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-surface-900">Recent Surveys</h2>
-          <Link href="/municipalities/report" className="text-sm text-primary-600 hover:underline">
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">Recent Surveys</h2>
+          <Link href="/municipalities/report" className="text-sm text-primary-600 dark:text-dark-primary hover:underline">
             View all →
           </Link>
         </div>
@@ -198,13 +198,13 @@ export default async function ReportsPage() {
             <Link
               key={survey.id}
               href={`/municipality/${survey.municipalityId}`}
-              className="flex items-center justify-between p-3 bg-surface-50 rounded-lg hover:bg-surface-100 transition-colors group"
+              className="flex items-center justify-between p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface transition-colors group"
             >
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-surface-900 truncate group-hover:text-primary-600">
+                <p className="font-medium text-surface-900 dark:text-dark-text truncate group-hover:text-primary-600 dark:group-hover:text-dark-primary">
                   {survey.title}
                 </p>
-                <div className="flex items-center gap-3 mt-1 text-xs text-surface-500">
+                <div className="flex items-center gap-3 mt-1 text-xs text-surface-500 dark:text-dark-text-muted">
                   <span className="flex items-center gap-1">
                     <Building2 className="w-3 h-3" />
                     {survey.municipality}
@@ -220,25 +220,24 @@ export default async function ReportsPage() {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <div className={`text-lg font-bold ${
-                    survey.avgScore >= 8 ? 'text-green-600' :
-                    survey.avgScore >= 6 ? 'text-amber-600' :
-                    'text-accent-600'
+                    survey.avgScore >= 8 ? 'text-green-600 dark:text-green-400' :
+                    survey.avgScore >= 6 ? 'text-amber-600 dark:text-amber-400' :
+                    'text-accent-600 dark:text-accent-400'
                   }`}>
                     {survey.avgScore}
                   </div>
-                  <div className="text-xs text-surface-500">{survey.responseCount} responses</div>
+                  <div className="text-xs text-surface-500 dark:text-dark-text-muted">{survey.responseCount} responses</div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-surface-400 group-hover:text-primary-600" />
+                <ChevronRight className="w-4 h-4 text-surface-400 dark:text-dark-text-muted group-hover:text-primary-600 dark:group-hover:text-dark-primary" />
               </div>
             </Link>
           ))}
 
           {recentSurveys.length === 0 && (
-            <p className="text-center text-surface-500 py-8">No completed surveys yet</p>
+            <p className="text-center text-surface-500 dark:text-dark-text-muted py-8">No completed surveys yet</p>
           )}
         </div>
       </div>
     </div>
   )
 }
-

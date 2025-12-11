@@ -379,8 +379,8 @@ export default function ManageMunicipalitiesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">Manage Municipalities</h1>
-          <p className="text-surface-500 mt-1">Create, edit, and manage municipality email lists</p>
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Manage Municipalities</h1>
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">Create, edit, and manage municipality email lists</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -393,7 +393,7 @@ export default function ManageMunicipalitiesPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
         <input
           type="text"
           placeholder="Search municipalities..."
@@ -408,47 +408,47 @@ export default function ManageMunicipalitiesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm table-fixed">
             <thead>
-              <tr className="bg-surface-50 border-b border-surface-200">
-                <th className="w-12 px-3 py-3 text-left font-medium text-surface-600"></th>
-                <th className="w-[30%] px-4 py-3 text-left font-medium text-surface-600">Municipality</th>
-                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600">Email Recipients</th>
-                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600">Surveys</th>
-                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600">Placements</th>
-                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600">Actions</th>
+              <tr className="bg-surface-50 dark:bg-dark-surface-light border-b border-surface-200 dark:border-dark-border">
+                <th className="w-12 px-3 py-3 text-left font-medium text-surface-600 dark:text-dark-text-muted"></th>
+                <th className="w-[30%] px-4 py-3 text-left font-medium text-surface-600 dark:text-dark-text-muted">Municipality</th>
+                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Email Recipients</th>
+                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Surveys</th>
+                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Placements</th>
+                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredMunicipalities.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-surface-500">
+                  <td colSpan={6} className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
                     {searchQuery ? 'No municipalities found matching your search' : 'No municipalities yet. Click "Add Municipality" to create one.'}
                   </td>
                 </tr>
               ) : (
                 filteredMunicipalities.map((municipality) => (
                   <>
-                    <tr key={municipality.id} className="group border-b border-surface-100 last:border-b-0 hover:bg-surface-50/50">
+                    <tr key={municipality.id} className="group border-b border-surface-100 last:border-b-0 hover:bg-surface-50 dark:bg-dark-surface-light/50">
                       <td className="w-12 px-3 py-3">
                         <button
                           onClick={() => toggleExpanded(municipality.id)}
-                          className="p-1 hover:bg-surface-100 rounded transition-colors"
+                          className="p-1 hover:bg-surface-100 dark:hover:bg-dark-surface-light dark:bg-dark-surface-light rounded transition-colors"
                         >
                           {expandedId === municipality.id ? (
-                            <ChevronUp className="w-4 h-4 text-surface-400" />
+                            <ChevronUp className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-surface-400" />
+                            <ChevronDown className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
                           )}
                         </button>
                       </td>
                       <td className="w-[30%] px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-primary-50 rounded-lg flex-shrink-0">
-                            <Building2 className="w-5 h-5 text-primary-600" />
+                          <div className="p-2 bg-primary-50 dark:bg-dark-primary/20 rounded-lg flex-shrink-0">
+                            <Building2 className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
                           </div>
                           <div className="min-w-0">
-                            <div className="font-medium text-surface-900 truncate">{municipality.name}</div>
+                            <div className="font-medium text-surface-900 dark:text-dark-text truncate">{municipality.name}</div>
                             {municipality.description && (
-                              <div className="text-sm text-surface-500 truncate">{municipality.description}</div>
+                              <div className="text-sm text-surface-500 dark:text-dark-text-muted truncate">{municipality.description}</div>
                             )}
                           </div>
                         </div>
@@ -456,29 +456,29 @@ export default function ManageMunicipalitiesPage() {
                       <td className="w-[20%] px-4 py-3 text-center">
                         <button
                           onClick={() => openEmailsModal(municipality)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-100 hover:bg-surface-200 rounded-full text-sm font-medium text-surface-700 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-100 dark:bg-dark-surface-light hover:bg-surface-200 dark:hover:bg-dark-surface rounded-full text-sm font-medium text-surface-700 dark:text-dark-text transition-colors"
                         >
                           <Mail className="w-4 h-4" />
                           {municipality._count.emails}
                         </button>
                       </td>
-                      <td className="w-[15%] px-4 py-3 text-center text-surface-600">{municipality._count.surveys}</td>
-                      <td className="w-[15%] px-4 py-3 text-center text-surface-600">{municipality._count.placements}</td>
+                      <td className="w-[15%] px-4 py-3 text-center text-surface-600 dark:text-dark-text-muted">{municipality._count.surveys}</td>
+                      <td className="w-[15%] px-4 py-3 text-center text-surface-600 dark:text-dark-text-muted">{municipality._count.placements}</td>
                       <td className="w-[20%] px-4 py-3">
                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => openEmailsModal(municipality, true)}
-                            className="p-2 hover:bg-primary-50 rounded-lg transition-colors"
+                            className="p-2 hover:bg-primary-50 dark:bg-dark-primary/20 rounded-lg transition-colors"
                             title="Upload email list"
                           >
-                            <Upload className="w-4 h-4 text-primary-600" />
+                            <Upload className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
                           </button>
                           <button
                             onClick={() => openEditModal(municipality)}
-                            className="p-2 hover:bg-surface-100 rounded-lg transition-colors"
+                            className="p-2 hover:bg-surface-100 dark:hover:bg-dark-surface-light dark:bg-dark-surface-light rounded-lg transition-colors"
                             title="Edit"
                           >
-                            <Pencil className="w-4 h-4 text-surface-600" />
+                            <Pencil className="w-4 h-4 text-surface-600 dark:text-dark-text-muted" />
                           </button>
                           <button
                             onClick={() => {
@@ -495,27 +495,27 @@ export default function ManageMunicipalitiesPage() {
                     </tr>
                     {/* Expanded email preview row */}
                     {expandedId === municipality.id && (
-                      <tr className="bg-surface-50">
+                      <tr className="bg-surface-50 dark:bg-dark-surface-light">
                         <td colSpan={6} className="px-4 py-3">
                           <div className="ml-10">
-                            <div className="text-sm font-medium text-surface-700 mb-2">
+                            <div className="text-sm font-medium text-surface-700 dark:text-dark-text mb-2">
                               Email Recipients ({municipality._count.emails})
                             </div>
                             {municipalityEmails.length > 0 ? (
                               <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                                 {municipalityEmails.slice(0, 20).map((email) => (
-                                  <span key={email} className="px-2 py-1 bg-white border border-surface-200 rounded text-xs text-surface-600">
+                                  <span key={email} className="px-2 py-1 bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border rounded text-xs text-surface-600 dark:text-dark-text-muted">
                                     {email}
                                   </span>
                                 ))}
                                 {municipalityEmails.length > 20 && (
-                                  <span className="px-2 py-1 bg-surface-100 rounded text-xs text-surface-500">
+                                  <span className="px-2 py-1 bg-surface-100 dark:bg-dark-surface-light rounded text-xs text-surface-500 dark:text-dark-text-muted">
                                     +{municipalityEmails.length - 20} more
                                   </span>
                                 )}
                               </div>
                             ) : (
-                              <p className="text-sm text-surface-500">No email recipients yet</p>
+                              <p className="text-sm text-surface-500 dark:text-dark-text-muted">No email recipients yet</p>
                             )}
                           </div>
                         </td>
@@ -534,10 +534,10 @@ export default function ManageMunicipalitiesPage() {
         {showCreateModal && (
           <Modal onClose={() => { setShowCreateModal(false); resetForm() }}>
             <div className="p-6">
-              <h2 className="text-xl font-display font-bold text-surface-900 mb-4">Add Municipality</h2>
+              <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text dark:text-dark-text mb-4">Add Municipality</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text dark:text-dark-text mb-1">
                     Name <span className="text-accent-500">*</span>
                   </label>
                   <input
@@ -549,7 +549,7 @@ export default function ManageMunicipalitiesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Organization Number</label>
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text dark:text-dark-text mb-1">Organization Number</label>
                   <input
                     type="text"
                     value={formOrgNumber}
@@ -559,7 +559,7 @@ export default function ManageMunicipalitiesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Business Type</label>
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text dark:text-dark-text mb-1">Business Type</label>
                   <select
                     value={formBusinessType}
                     onChange={(e) => setFormBusinessType(e.target.value)}
@@ -574,17 +574,17 @@ export default function ManageMunicipalitiesPage() {
                   </select>
                 </div>
               </div>
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                 <button 
                   onClick={() => { setShowCreateModal(false); resetForm() }} 
-                  className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                  className="px-4 py-2 bg-surface-100 dark:bg-dark-surface-light dark:bg-dark-surface-light text-surface-700 dark:text-dark-text dark:text-dark-text font-medium rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface dark:hover:bg-dark-surface-lighter transition-colors border border-surface-300 dark:border-dark-border"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleCreate} 
                   disabled={formSaving} 
-                  className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
+                  className="px-4 py-2 bg-primary-600 dark:bg-dark-primary text-white dark:text-dark-primary-text font-medium rounded-lg hover:bg-primary-700 dark:hover:bg-dark-primary-hover transition-colors shadow-sm disabled:opacity-50"
                 >
                   {formSaving ? 'Creating...' : 'Create Municipality'}
                 </button>
@@ -599,10 +599,10 @@ export default function ManageMunicipalitiesPage() {
         {showEditModal && selectedMunicipality && (
           <Modal onClose={() => { setShowEditModal(false); resetForm() }}>
             <div className="p-6">
-              <h2 className="text-xl font-display font-bold text-surface-900 mb-4">Edit Municipality</h2>
+              <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text dark:text-dark-text mb-4">Edit Municipality</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text mb-1">
                     Name <span className="text-accent-500">*</span>
                   </label>
                   <input
@@ -613,7 +613,7 @@ export default function ManageMunicipalitiesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Organization Number</label>
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text dark:text-dark-text mb-1">Organization Number</label>
                   <input
                     type="text"
                     value={formOrgNumber}
@@ -623,7 +623,7 @@ export default function ManageMunicipalitiesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 mb-1">Business Type</label>
+                  <label className="block text-sm font-medium text-surface-700 dark:text-dark-text dark:text-dark-text mb-1">Business Type</label>
                   <select
                     value={formBusinessType}
                     onChange={(e) => setFormBusinessType(e.target.value)}
@@ -638,17 +638,17 @@ export default function ManageMunicipalitiesPage() {
                   </select>
                 </div>
               </div>
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                 <button 
                   onClick={() => { setShowEditModal(false); resetForm() }} 
-                  className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                  className="px-4 py-2 bg-surface-100 dark:bg-dark-surface-light dark:bg-dark-surface-light text-surface-700 dark:text-dark-text dark:text-dark-text font-medium rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface dark:hover:bg-dark-surface-lighter transition-colors border border-surface-300 dark:border-dark-border"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleUpdate} 
                   disabled={formSaving} 
-                  className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
+                  className="px-4 py-2 bg-primary-600 dark:bg-dark-primary text-white dark:text-dark-primary-text font-medium rounded-lg hover:bg-primary-700 dark:hover:bg-dark-primary-hover transition-colors shadow-sm disabled:opacity-50"
                 >
                   {formSaving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -672,17 +672,17 @@ export default function ManageMunicipalitiesPage() {
                         setEmailModalView('list')
                         resetUploadForm()
                       }}
-                      className="p-2 bg-surface-100 hover:bg-surface-200 rounded-lg transition-colors border border-surface-200"
+                      className="p-2 bg-surface-100 dark:bg-dark-surface-light hover:bg-surface-200 dark:hover:bg-dark-surface rounded-lg transition-colors border border-surface-200 dark:border-dark-border"
                       title="Go back"
                     >
-                      <ArrowLeft className="w-5 h-5 text-surface-700" />
+                      <ArrowLeft className="w-5 h-5 text-surface-700 dark:text-dark-text" />
                     </button>
                   )}
                   <div>
-                    <h2 className="text-xl font-display font-bold text-surface-900">
+                    <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">
                       {emailModalView === 'list' ? 'Email Recipients' : 'Upload Email List'}
                     </h2>
-                    <p className="text-surface-500">
+                    <p className="text-surface-500 dark:text-dark-text-muted">
                       {selectedMunicipality.name} • {municipalityEmails.length} emails
                     </p>
                   </div>
@@ -703,20 +703,20 @@ export default function ManageMunicipalitiesPage() {
                 /* Email List View */
                 <>
                   {municipalityEmails.length > 0 ? (
-                    <div className="max-h-96 overflow-y-auto bg-surface-50 rounded-lg p-4">
+                    <div className="max-h-96 overflow-y-auto bg-surface-50 dark:bg-dark-surface-light rounded-lg p-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {municipalityEmails.map((email) => (
-                          <div key={email} className="flex items-center gap-2 px-3 py-2 bg-white border border-surface-200 rounded-lg">
-                            <Mail className="w-4 h-4 text-surface-400" />
-                            <span className="text-sm text-surface-700 truncate">{email}</span>
+                          <div key={email} className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border rounded-lg">
+                            <Mail className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
+                            <span className="text-sm text-surface-700 dark:text-dark-text truncate">{email}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-surface-50 rounded-lg border-2 border-dashed border-surface-200">
+                    <div className="text-center py-12 bg-surface-50 dark:bg-dark-surface-light rounded-lg border-2 border-dashed border-surface-200 dark:border-dark-border">
                       <Users className="w-12 h-12 text-surface-300 mx-auto mb-4" />
-                      <p className="text-surface-600 mb-4">No email recipients yet</p>
+                      <p className="text-surface-600 dark:text-dark-text-muted mb-4">No email recipients yet</p>
                       <button 
                         onClick={() => setEmailModalView('upload')} 
                         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
@@ -727,10 +727,10 @@ export default function ManageMunicipalitiesPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-end mt-6 pt-4 border-t border-surface-200">
+                  <div className="flex justify-end mt-6 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                     <button 
                       onClick={closeEmailsModal} 
-                      className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                      className="px-4 py-2 bg-surface-100 dark:bg-dark-surface-light dark:bg-dark-surface-light text-surface-700 dark:text-dark-text dark:text-dark-text font-medium rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface dark:hover:bg-dark-surface-lighter transition-colors border border-surface-300 dark:border-dark-border"
                     >
                       Close
                     </button>
@@ -744,7 +744,7 @@ export default function ManageMunicipalitiesPage() {
                       {/* File Upload Drop Zone */}
                       <label 
                         htmlFor="file-upload" 
-                        className="block border-2 border-dashed border-primary-300 bg-primary-50/50 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-primary-50 transition-all cursor-pointer group"
+                        className="block border-2 border-dashed border-primary-300 bg-primary-50 dark:bg-dark-primary/20/50 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-primary-50 dark:bg-dark-primary/20 transition-all cursor-pointer group"
                       >
                         <input
                           ref={fileInputRef}
@@ -756,11 +756,11 @@ export default function ManageMunicipalitiesPage() {
                         />
                         <div className="flex justify-center mb-4">
                           <div className="p-4 bg-primary-100 rounded-full group-hover:bg-primary-200 transition-colors">
-                            <Upload className="w-8 h-8 text-primary-600" />
+                            <Upload className="w-8 h-8 text-primary-600 dark:text-dark-primary" />
                           </div>
                         </div>
                         <p className="text-primary-900 font-semibold mb-1 group-hover:text-primary-700">Click to upload a file</p>
-                        <p className="text-sm text-primary-600">CSV, XLSX, or TXT files supported</p>
+                        <p className="text-sm text-primary-600 dark:text-dark-primary">CSV, XLSX, or TXT files supported</p>
                       </label>
 
                       {/* Selected File */}
@@ -769,10 +769,10 @@ export default function ManageMunicipalitiesPage() {
                           <div className="flex items-center gap-3">
                             {uploadFile.name.endsWith('.csv') && <FileSpreadsheet className="w-6 h-6 text-green-600" />}
                             {(uploadFile.name.endsWith('.xlsx') || uploadFile.name.endsWith('.xls')) && <FileSpreadsheet className="w-6 h-6 text-blue-600" />}
-                            {uploadFile.name.endsWith('.txt') && <FileText className="w-6 h-6 text-surface-600" />}
+                            {uploadFile.name.endsWith('.txt') && <FileText className="w-6 h-6 text-surface-600 dark:text-dark-text-muted" />}
                             <div>
-                              <p className="font-medium text-surface-900">{uploadFile.name}</p>
-                              <p className="text-xs text-surface-500">{(uploadFile.size / 1024).toFixed(1)} KB</p>
+                              <p className="font-medium text-surface-900 dark:text-dark-text">{uploadFile.name}</p>
+                              <p className="text-xs text-surface-500 dark:text-dark-text-muted">{(uploadFile.size / 1024).toFixed(1)} KB</p>
                             </div>
                           </div>
                           <button 
@@ -786,33 +786,33 @@ export default function ManageMunicipalitiesPage() {
                       )}
 
                       {/* Supported Formats Info */}
-                      <div className="bg-surface-50 rounded-lg p-4 border border-surface-200">
-                        <h4 className="font-medium text-surface-900 mb-2">Supported Formats</h4>
-                        <ul className="text-sm text-surface-600 space-y-1">
+                      <div className="bg-surface-50 dark:bg-dark-surface-light rounded-lg p-4 border border-surface-200 dark:border-dark-border">
+                        <h4 className="font-medium text-surface-900 dark:text-dark-text mb-2">Supported Formats</h4>
+                        <ul className="text-sm text-surface-600 dark:text-dark-text-muted space-y-1">
                           <li>• <strong>CSV</strong> - Comma-separated values</li>
                           <li>• <strong>XLSX/XLS</strong> - Excel spreadsheet</li>
                           <li>• <strong>TXT</strong> - Plain text (one email per line)</li>
                         </ul>
-                        <p className="text-xs text-surface-500 mt-2">
+                        <p className="text-xs text-surface-500 dark:text-dark-text-muted mt-2">
                           The system will automatically detect and extract all valid email addresses.
                         </p>
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex justify-end gap-3 pt-4 border-t border-surface-200">
+                      <div className="flex justify-end gap-3 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                         <button 
                           onClick={() => {
                             setEmailModalView('list')
                             resetUploadForm()
                           }} 
-                          className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                          className="px-4 py-2 bg-surface-100 dark:bg-dark-surface-light dark:bg-dark-surface-light text-surface-700 dark:text-dark-text dark:text-dark-text font-medium rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface dark:hover:bg-dark-surface-lighter transition-colors border border-surface-300 dark:border-dark-border"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={handleFileUpload}
                           disabled={!uploadFile || uploadParsing}
-                          className="px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2 bg-primary-600 dark:bg-dark-primary text-white dark:text-dark-primary-text font-medium rounded-lg hover:bg-primary-700 dark:hover:bg-dark-primary-hover transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {uploadParsing ? 'Parsing...' : 'Parse File'}
                         </button>
@@ -832,16 +832,16 @@ export default function ManageMunicipalitiesPage() {
                       </div>
 
                       <div>
-                        <h4 className="font-medium text-surface-900 mb-2">Preview (first 20)</h4>
-                        <div className="max-h-48 overflow-y-auto bg-surface-50 rounded-lg p-3">
+                        <h4 className="font-medium text-surface-900 dark:text-dark-text mb-2">Preview (first 20)</h4>
+                        <div className="max-h-48 overflow-y-auto bg-surface-50 dark:bg-dark-surface-light rounded-lg p-3">
                           <div className="flex flex-wrap gap-2">
                             {parsedEmails.emails.slice(0, 20).map((email) => (
-                              <span key={email} className="px-2 py-1 bg-white border border-surface-200 rounded text-sm">
+                              <span key={email} className="px-2 py-1 bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border rounded text-sm">
                                 {email}
                               </span>
                             ))}
                             {parsedEmails.emails.length > 20 && (
-                              <span className="px-2 py-1 bg-surface-100 rounded text-sm text-surface-500">
+                              <span className="px-2 py-1 bg-surface-100 dark:bg-dark-surface-light rounded text-sm text-surface-500 dark:text-dark-text-muted">
                                 +{parsedEmails.emails.length - 20} more
                               </span>
                             )}
@@ -862,21 +862,21 @@ export default function ManageMunicipalitiesPage() {
                               type="checkbox"
                               checked={replaceExisting}
                               onChange={(e) => setReplaceExisting(e.target.checked)}
-                              className="rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+                              className="rounded border-surface-300 text-primary-600 dark:text-dark-primary focus:ring-primary-500"
                             />
                             <span className="text-sm font-medium text-amber-800">Replace all</span>
                           </label>
                         </div>
                       )}
 
-                      <div className="flex justify-between gap-3 pt-4 border-t border-surface-200">
+                      <div className="flex justify-between gap-3 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                         <button
                           onClick={() => {
                             setParsedEmails(null)
                             setUploadFile(null)
                             if (fileInputRef.current) fileInputRef.current.value = ''
                           }}
-                          className="px-4 py-2 text-primary-600 font-medium rounded-lg hover:bg-primary-50 transition-colors border border-primary-200"
+                          className="px-4 py-2 text-primary-600 dark:text-dark-primary font-medium rounded-lg hover:bg-primary-50 dark:bg-dark-primary/20 transition-colors border border-primary-200"
                         >
                           Upload Different File
                         </button>
@@ -886,7 +886,7 @@ export default function ManageMunicipalitiesPage() {
                               setEmailModalView('list')
                               resetUploadForm()
                             }} 
-                            className="px-4 py-2 bg-surface-100 text-surface-700 font-medium rounded-lg hover:bg-surface-200 transition-colors border border-surface-300"
+                            className="px-4 py-2 bg-surface-100 dark:bg-dark-surface-light dark:bg-dark-surface-light text-surface-700 dark:text-dark-text dark:text-dark-text font-medium rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface dark:hover:bg-dark-surface-lighter transition-colors border border-surface-300 dark:border-dark-border"
                           >
                             Cancel
                           </button>
@@ -918,11 +918,11 @@ export default function ManageMunicipalitiesPage() {
                   <AlertCircle className="w-6 h-6 text-accent-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-display font-bold text-surface-900">Delete Municipality</h2>
-                  <p className="text-surface-500">This action cannot be undone</p>
+                  <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">Delete Municipality</h2>
+                  <p className="text-surface-500 dark:text-dark-text-muted">This action cannot be undone</p>
                 </div>
               </div>
-              <p className="text-surface-600 mb-6">
+              <p className="text-surface-600 dark:text-dark-text-muted mb-6">
                 Are you sure you want to delete <strong>{selectedMunicipality.name}</strong>? 
                 This will also remove all {selectedMunicipality._count.emails} email recipients associated with this municipality.
               </p>
@@ -963,7 +963,7 @@ function Modal({ children, onClose, size = 'md' }: { children: React.ReactNode; 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto`}
+        className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto`}
       >
         {children}
       </motion.div>

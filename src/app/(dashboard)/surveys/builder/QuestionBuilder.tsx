@@ -143,8 +143,8 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">Question Builder</h1>
-          <p className="text-surface-500 mt-1">Create and manage survey questions</p>
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Question Builder</h1>
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">Create and manage survey questions</p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => setShowPreview(true)} className="btn-secondary">
@@ -187,7 +187,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
       {/* Questions List */}
       <div className="card">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-surface-900">
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">
             Questions ({template.questions.length})
           </h2>
           <button onClick={handleAddQuestion} className="btn-primary btn-sm">
@@ -209,12 +209,12 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
                 <Reorder.Item
                   key={question.id}
                   value={question}
-                  className="flex items-center gap-3 p-4 bg-surface-50 rounded-lg border border-surface-200 cursor-move hover:border-primary-300 transition-colors"
+                  className="flex items-center gap-3 p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg border border-surface-200 dark:border-dark-border cursor-move hover:border-primary-300 dark:hover:border-dark-primary transition-colors"
                 >
-                  <GripVertical className="w-5 h-5 text-surface-400 flex-shrink-0" />
+                  <GripVertical className="w-5 h-5 text-surface-400 dark:text-dark-text-muted flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
+                      <span className="font-mono text-sm text-primary-600 dark:text-dark-primary bg-primary-50 dark:bg-dark-primary/20 px-2 py-0.5 rounded">
                         {question.questionCode}
                       </span>
                       {question.category && (
@@ -224,8 +224,8 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
                         <span className="badge-warning text-xs">Optional</span>
                       )}
                     </div>
-                    <p className="text-surface-700 mt-1 truncate">{question.questionText || 'No question text'}</p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-surface-500">
+                    <p className="text-surface-700 dark:text-dark-text mt-1 truncate">{question.questionText || 'No question text'}</p>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-surface-500 dark:text-dark-text-muted">
                       <Icon className="w-3 h-3" />
                       {questionTypeLabels[question.questionType]}
                     </div>
@@ -233,13 +233,13 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setEditingQuestion(question)}
-                      className="p-2 rounded-lg hover:bg-surface-200 text-surface-500 hover:text-surface-700 transition-colors"
+                      className="p-2 rounded-lg hover:bg-surface-200 dark:hover:bg-dark-surface-lighter text-surface-500 dark:text-dark-text-muted hover:text-surface-700 dark:hover:text-dark-text transition-colors"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteQuestion(question.id)}
-                      className="p-2 rounded-lg hover:bg-accent-50 text-surface-500 hover:text-accent-600 transition-colors"
+                      className="p-2 rounded-lg hover:bg-accent-50 dark:hover:bg-accent-900/30 text-surface-500 dark:text-dark-text-muted hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -249,9 +249,9 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
             })}
           </Reorder.Group>
         ) : (
-          <div className="text-center py-12 bg-surface-50 rounded-lg border-2 border-dashed border-surface-200">
-            <FileText className="w-12 h-12 mx-auto text-surface-300 mb-4" />
-            <p className="text-surface-500">No questions yet</p>
+          <div className="text-center py-12 bg-surface-50 dark:bg-dark-surface-light rounded-lg border-2 border-dashed border-surface-200 dark:border-dark-border">
+            <FileText className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
+            <p className="text-surface-500 dark:text-dark-text-muted">No questions yet</p>
             <button onClick={handleAddQuestion} className="btn-primary btn-sm mt-4">
               <Plus className="w-4 h-4" />
               Add your first question
@@ -300,20 +300,20 @@ function QuestionEditor({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-auto"
+        className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-lg max-h-[90vh] overflow-auto"
       >
-        <div className="flex items-center justify-between p-6 border-b border-surface-200">
-          <h2 className="text-xl font-display font-bold text-surface-900">
+        <div className="flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border">
+          <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">
             {question.id.startsWith('new-') ? 'Add Question' : 'Edit Question'}
           </h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-100">
-            <X className="w-5 h-5 text-surface-500" />
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light">
+            <X className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
           </button>
         </div>
 
@@ -373,8 +373,8 @@ function QuestionEditor({
                     })}
                     className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                       form.questionType === type
-                        ? 'border-primary-500 bg-primary-50 text-primary-700'
-                        : 'border-surface-200 hover:border-surface-300'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-dark-primary dark:bg-dark-primary/20 dark:text-dark-primary'
+                        : 'border-surface-200 hover:border-surface-300 dark:border-dark-border dark:hover:border-dark-primary/50 dark:text-dark-text'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -391,15 +391,15 @@ function QuestionEditor({
               id="required"
               checked={form.required}
               onChange={(e) => setForm({ ...form, required: e.target.checked })}
-              className="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+              className="w-4 h-4 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
             />
-            <label htmlFor="required" className="text-sm text-surface-700">
+            <label htmlFor="required" className="text-sm text-surface-700 dark:text-dark-text">
               Required question
             </label>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 bg-surface-50">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light">
           <button onClick={onClose} className="btn-secondary">
             Cancel
           </button>
@@ -428,21 +428,21 @@ function PreviewModal({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-auto"
+        className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-2xl max-h-[90vh] overflow-auto"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-surface-200 bg-white">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border bg-white dark:bg-dark-surface">
           <div>
-            <h2 className="text-xl font-display font-bold text-surface-900">{template.name}</h2>
-            <p className="text-sm text-surface-500">{template.description}</p>
+            <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">{template.name}</h2>
+            <p className="text-sm text-surface-500 dark:text-dark-text-muted">{template.description}</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-100">
-            <X className="w-5 h-5 text-surface-500" />
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light">
+            <X className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
           </button>
         </div>
 
@@ -450,7 +450,7 @@ function PreviewModal({
           {categories.length > 0 ? (
             categories.map((category) => (
               <div key={category}>
-                <h3 className="text-lg font-semibold text-primary-700 mb-4">{category}</h3>
+                <h3 className="text-lg font-semibold text-primary-700 dark:text-dark-primary mb-4">{category}</h3>
                 <div className="space-y-4">
                   {template.questions
                     .filter((q) => q.category === category)
@@ -476,13 +476,13 @@ function PreviewModal({
 // Question Preview Component
 function QuestionPreview({ question }: { question: Question }) {
   return (
-    <div className="p-4 bg-surface-50 rounded-lg">
+    <div className="p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
       <div className="flex items-start gap-3">
-        <span className="font-mono text-sm text-primary-600 bg-primary-100 px-2 py-0.5 rounded mt-0.5">
+        <span className="font-mono text-sm text-primary-600 dark:text-dark-primary bg-primary-100 dark:bg-dark-primary/20 px-2 py-0.5 rounded mt-0.5">
           {question.questionCode}
         </span>
         <div className="flex-1">
-          <p className="text-surface-900">
+          <p className="text-surface-900 dark:text-dark-text">
             {question.questionText}
             {question.required && <span className="text-accent-500 ml-1">*</span>}
           </p>
@@ -520,4 +520,3 @@ function QuestionPreview({ question }: { question: Question }) {
     </div>
   )
 }
-

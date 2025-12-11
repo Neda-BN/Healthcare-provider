@@ -92,10 +92,10 @@ export default function LoginPage() {
             
             <h1 className="text-4xl font-display font-bold leading-tight mb-6">
               Survey Management<br />
-              <span className="text-primary-200">& Analytics Platform</span>
+              <span className="text-primary-200 dark:text-cyan-300">& Analytics Platform</span>
             </h1>
             
-            <p className="text-lg text-primary-100 leading-relaxed max-w-md">
+            <p className="text-lg text-primary-100 dark:text-cyan-100 leading-relaxed max-w-md">
               Comprehensive municipality survey management, real-time dashboards, 
               and comparative analysis to improve care quality.
             </p>
@@ -103,11 +103,11 @@ export default function LoginPage() {
             <div className="mt-12 grid grid-cols-2 gap-6">
               <div className="bg-white/10 rounded-xl p-4">
                 <div className="text-3xl font-bold">3</div>
-                <div className="text-sm text-primary-200">Active Municipalities</div>
+                <div className="text-sm text-primary-200 dark:text-cyan-200">Active Municipalities</div>
               </div>
               <div className="bg-white/10 rounded-xl p-4">
                 <div className="text-3xl font-bold">43</div>
-                <div className="text-sm text-primary-200">Survey Questions</div>
+                <div className="text-sm text-primary-200 dark:text-cyan-200">Survey Questions</div>
               </div>
             </div>
           </motion.div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Login form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-surface-50">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-surface-50 dark:bg-dark-bg">
         <motion.div
           className="w-full max-w-md"
           initial={{ opacity: 0, y: 20 }}
@@ -124,22 +124,22 @@ export default function LoginPage() {
         >
           {/* Mobile branding */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <div className="p-1.5 bg-primary-600 rounded-lg">
-              <Heart className="w-5 h-5 text-white" />
+            <div className="p-1.5 bg-primary-600 dark:bg-dark-primary rounded-lg">
+              <Heart className="w-5 h-5 text-white dark:text-dark-primary-text" />
             </div>
-            <span className="text-base font-display font-semibold text-surface-900">Healthcare Provider</span>
+            <span className="text-base font-display font-semibold text-surface-900 dark:text-dark-text">Healthcare Provider</span>
           </div>
 
           <div className="card">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-display font-bold text-surface-900">Welcome back</h2>
-              <p className="text-surface-500 mt-2">Sign in to access your dashboard</p>
+              <h2 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Welcome back</h2>
+              <p className="text-surface-500 dark:text-dark-text-muted mt-2">Sign in to access your dashboard</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
                 <motion.div
-                  className="flex items-center gap-2 p-3 bg-accent-50 border border-accent-200 rounded-lg text-accent-700"
+                  className="flex items-center gap-2 p-3 bg-accent-50 dark:bg-accent-900/30 border border-accent-200 dark:border-accent-800 rounded-lg text-accent-700 dark:text-accent-400"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                 >
@@ -151,7 +151,7 @@ export default function LoginPage() {
               <div>
                 <label htmlFor="email" className="label">Email address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
                   <input
                     id="email"
                     type="email"
@@ -168,7 +168,7 @@ export default function LoginPage() {
               <div>
                 <label htmlFor="password" className="label">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
                   <input
                     id="password"
                     type="password"
@@ -204,22 +204,22 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-surface-200">
-              <p className="text-sm text-center text-surface-500 mb-4">Demo credentials</p>
+            <div className="mt-8 pt-6 border-t border-surface-200 dark:border-dark-border">
+              <p className="text-sm text-center text-surface-500 dark:text-dark-text-muted mb-4">Demo credentials</p>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center p-3 bg-surface-50 rounded-lg">
+                <div className="flex justify-between items-center p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
                   <div>
-                    <span className="font-medium text-surface-700">Admin</span>
-                    <p className="text-surface-500 text-xs">admin@healthcare-provider.se</p>
+                    <span className="font-medium text-surface-700 dark:text-dark-text">Admin</span>
+                    <p className="text-surface-500 dark:text-dark-text-muted text-xs">admin@healthcare-provider.se</p>
                   </div>
-                  <code className="text-xs bg-surface-200 px-2 py-1 rounded">admin123</code>
+                  <code className="text-xs bg-surface-200 dark:bg-dark-surface px-2 py-1 rounded text-surface-700 dark:text-dark-text">admin123</code>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-surface-50 rounded-lg">
+                <div className="flex justify-between items-center p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
                   <div>
-                    <span className="font-medium text-surface-700">Caregiver</span>
-                    <p className="text-surface-500 text-xs">caregiver@healthcare-provider.se</p>
+                    <span className="font-medium text-surface-700 dark:text-dark-text">Caregiver</span>
+                    <p className="text-surface-500 dark:text-dark-text-muted text-xs">caregiver@healthcare-provider.se</p>
                   </div>
-                  <code className="text-xs bg-surface-200 px-2 py-1 rounded">caregiver123</code>
+                  <code className="text-xs bg-surface-200 dark:bg-dark-surface px-2 py-1 rounded text-surface-700 dark:text-dark-text">caregiver123</code>
                 </div>
               </div>
             </div>
@@ -229,4 +229,3 @@ export default function LoginPage() {
     </div>
   )
 }
-

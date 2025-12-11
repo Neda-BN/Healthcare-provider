@@ -21,8 +21,8 @@ export default async function FrameworkAgreementPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">Framework Agreements</h1>
-        <p className="text-surface-500 mt-1">Overview of municipality framework agreements</p>
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Framework Agreements</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">Overview of municipality framework agreements</p>
       </div>
 
       <div className="table-container">
@@ -47,8 +47,8 @@ export default async function FrameworkAgreementPage() {
                 <tr key={agreement.id}>
                   <td>
                     <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-primary-600" />
-                      <span className="font-medium">{agreement.name}</span>
+                      <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                      <span className="font-medium text-surface-900 dark:text-dark-text">{agreement.name}</span>
                     </div>
                   </td>
                   <td>
@@ -70,7 +70,7 @@ export default async function FrameworkAgreementPage() {
                       <span className="badge-success">Active</span>
                     )}
                   </td>
-                  <td className="text-surface-500 max-w-xs truncate">
+                  <td className="text-surface-500 dark:text-dark-text-muted max-w-xs truncate">
                     {agreement.frameworkAgreementNotes || '-'}
                   </td>
                 </tr>
@@ -82,8 +82,8 @@ export default async function FrameworkAgreementPage() {
 
       {agreements.length === 0 && (
         <div className="card text-center py-12">
-          <FileText className="w-12 h-12 mx-auto text-surface-300 mb-4" />
-          <p className="text-surface-500">No framework agreements found.</p>
+          <FileText className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
+          <p className="text-surface-500 dark:text-dark-text-muted">No framework agreements found.</p>
         </div>
       )}
     </div>

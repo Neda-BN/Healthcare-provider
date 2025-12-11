@@ -21,6 +21,7 @@ import {
   Legend,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import { useTheme } from '@/contexts/ThemeContext'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -46,7 +47,18 @@ const chartColors = [
   'rgba(59, 130, 246, 0.8)',
 ]
 
+const darkChartColors = [
+  'rgba(6, 182, 212, 0.8)',
+  'rgba(249, 112, 102, 0.8)',
+  'rgba(148, 163, 184, 0.8)',
+  'rgba(96, 165, 250, 0.8)',
+]
+
 export default function AnalyseContent({ data }: { data: AnalysisData }) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  const colors = isDark ? darkChartColors : chartColors
+
   const [selectedIds, setSelectedIds] = useState<string[]>(
     data.municipalities.slice(0, 3).map((m) => m.id)
   )
@@ -75,10 +87,10 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
         const catData = m.categoryAverages.find((c) => c.category === cat)
         return catData?.average || 0
       }),
-      backgroundColor: chartColors[i],
+      backgroundColor: colors[i],
       borderRadius: 4,
     })),
-  }), [selectedMunicipalities, data.categories])
+  }), [selectedMunicipalities, data.categories, colors])
 
   const chartOptions = {
     responsive: true,
@@ -89,6 +101,7 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
         labels: {
           padding: 20,
           usePointStyle: true,
+          color: isDark ? '#F1F5F9' : '#1c1917',
         },
       },
     },
@@ -99,12 +112,23 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
         title: {
           display: true,
           text: 'Average Score',
+          color: isDark ? '#94A3B8' : '#78716c',
+        },
+        ticks: {
+          color: isDark ? '#94A3B8' : '#78716c',
+        },
+        grid: {
+          color: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)',
         },
       },
       x: {
         ticks: {
           maxRotation: 45,
           minRotation: 45,
+          color: isDark ? '#94A3B8' : '#78716c',
+        },
+        grid: {
+          color: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)',
         },
       },
     },
@@ -141,10 +165,10 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900">
+          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">
             Comparative Analysis
           </h1>
-          <p className="text-surface-500 mt-1">
+          <p className="text-surface-500 dark:text-dark-text-muted mt-1">
             Compare performance across municipalities (select 2-4)
           </p>
         </div>
@@ -156,7 +180,7 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
 
       {/* Municipality Selection */}
       <div className="card">
-        <h3 className="text-lg font-semibold text-surface-900 mb-4">Select Municipalities</h3>
+        <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Select Municipalities</h3>
         <div className="flex flex-wrap gap-3">
           {data.municipalities.map((m) => {
             const isSelected = selectedIds.includes(m.id)
@@ -168,22 +192,22 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
                 disabled={!isSelected && selectedIds.length >= 4}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all ${
                   isSelected
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-surface-200 hover:border-surface-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                    ? 'border-primary-500 bg-primary-50 dark:border-dark-primary dark:bg-dark-primary/20'
+                    : 'border-surface-200 hover:border-surface-300 dark:border-dark-border dark:hover:border-dark-primary/50 disabled:opacity-50 disabled:cursor-not-allowed'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-                    isSelected ? 'border-primary-500 bg-primary-500' : 'border-surface-300'
+                    isSelected ? 'border-primary-500 bg-primary-500 dark:border-dark-primary dark:bg-dark-primary' : 'border-surface-300 dark:border-dark-border'
                   }`}
-                  style={isSelected ? { backgroundColor: chartColors[colorIndex].replace('0.8', '1') } : {}}
+                  style={isSelected ? { backgroundColor: colors[colorIndex].replace('0.8', '1') } : {}}
                 >
-                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                  {isSelected && <Check className="w-3 h-3 text-white dark:text-dark-primary-text" />}
                 </div>
-                <span className={isSelected ? 'text-primary-700 font-medium' : 'text-surface-700'}>
+                <span className={isSelected ? 'text-primary-700 dark:text-dark-primary font-medium' : 'text-surface-700 dark:text-dark-text'}>
                   {m.name}
                 </span>
-                <span className="text-sm text-surface-500">({m.avgScore}/10)</span>
+                <span className="text-sm text-surface-500 dark:text-dark-text-muted">({m.avgScore}/10)</span>
               </button>
             )
           })}
@@ -203,12 +227,12 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
             <div className="flex items-center gap-3 mb-3">
               <div
                 className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: chartColors[i].replace('0.8', '1') }}
+                style={{ backgroundColor: colors[i].replace('0.8', '1') }}
               />
-              <h4 className="font-semibold text-surface-900">{m.name}</h4>
+              <h4 className="font-semibold text-surface-900 dark:text-dark-text">{m.name}</h4>
             </div>
-            <div className="text-3xl font-bold text-surface-900">{m.avgScore}/10</div>
-            <p className="text-sm text-surface-500 mt-1">{m.surveyCount} surveys completed</p>
+            <div className="text-3xl font-bold text-surface-900 dark:text-dark-text">{m.avgScore}/10</div>
+            <p className="text-sm text-surface-500 dark:text-dark-text-muted mt-1">{m.surveyCount} surveys completed</p>
           </motion.div>
         ))}
       </div>
@@ -220,7 +244,7 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <h3 className="text-lg font-semibold text-surface-900 mb-4">Score Comparison by Category</h3>
+        <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Score Comparison by Category</h3>
         <div className="h-96">
           <Bar data={comparisonChartData} options={chartOptions} />
         </div>
@@ -233,18 +257,18 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <h3 className="text-lg font-semibold text-surface-900 mb-4">Detailed Comparison</h3>
+        <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Detailed Comparison</h3>
         <div className="table-container">
           <table className="table">
             <thead>
               <tr>
-                <th className="sticky left-0 bg-surface-50">Category</th>
+                <th className="sticky left-0 bg-surface-50 dark:bg-dark-surface">Category</th>
                 {selectedMunicipalities.map((m, i) => (
                   <th key={m.id} className="text-center">
                     <div className="flex items-center justify-center gap-2">
                       <div
                         className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: chartColors[i].replace('0.8', '1') }}
+                        style={{ backgroundColor: colors[i].replace('0.8', '1') }}
                       />
                       {m.name}
                     </div>
@@ -256,7 +280,7 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
             <tbody>
               {data.categories.map((category) => (
                 <tr key={category}>
-                  <td className="sticky left-0 bg-white font-medium">{category}</td>
+                  <td className="sticky left-0 bg-white dark:bg-dark-surface font-medium">{category}</td>
                   {selectedMunicipalities.map((m) => {
                     const catData = m.categoryAverages.find((c) => c.category === category)
                     const score = catData?.average || 0
@@ -265,10 +289,10 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
                         <span
                           className={`font-medium ${
                             score >= 8
-                              ? 'text-green-600'
+                              ? 'text-green-600 dark:text-green-400'
                               : score >= 6
-                              ? 'text-amber-600'
-                              : 'text-accent-600'
+                              ? 'text-amber-600 dark:text-amber-400'
+                              : 'text-accent-600 dark:text-accent-400'
                           }`}
                         >
                           {score}
@@ -288,10 +312,10 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
                           <span
                             className={`flex items-center justify-center gap-1 ${
                               delta > 0
-                                ? 'text-green-600'
+                                ? 'text-green-600 dark:text-green-400'
                                 : delta < 0
-                                ? 'text-accent-600'
-                                : 'text-surface-500'
+                                ? 'text-accent-600 dark:text-accent-400'
+                                : 'text-surface-500 dark:text-dark-text-muted'
                             }`}
                           >
                             {delta > 0 ? (
@@ -326,22 +350,22 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: chartColors[i].replace('0.8', '1') }}
+                style={{ backgroundColor: colors[i].replace('0.8', '1') }}
               />
-              <h3 className="text-lg font-semibold text-surface-900">{m.name}</h3>
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text">{m.name}</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-green-600" />
-                  <span className="font-medium text-surface-700">Top Strengths</span>
+                  <Award className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <span className="font-medium text-surface-700 dark:text-dark-text">Top Strengths</span>
                 </div>
                 <div className="space-y-2">
                   {m.strengths.map((s, j) => (
-                    <div key={s.category} className="flex items-center justify-between p-2 bg-green-50 rounded">
-                      <span className="text-sm text-surface-700">{s.category}</span>
-                      <span className="font-medium text-green-700">{s.average}</span>
+                    <div key={s.category} className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                      <span className="text-sm text-surface-700 dark:text-dark-text">{s.category}</span>
+                      <span className="font-medium text-green-700 dark:text-green-400">{s.average}</span>
                     </div>
                   ))}
                 </div>
@@ -349,14 +373,14 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600" />
-                  <span className="font-medium text-surface-700">Areas to Improve</span>
+                  <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <span className="font-medium text-surface-700 dark:text-dark-text">Areas to Improve</span>
                 </div>
                 <div className="space-y-2">
                   {m.weaknesses.map((w, j) => (
-                    <div key={w.category} className="flex items-center justify-between p-2 bg-amber-50 rounded">
-                      <span className="text-sm text-surface-700">{w.category}</span>
-                      <span className="font-medium text-amber-700">{w.average}</span>
+                    <div key={w.category} className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                      <span className="text-sm text-surface-700 dark:text-dark-text">{w.category}</span>
+                      <span className="font-medium text-amber-700 dark:text-amber-400">{w.average}</span>
                     </div>
                   ))}
                 </div>
@@ -368,4 +392,3 @@ export default function AnalyseContent({ data }: { data: AnalysisData }) {
     </div>
   )
 }
-

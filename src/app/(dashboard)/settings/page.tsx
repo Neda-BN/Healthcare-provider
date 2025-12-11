@@ -36,8 +36,8 @@ export default function SettingsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">Settings</h1>
-        <p className="text-surface-500 mt-1">Manage your application preferences</p>
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Settings</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">Manage your application preferences</p>
       </div>
 
       {/* General Settings */}
@@ -47,8 +47,8 @@ export default function SettingsPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <Settings className="w-5 h-5 text-primary-600" />
-          <h2 className="text-lg font-semibold text-surface-900">General</h2>
+          <Settings className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">General</h2>
         </div>
 
         <div className="space-y-4">
@@ -60,7 +60,7 @@ export default function SettingsPage() {
               onChange={(e) => setSettings({ ...settings, companyName: e.target.value })}
               className="input"
             />
-            <p className="text-xs text-surface-500 mt-1">
+            <p className="text-xs text-surface-500 dark:text-dark-text-muted mt-1">
               Displayed in emails and the sidebar
             </p>
           </div>
@@ -75,15 +75,15 @@ export default function SettingsPage() {
         transition={{ delay: 0.1 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <Mail className="w-5 h-5 text-primary-600" />
-          <h2 className="text-lg font-semibold text-surface-900">Email</h2>
+          <Mail className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">Email</h2>
         </div>
 
         <div className="space-y-4">
-          <label className="flex items-center justify-between p-3 bg-surface-50 rounded-lg cursor-pointer">
+          <label className="flex items-center justify-between p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg cursor-pointer">
             <div>
-              <span className="font-medium text-surface-900">Auto-parse email replies</span>
-              <p className="text-sm text-surface-500">
+              <span className="font-medium text-surface-900 dark:text-dark-text">Auto-parse email replies</span>
+              <p className="text-sm text-surface-500 dark:text-dark-text-muted">
                 Automatically extract survey responses from email replies
               </p>
             </div>
@@ -91,14 +91,14 @@ export default function SettingsPage() {
               type="checkbox"
               checked={settings.autoParseReplies}
               onChange={(e) => setSettings({ ...settings, autoParseReplies: e.target.checked })}
-              className="w-5 h-5 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+              className="w-5 h-5 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
             />
           </label>
 
-          <label className="flex items-center justify-between p-3 bg-surface-50 rounded-lg cursor-pointer">
+          <label className="flex items-center justify-between p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg cursor-pointer">
             <div>
-              <span className="font-medium text-surface-900">Send email reminders</span>
-              <p className="text-sm text-surface-500">
+              <span className="font-medium text-surface-900 dark:text-dark-text">Send email reminders</span>
+              <p className="text-sm text-surface-500 dark:text-dark-text-muted">
                 Automatically remind recipients who haven&apos;t responded
               </p>
             </div>
@@ -106,7 +106,7 @@ export default function SettingsPage() {
               type="checkbox"
               checked={settings.emailReminders}
               onChange={(e) => setSettings({ ...settings, emailReminders: e.target.checked })}
-              className="w-5 h-5 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+              className="w-5 h-5 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
             />
           </label>
 
@@ -134,15 +134,15 @@ export default function SettingsPage() {
         transition={{ delay: 0.2 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <Shield className="w-5 h-5 text-primary-600" />
-          <h2 className="text-lg font-semibold text-surface-900">Surveys</h2>
+          <Shield className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text">Surveys</h2>
         </div>
 
         <div className="space-y-4">
-          <label className="flex items-center justify-between p-3 bg-surface-50 rounded-lg cursor-pointer">
+          <label className="flex items-center justify-between p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg cursor-pointer">
             <div>
-              <span className="font-medium text-surface-900">Require all questions</span>
-              <p className="text-sm text-surface-500">
+              <span className="font-medium text-surface-900 dark:text-dark-text">Require all questions</span>
+              <p className="text-sm text-surface-500 dark:text-dark-text-muted">
                 Mark survey as incomplete unless all questions are answered
               </p>
             </div>
@@ -150,7 +150,7 @@ export default function SettingsPage() {
               type="checkbox"
               checked={settings.requireAllQuestions}
               onChange={(e) => setSettings({ ...settings, requireAllQuestions: e.target.checked })}
-              className="w-5 h-5 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+              className="w-5 h-5 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
             />
           </label>
         </div>
@@ -158,17 +158,17 @@ export default function SettingsPage() {
 
       {/* Demo Info */}
       <motion.div
-        className="card bg-primary-50 border-primary-200"
+        className="card bg-primary-50 dark:bg-dark-primary/10 border-primary-200 dark:border-dark-primary/30"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <h3 className="font-semibold text-primary-900 mb-2">Demo Mode</h3>
-        <p className="text-sm text-primary-700 mb-3">
+        <h3 className="font-semibold text-primary-900 dark:text-dark-primary mb-2">Demo Mode</h3>
+        <p className="text-sm text-primary-700 dark:text-dark-text-muted mb-3">
           This is a demo application. Settings changes are not persisted to the database in this version.
           In production, connect to your SMTP provider and configure environment variables.
         </p>
-        <div className="text-xs font-mono bg-primary-100 p-3 rounded-lg text-primary-800 overflow-x-auto">
+        <div className="text-xs font-mono bg-primary-100 dark:bg-dark-surface p-3 rounded-lg text-primary-800 dark:text-dark-text overflow-x-auto">
           <div>SMTP_HOST=localhost</div>
           <div>SMTP_PORT=1025</div>
           <div>DATABASE_URL=file:./dev.db</div>
@@ -201,4 +201,3 @@ export default function SettingsPage() {
     </div>
   )
 }
-

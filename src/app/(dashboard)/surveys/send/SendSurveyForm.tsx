@@ -210,8 +210,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">Send Survey</h1>
-        <p className="text-surface-500 mt-1">
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Send Survey</h1>
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">
           Send a survey to one or more municipalities by email
         </p>
       </div>
@@ -222,7 +222,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className={`flex flex-col items-center py-8 ${result.success ? 'text-green-600' : 'text-accent-600'}`}>
+          <div className={`flex flex-col items-center py-8 ${result.success ? 'text-green-600 dark:text-green-400' : 'text-accent-600 dark:text-accent-400'}`}>
             {result.success ? (
               <CheckCircle className="w-16 h-16 mb-4" />
             ) : (
@@ -231,7 +231,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
             <h2 className="text-xl font-semibold mb-2">
               {result.success ? 'Surveys Sent!' : 'Failed to Send'}
             </h2>
-            <p className="text-surface-600 text-center mb-6">{result.message}</p>
+            <p className="text-surface-600 dark:text-dark-text-muted text-center mb-6">{result.message}</p>
             <div className="flex gap-3">
               <button onClick={() => setResult(null)} className="btn-secondary">
                 Send More
@@ -243,9 +243,9 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
           </div>
 
           {result.success && (
-            <div className="mt-6 p-4 bg-primary-50 rounded-lg">
-              <h3 className="font-medium text-primary-800 mb-2">📧 Demo: View Emails</h3>
-              <p className="text-sm text-primary-700 mb-3">
+            <div className="mt-6 p-4 bg-primary-50 dark:bg-dark-primary/20 rounded-lg">
+              <h3 className="font-medium text-primary-800 dark:text-dark-primary mb-2">📧 Demo: View Emails</h3>
+              <p className="text-sm text-primary-700 dark:text-dark-text-muted mb-3">
                 If you&apos;re running Maildev locally (npm run maildev), you can view the sent emails at:
               </p>
               <a
@@ -263,8 +263,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Template Selection */}
           <div className="card">
-            <h3 className="text-lg font-semibold text-surface-900 mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary-600" />
+            <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
               Select Template
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -275,17 +275,17 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                   onClick={() => setSelectedTemplate(template.id)}
                   className={`p-4 rounded-lg border-2 text-left transition-all ${
                     selectedTemplate === template.id
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-surface-200 hover:border-surface-300'
+                      ? 'border-primary-500 bg-primary-50 dark:border-dark-primary dark:bg-dark-primary/20'
+                      : 'border-surface-200 hover:border-surface-300 dark:border-dark-border dark:hover:border-dark-primary/50'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-surface-900">{template.name}</span>
+                    <span className="font-medium text-surface-900 dark:text-dark-text">{template.name}</span>
                     {template.isDefault && (
                       <span className="badge-primary text-xs">Default</span>
                     )}
                   </div>
-                  <p className="text-sm text-surface-500">
+                  <p className="text-sm text-surface-500 dark:text-dark-text-muted">
                     {template.questionCount} questions
                   </p>
                 </button>
@@ -295,8 +295,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
 
           {/* Municipality Selection */}
           <div className="card">
-            <h3 className="text-lg font-semibold text-surface-900 mb-4 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-primary-600" />
+            <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
               Select Municipalities
             </h3>
             <div className="space-y-2">
@@ -310,8 +310,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                     key={m.id}
                     className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-surface-200 hover:border-surface-300'
+                        ? 'border-primary-500 bg-primary-50 dark:border-dark-primary dark:bg-dark-primary/20'
+                        : 'border-surface-200 hover:border-surface-300 dark:border-dark-border dark:hover:border-dark-primary/50'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -319,15 +319,15 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                         type="checkbox"
                         checked={isSelected}
                         onChange={(e) => handleMunicipalityToggle(m.id, e.target.checked)}
-                        className="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+                        className="w-4 h-4 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
                       />
-                      <span className="font-medium text-surface-900">{m.name}</span>
+                      <span className="font-medium text-surface-900 dark:text-dark-text">{m.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {isLoading ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-surface-400" />
+                        <Loader2 className="w-4 h-4 animate-spin text-surface-400 dark:text-dark-text-muted" />
                       ) : (
-                        <span className={`flex items-center gap-1 text-sm ${emailCount > 0 ? 'text-primary-600' : 'text-surface-400'}`}>
+                        <span className={`flex items-center gap-1 text-sm ${emailCount > 0 ? 'text-primary-600 dark:text-dark-primary' : 'text-surface-400 dark:text-dark-text-muted'}`}>
                           <Mail className="w-4 h-4" />
                           {emailCount} {emailCount === 1 ? 'email' : 'emails'}
                         </span>
@@ -345,17 +345,17 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
               className="flex items-center justify-between cursor-pointer"
               onClick={() => setShowEmailList(!showEmailList)}
             >
-              <h3 className="text-lg font-semibold text-surface-900 flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary-600" />
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
                 Recipients
                 {selectedEmails.length > 0 && (
-                  <span className="ml-2 px-2 py-0.5 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                  <span className="ml-2 px-2 py-0.5 bg-primary-100 dark:bg-dark-primary/20 text-primary-700 dark:text-dark-primary rounded-full text-sm font-medium">
                     {selectedEmails.length} {selectedEmails.length === 1 ? 'email' : 'emails'} loaded
                   </span>
                 )}
               </h3>
-              <button type="button" className="p-1 hover:bg-surface-100 rounded">
-                {showEmailList ? <ChevronUp className="w-5 h-5 text-surface-500" /> : <ChevronDown className="w-5 h-5 text-surface-500" />}
+              <button type="button" className="p-1 hover:bg-surface-100 dark:hover:bg-dark-surface-light rounded">
+                {showEmailList ? <ChevronUp className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" /> : <ChevronDown className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />}
               </button>
             </div>
 
@@ -391,24 +391,24 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <label className="label mb-0">Email List ({selectedEmails.length})</label>
-                          <p className="text-xs text-surface-500">Click × to remove an email</p>
+                          <p className="text-xs text-surface-500 dark:text-dark-text-muted">Click × to remove an email</p>
                         </div>
-                        <div className="max-h-48 overflow-y-auto bg-surface-50 rounded-lg p-3">
+                        <div className="max-h-48 overflow-y-auto bg-surface-50 dark:bg-dark-surface-light rounded-lg p-3">
                           <div className="flex flex-wrap gap-2">
                             {selectedEmails.map((email) => (
                               <span
                                 key={email}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm ${
                                   additionalEmails.includes(email)
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-white border border-surface-200 text-surface-700'
+                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
+                                    : 'bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border text-surface-700 dark:text-dark-text'
                                 }`}
                               >
                                 {email}
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveEmail(email)}
-                                  className="p-0.5 hover:bg-surface-200 rounded-full"
+                                  className="p-0.5 hover:bg-surface-200 dark:hover:bg-dark-surface-lighter rounded-full"
                                 >
                                   <X className="w-3 h-3" />
                                 </button>
@@ -418,9 +418,9 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-6 bg-surface-50 rounded-lg">
-                        <Users className="w-10 h-10 text-surface-300 mx-auto mb-2" />
-                        <p className="text-surface-500 text-sm">
+                      <div className="text-center py-6 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
+                        <Users className="w-10 h-10 text-surface-300 dark:text-dark-text-muted mx-auto mb-2" />
+                        <p className="text-surface-500 dark:text-dark-text-muted text-sm">
                           {selectedMunicipalities.length === 0
                             ? 'Select municipalities above to load email recipients'
                             : isLoadingAnyEmails
@@ -436,7 +436,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
 
             {/* Summary when collapsed */}
             {!showEmailList && selectedEmails.length === 0 && selectedMunicipalities.length > 0 && (
-              <p className="text-sm text-amber-600 mt-2 flex items-center gap-1">
+              <p className="text-sm text-amber-600 dark:text-amber-400 mt-2 flex items-center gap-1">
                 <AlertCircle className="w-4 h-4" />
                 No email recipients. Click to add emails manually.
               </p>
@@ -445,8 +445,8 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
 
           {/* Survey Details */}
           <div className="card">
-            <h3 className="text-lg font-semibold text-surface-900 mb-4 flex items-center gap-2">
-              <Mail className="w-5 h-5 text-primary-600" />
+            <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4 flex items-center gap-2">
+              <Mail className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
               Survey Details
             </h3>
 
@@ -468,9 +468,9 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
                   id="parseReplies"
                   checked={parseReplies}
                   onChange={(e) => setParseReplies(e.target.checked)}
-                  className="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+                  className="w-4 h-4 rounded border-surface-300 dark:border-dark-border text-primary-600 dark:text-dark-primary focus:ring-primary-500 dark:focus:ring-dark-primary dark:bg-dark-surface"
                 />
-                <label htmlFor="parseReplies" className="text-sm text-surface-700">
+                <label htmlFor="parseReplies" className="text-sm text-surface-700 dark:text-dark-text">
                   Automatically parse email replies as survey responses
                 </label>
               </div>

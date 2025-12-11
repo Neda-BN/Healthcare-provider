@@ -24,6 +24,7 @@ import {
   ArcElement,
 } from 'chart.js'
 import { Bar, Line, Doughnut } from 'react-chartjs-2'
+import { useTheme } from '@/contexts/ThemeContext'
 
 ChartJS.register(
   CategoryScale,
@@ -72,12 +73,17 @@ interface DashboardContentProps {
 }
 
 export default function DashboardContent({ data, userName }: DashboardContentProps) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+
   const chartColors = {
-    primary: 'rgb(13, 148, 136)',
-    primaryLight: 'rgba(13, 148, 136, 0.2)',
+    primary: isDark ? 'rgb(6, 182, 212)' : 'rgb(13, 148, 136)',
+    primaryLight: isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(13, 148, 136, 0.2)',
     accent: 'rgb(249, 112, 102)',
     accentLight: 'rgba(249, 112, 102, 0.2)',
-    surface: 'rgb(120, 113, 108)',
+    surface: isDark ? 'rgb(148, 163, 184)' : 'rgb(120, 113, 108)',
+    text: isDark ? 'rgb(241, 245, 249)' : 'rgb(28, 25, 23)',
+    grid: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)',
   }
 
   // Prepare chart data
@@ -109,7 +115,7 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         yAxisID: 'y1',
       },
     ],
-  }), [data.timeSeries])
+  }), [data.timeSeries, chartColors])
 
   const categoryChartData = useMemo(() => ({
     labels: data.categoryAverages.map((c) => c.category),
@@ -118,12 +124,14 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         label: 'Average Score',
         data: data.categoryAverages.map((c) => c.average),
         backgroundColor: data.categoryAverages.map((_, i) =>
-          `hsl(${170 + i * 15}, 70%, ${45 + i * 3}%)`
+          isDark 
+            ? `hsla(${185 + i * 15}, 70%, 50%, 0.8)`
+            : `hsl(${170 + i * 15}, 70%, ${45 + i * 3}%)`
         ),
         borderRadius: 8,
       },
     ],
-  }), [data.categoryAverages])
+  }), [data.categoryAverages, isDark])
 
   const municipalityChartData = useMemo(() => ({
     labels: data.municipalityStats.map((m) => m.name),
@@ -131,15 +139,13 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
       {
         label: 'Average Score',
         data: data.municipalityStats.map((m) => m.avgScore),
-        backgroundColor: [
-          'rgba(13, 148, 136, 0.8)',
-          'rgba(249, 112, 102, 0.8)',
-          'rgba(168, 162, 158, 0.8)',
-        ],
+        backgroundColor: isDark
+          ? ['rgba(6, 182, 212, 0.8)', 'rgba(249, 112, 102, 0.8)', 'rgba(148, 163, 184, 0.8)']
+          : ['rgba(13, 148, 136, 0.8)', 'rgba(249, 112, 102, 0.8)', 'rgba(168, 162, 158, 0.8)'],
         borderWidth: 0,
       },
     ],
-  }), [data.municipalityStats])
+  }), [data.municipalityStats, isDark])
 
   const chartOptions = {
     responsive: true,
@@ -150,6 +156,7 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         labels: {
           padding: 20,
           usePointStyle: true,
+          color: chartColors.text,
         },
       },
     },
@@ -158,6 +165,10 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
   const timeSeriesOptions = {
     ...chartOptions,
     scales: {
+      x: {
+        ticks: { color: chartColors.surface },
+        grid: { color: chartColors.grid },
+      },
       y: {
         type: 'linear' as const,
         display: true,
@@ -165,7 +176,10 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         title: {
           display: true,
           text: 'Surveys',
+          color: chartColors.surface,
         },
+        ticks: { color: chartColors.surface },
+        grid: { color: chartColors.grid },
       },
       y1: {
         type: 'linear' as const,
@@ -176,7 +190,9 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         title: {
           display: true,
           text: 'Score',
+          color: chartColors.surface,
         },
+        ticks: { color: chartColors.surface },
         grid: {
           drawOnChartArea: false,
         },
@@ -187,9 +203,15 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
   const barOptions = {
     ...chartOptions,
     scales: {
+      x: {
+        ticks: { color: chartColors.surface },
+        grid: { color: chartColors.grid },
+      },
       y: {
         beginAtZero: true,
         max: 10,
+        ticks: { color: chartColors.surface },
+        grid: { color: chartColors.grid },
       },
     },
     indexAxis: 'y' as const,
@@ -199,10 +221,10 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-surface-900">
+        <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">
           Welcome back, {userName.split(' ')[0]}
         </h1>
-        <p className="text-surface-500 mt-1">
+        <p className="text-surface-500 dark:text-dark-text-muted mt-1">
           Here&apos;s an overview of your survey performance
         </p>
       </div>
@@ -252,14 +274,14 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-surface-500">{stat.label}</p>
-                <p className="text-3xl font-bold text-surface-900 mt-1">{stat.value}</p>
+                <p className="text-sm text-surface-500 dark:text-dark-text-muted">{stat.label}</p>
+                <p className="text-3xl font-bold text-surface-900 dark:text-dark-text mt-1">{stat.value}</p>
               </div>
-              <div className={`p-2 rounded-lg ${stat.color === 'primary' ? 'bg-primary-100' : 'bg-accent-100'}`}>
-                <stat.icon className={`w-5 h-5 ${stat.color === 'primary' ? 'text-primary-600' : 'text-accent-600'}`} />
+              <div className={`p-2 rounded-lg ${stat.color === 'primary' ? 'bg-primary-100 dark:bg-dark-primary/20' : 'bg-accent-100 dark:bg-accent-900/30'}`}>
+                <stat.icon className={`w-5 h-5 ${stat.color === 'primary' ? 'text-primary-600 dark:text-dark-primary' : 'text-accent-600 dark:text-accent-400'}`} />
               </div>
             </div>
-            <div className={`flex items-center gap-1 mt-3 text-sm ${stat.up ? 'text-green-600' : 'text-accent-600'}`}>
+            <div className={`flex items-center gap-1 mt-3 text-sm ${stat.up ? 'text-green-600 dark:text-green-400' : 'text-accent-600 dark:text-accent-400'}`}>
               {stat.up ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
               <span>{stat.change} from last month</span>
             </div>
@@ -276,7 +298,7 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="text-lg font-semibold text-surface-900 mb-4">Survey Trends</h3>
+          <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Survey Trends</h3>
           <div className="chart-container">
             <Line data={timeSeriesChartData} options={timeSeriesOptions} />
           </div>
@@ -289,7 +311,7 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <h3 className="text-lg font-semibold text-surface-900 mb-4">Municipality Performance</h3>
+          <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Municipality Performance</h3>
           <div className="chart-container flex items-center justify-center">
             <div className="w-64 h-64">
               <Doughnut data={municipalityChartData} options={chartOptions} />
@@ -301,13 +323,16 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
                 <div className="flex items-center gap-2">
                   <span
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: ['#0d9488', '#f97066', '#a8a29e'][i] }}
+                    style={{ backgroundColor: isDark 
+                      ? ['#06B6D4', '#f97066', '#94A3B8'][i] 
+                      : ['#0d9488', '#f97066', '#a8a29e'][i] 
+                    }}
                   />
-                  <span className="text-surface-700">{m.name}</span>
+                  <span className="text-surface-700 dark:text-dark-text">{m.name}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-surface-500">{m.surveyCount} surveys</span>
-                  <span className="font-medium text-surface-900">{m.avgScore}/10</span>
+                  <span className="text-surface-500 dark:text-dark-text-muted">{m.surveyCount} surveys</span>
+                  <span className="font-medium text-surface-900 dark:text-dark-text">{m.avgScore}/10</span>
                 </div>
               </div>
             ))}
@@ -322,7 +347,7 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <h3 className="text-lg font-semibold text-surface-900 mb-4">Scores by Category</h3>
+        <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Scores by Category</h3>
         <div className="h-96">
           <Bar data={categoryChartData} options={barOptions} />
         </div>
@@ -336,18 +361,18 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
         transition={{ delay: 0.7 }}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-surface-900">Recent Comments</h3>
-          <MessageSquare className="w-5 h-5 text-surface-400" />
+          <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text">Recent Comments</h3>
+          <MessageSquare className="w-5 h-5 text-surface-400 dark:text-dark-text-muted" />
         </div>
         <div className="space-y-4">
           {data.recentComments.length > 0 ? (
             data.recentComments.map((comment) => (
               <div
                 key={comment.id}
-                className="p-4 bg-surface-50 rounded-lg border border-surface-200"
+                className="p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg border border-surface-200 dark:border-dark-border"
               >
-                <p className="text-surface-700">&ldquo;{comment.text}&rdquo;</p>
-                <div className="flex items-center gap-3 mt-3 text-sm text-surface-500">
+                <p className="text-surface-700 dark:text-dark-text">&ldquo;{comment.text}&rdquo;</p>
+                <div className="flex items-center gap-3 mt-3 text-sm text-surface-500 dark:text-dark-text-muted">
                   <span className="badge-primary">{comment.municipality}</span>
                   <span>{comment.category}</span>
                   <span>•</span>
@@ -356,11 +381,10 @@ export default function DashboardContent({ data, userName }: DashboardContentPro
               </div>
             ))
           ) : (
-            <p className="text-center text-surface-500 py-8">No comments yet</p>
+            <p className="text-center text-surface-500 dark:text-dark-text-muted py-8">No comments yet</p>
           )}
         </div>
       </motion.div>
     </div>
   )
 }
-
