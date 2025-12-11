@@ -51,9 +51,9 @@ const navigation: NavItem[] = [
     name: 'Surveys',
     icon: ClipboardList,
     children: [
-      { name: 'Survey Templates', href: '/surveys/builder', icon: PenSquare },
+      { name: 'Survey Builder', href: '/surveys/builder', icon: PenSquare },
       { name: 'Send Survey', href: '/surveys/send', icon: Send },
-      { name: 'All Surveys', href: '/municipalities/report', icon: List },
+      { name: 'Sent Surveys', href: '/municipalities/report', icon: List },
     ],
   },
   {

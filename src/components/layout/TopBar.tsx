@@ -185,7 +185,7 @@ export default function TopBar({
                 <ol className="space-y-2 text-sm text-surface-600 dark:text-dark-text-muted">
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">1</span>
-                    <span>Go to <strong className="dark:text-dark-text">Surveys → Survey Templates</strong> to build a survey</span>
+                    <span>Go to <strong className="dark:text-dark-text">Surveys → Survey Builder</strong> to build a survey</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">2</span>

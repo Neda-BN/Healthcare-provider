@@ -196,10 +196,10 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">
-            Survey Templates
+            Survey Builder
           </h1>
           <p className="text-surface-500 dark:text-dark-text-muted mt-1">
-            Create and manage survey templates with custom questions
+            Create and manage your surveys with custom questions
           </p>
         </div>
         <button

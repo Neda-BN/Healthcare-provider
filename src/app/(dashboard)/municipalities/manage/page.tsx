@@ -404,129 +404,120 @@ export default function ManageMunicipalitiesPage() {
       </div>
 
       {/* Municipalities Table */}
-      <div className="card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm table-fixed">
-            <thead>
-              <tr className="bg-surface-50 dark:bg-dark-surface-light border-b border-surface-200 dark:border-dark-border">
-                <th className="w-12 px-3 py-3 text-left font-medium text-surface-600 dark:text-dark-text-muted"></th>
-                <th className="w-[30%] px-4 py-3 text-left font-medium text-surface-600 dark:text-dark-text-muted">Municipality</th>
-                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Email Recipients</th>
-                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Surveys</th>
-                <th className="w-[15%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Placements</th>
-                <th className="w-[20%] px-4 py-3 text-center font-medium text-surface-600 dark:text-dark-text-muted">Actions</th>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th style={{ width: '40px' }}></th>
+              <th>Municipality</th>
+              <th>Email Recipients</th>
+              <th>Surveys</th>
+              <th>Placements</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredMunicipalities.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
+                  {searchQuery ? 'No municipalities found matching your search' : 'No municipalities yet. Click "Add Municipality" to create one.'}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredMunicipalities.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
-                    {searchQuery ? 'No municipalities found matching your search' : 'No municipalities yet. Click "Add Municipality" to create one.'}
-                  </td>
-                </tr>
-              ) : (
-                filteredMunicipalities.map((municipality) => (
-                  <>
-                    <tr key={municipality.id} className="group border-b border-surface-100 last:border-b-0 hover:bg-surface-50 dark:bg-dark-surface-light/50">
-                      <td className="w-12 px-3 py-3">
+            ) : (
+              filteredMunicipalities.map((municipality) => (
+                <>
+                  <tr key={municipality.id} className="group">
+                    <td>
+                      <button
+                        onClick={() => toggleExpanded(municipality.id)}
+                        className="p-1 hover:bg-surface-100 dark:hover:bg-dark-surface-light rounded transition-colors"
+                      >
+                        {expandedId === municipality.id ? (
+                          <ChevronUp className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
+                        )}
+                      </button>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                        <span className="font-medium text-surface-900 dark:text-dark-text">{municipality.name}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => openEmailsModal(municipality)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-100 dark:bg-dark-surface-light hover:bg-surface-200 dark:hover:bg-dark-surface rounded-full text-sm font-medium text-surface-700 dark:text-dark-text transition-colors"
+                      >
+                        <Mail className="w-4 h-4" />
+                        {municipality._count.emails}
+                      </button>
+                    </td>
+                    <td className="text-surface-600 dark:text-dark-text-muted">{municipality._count.surveys}</td>
+                    <td className="text-surface-600 dark:text-dark-text-muted">{municipality._count.placements}</td>
+                    <td>
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => toggleExpanded(municipality.id)}
-                          className="p-1 hover:bg-surface-100 dark:hover:bg-dark-surface-light dark:bg-dark-surface-light rounded transition-colors"
+                          onClick={() => openEmailsModal(municipality, true)}
+                          className="p-2 hover:bg-primary-50 dark:hover:bg-dark-primary/20 rounded-lg transition-colors"
+                          title="Upload email list"
                         >
-                          {expandedId === municipality.id ? (
-                            <ChevronUp className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
+                          <Upload className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                        </button>
+                        <button
+                          onClick={() => openEditModal(municipality)}
+                          className="p-2 hover:bg-surface-100 dark:hover:bg-dark-surface-light rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Pencil className="w-4 h-4 text-surface-600 dark:text-dark-text-muted" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedMunicipality(municipality)
+                            setShowDeleteConfirm(true)
+                          }}
+                          className="p-2 hover:bg-accent-50 dark:hover:bg-accent-900/20 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4 text-accent-600" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {/* Expanded email preview row */}
+                  {expandedId === municipality.id && (
+                    <tr className="bg-surface-50 dark:bg-dark-surface-light">
+                      <td colSpan={6} className="px-4 py-3">
+                        <div className="ml-10">
+                          <div className="text-sm font-medium text-surface-700 dark:text-dark-text mb-2">
+                            Email Recipients ({municipality._count.emails})
+                          </div>
+                          {municipalityEmails.length > 0 ? (
+                            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                              {municipalityEmails.slice(0, 20).map((email) => (
+                                <span key={email} className="px-2 py-1 bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border rounded text-xs text-surface-600 dark:text-dark-text-muted">
+                                  {email}
+                                </span>
+                              ))}
+                              {municipalityEmails.length > 20 && (
+                                <span className="px-2 py-1 bg-surface-100 dark:bg-dark-surface-light rounded text-xs text-surface-500 dark:text-dark-text-muted">
+                                  +{municipalityEmails.length - 20} more
+                                </span>
+                              )}
+                            </div>
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-surface-400 dark:text-dark-text-muted" />
+                            <p className="text-sm text-surface-500 dark:text-dark-text-muted">No email recipients yet</p>
                           )}
-                        </button>
-                      </td>
-                      <td className="w-[30%] px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-primary-50 dark:bg-dark-primary/20 rounded-lg flex-shrink-0">
-                            <Building2 className="w-5 h-5 text-primary-600 dark:text-dark-primary" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="font-medium text-surface-900 dark:text-dark-text truncate">{municipality.name}</div>
-                            {municipality.description && (
-                              <div className="text-sm text-surface-500 dark:text-dark-text-muted truncate">{municipality.description}</div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="w-[20%] px-4 py-3 text-center">
-                        <button
-                          onClick={() => openEmailsModal(municipality)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-100 dark:bg-dark-surface-light hover:bg-surface-200 dark:hover:bg-dark-surface rounded-full text-sm font-medium text-surface-700 dark:text-dark-text transition-colors"
-                        >
-                          <Mail className="w-4 h-4" />
-                          {municipality._count.emails}
-                        </button>
-                      </td>
-                      <td className="w-[15%] px-4 py-3 text-center text-surface-600 dark:text-dark-text-muted">{municipality._count.surveys}</td>
-                      <td className="w-[15%] px-4 py-3 text-center text-surface-600 dark:text-dark-text-muted">{municipality._count.placements}</td>
-                      <td className="w-[20%] px-4 py-3">
-                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => openEmailsModal(municipality, true)}
-                            className="p-2 hover:bg-primary-50 dark:bg-dark-primary/20 rounded-lg transition-colors"
-                            title="Upload email list"
-                          >
-                            <Upload className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
-                          </button>
-                          <button
-                            onClick={() => openEditModal(municipality)}
-                            className="p-2 hover:bg-surface-100 dark:hover:bg-dark-surface-light dark:bg-dark-surface-light rounded-lg transition-colors"
-                            title="Edit"
-                          >
-                            <Pencil className="w-4 h-4 text-surface-600 dark:text-dark-text-muted" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedMunicipality(municipality)
-                              setShowDeleteConfirm(true)
-                            }}
-                            className="p-2 hover:bg-accent-50 rounded-lg transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4 text-accent-600" />
-                          </button>
                         </div>
                       </td>
                     </tr>
-                    {/* Expanded email preview row */}
-                    {expandedId === municipality.id && (
-                      <tr className="bg-surface-50 dark:bg-dark-surface-light">
-                        <td colSpan={6} className="px-4 py-3">
-                          <div className="ml-10">
-                            <div className="text-sm font-medium text-surface-700 dark:text-dark-text mb-2">
-                              Email Recipients ({municipality._count.emails})
-                            </div>
-                            {municipalityEmails.length > 0 ? (
-                              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                                {municipalityEmails.slice(0, 20).map((email) => (
-                                  <span key={email} className="px-2 py-1 bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border rounded text-xs text-surface-600 dark:text-dark-text-muted">
-                                    {email}
-                                  </span>
-                                ))}
-                                {municipalityEmails.length > 20 && (
-                                  <span className="px-2 py-1 bg-surface-100 dark:bg-dark-surface-light rounded text-xs text-surface-500 dark:text-dark-text-muted">
-                                    +{municipalityEmails.length - 20} more
-                                  </span>
-                                )}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-surface-500 dark:text-dark-text-muted">No email recipients yet</p>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                  )}
+                </>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* Create Municipality Modal */}
