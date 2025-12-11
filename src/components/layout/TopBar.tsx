@@ -61,29 +61,29 @@ export default function TopBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-surface-200">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-sm border-b border-surface-200 dark:border-dark-border">
         <div className="flex items-center justify-between h-16 px-4 lg:px-6">
           {/* Left section */}
           <div className="flex items-center gap-4">
             {/* Mobile menu button */}
             <button
               onClick={onMenuClick}
-              className="lg:hidden p-2 rounded-lg hover:bg-surface-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
             >
-              <Menu className="w-5 h-5 text-surface-600" />
+              <Menu className="w-5 h-5 text-surface-600 dark:text-dark-text" />
             </button>
 
             {/* Municipality dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 px-4 py-2 bg-surface-50 hover:bg-surface-100 rounded-lg transition-colors border border-surface-200"
+                className="flex items-center gap-2 px-4 py-2 bg-surface-50 hover:bg-surface-100 dark:bg-dark-surface dark:hover:bg-dark-surface-light rounded-lg transition-colors border border-surface-200 dark:border-dark-border"
               >
-                <Building2 className="w-4 h-4 text-primary-600" />
-                <span className="text-sm font-medium text-surface-700 max-w-[200px] truncate">
+                <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                <span className="text-sm font-medium text-surface-700 dark:text-dark-text max-w-[200px] truncate">
                   {selectedMunicipality?.name || 'Select Municipality'}
                 </span>
-                <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-surface-400 dark:text-dark-text-muted transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               <AnimatePresence>
@@ -92,10 +92,10 @@ export default function TopBar({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-surface-200 overflow-hidden z-50"
+                    className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-dark-surface rounded-xl shadow-lg dark:shadow-dark-soft border border-surface-200 dark:border-dark-border overflow-hidden z-50"
                   >
                     <div className="p-2">
-                      <div className="px-3 py-2 text-xs font-medium text-surface-400 uppercase tracking-wider">
+                      <div className="px-3 py-2 text-xs font-medium text-surface-400 dark:text-dark-text-muted uppercase tracking-wider">
                         Municipalities
                       </div>
                       {municipalities.map((municipality) => (
@@ -104,8 +104,8 @@ export default function TopBar({
                           onClick={() => handleMunicipalitySelect(municipality)}
                           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
                             selectedMunicipality?.id === municipality.id
-                              ? 'bg-primary-50 text-primary-700'
-                              : 'hover:bg-surface-50 text-surface-700'
+                              ? 'bg-primary-50 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary'
+                              : 'hover:bg-surface-50 text-surface-700 dark:hover:bg-dark-surface-light dark:text-dark-text'
                           }`}
                         >
                           <Building2 className="w-4 h-4" />
@@ -113,10 +113,10 @@ export default function TopBar({
                         </button>
                       ))}
                     </div>
-                    <div className="border-t border-surface-200 p-2">
+                    <div className="border-t border-surface-200 dark:border-dark-border p-2">
                       <Link
                         href="/municipalities"
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-primary-50 dark:text-dark-primary dark:hover:bg-dark-primary/10 rounded-lg transition-colors"
                         onClick={() => setDropdownOpen(false)}
                       >
                         View all municipalities
@@ -142,26 +142,26 @@ export default function TopBar({
             {/* Help button */}
             <button
               onClick={() => setHelpModalOpen(true)}
-              className="p-2 rounded-lg hover:bg-surface-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
               title="Help"
             >
-              <HelpCircle className="w-5 h-5 text-surface-500" />
+              <HelpCircle className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
             </button>
 
             {/* Notifications */}
-            <button className="p-2 rounded-lg hover:bg-surface-100 transition-colors relative">
-              <Bell className="w-5 h-5 text-surface-500" />
+            <button className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors relative">
+              <Bell className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-accent-500 rounded-full" />
             </button>
 
             {/* User avatar */}
-            <div className="flex items-center gap-3 pl-3 border-l border-surface-200">
+            <div className="flex items-center gap-3 pl-3 border-l border-surface-200 dark:border-dark-border">
               <div className="hidden sm:block text-right">
-                <div className="text-sm font-medium text-surface-900">{userName}</div>
-                <div className="text-xs text-surface-500">{userRole}</div>
+                <div className="text-sm font-medium text-surface-900 dark:text-dark-text">{userName}</div>
+                <div className="text-xs text-surface-500 dark:text-dark-text-muted">{userRole}</div>
               </div>
-              <div className="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-700">
+              <div className="w-9 h-9 rounded-full bg-primary-100 dark:bg-dark-primary/20 flex items-center justify-center">
+                <span className="text-sm font-medium text-primary-700 dark:text-dark-primary">
                   {userName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </span>
               </div>
@@ -178,51 +178,51 @@ export default function TopBar({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/50"
+              className="absolute inset-0 bg-black/50 dark:bg-black/70"
               onClick={() => setHelpModalOpen(false)}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft overflow-hidden"
             >
-              <div className="flex items-center justify-between p-6 border-b border-surface-200">
-                <h2 className="text-xl font-display font-bold text-surface-900">Help & Support</h2>
+              <div className="flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border">
+                <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">Help & Support</h2>
                 <button
                   onClick={() => setHelpModalOpen(false)}
-                  className="p-2 rounded-lg hover:bg-surface-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
                 </button>
               </div>
               
               <div className="p-6 space-y-4">
                 <div className="space-y-3">
-                  <h3 className="font-medium text-surface-900">Quick Start Guide</h3>
-                  <ol className="space-y-2 text-sm text-surface-600">
+                  <h3 className="font-medium text-surface-900 dark:text-dark-text">Quick Start Guide</h3>
+                  <ol className="space-y-2 text-sm text-surface-600 dark:text-dark-text-muted">
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">1</span>
-                      <span>Go to <strong>Surveys → Create New</strong> to build a survey</span>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">1</span>
+                      <span>Go to <strong className="dark:text-dark-text">Surveys → Create New</strong> to build a survey</span>
                     </li>
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">2</span>
-                      <span>Use <strong>Surveys → Send Survey</strong> to email it to municipalities</span>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">2</span>
+                      <span>Use <strong className="dark:text-dark-text">Surveys → Send Survey</strong> to email it to municipalities</span>
                     </li>
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">3</span>
-                      <span>View responses in <strong>Analysis → Reports</strong></span>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">3</span>
+                      <span>View responses in <strong className="dark:text-dark-text">Analysis → Reports</strong></span>
                     </li>
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-medium">4</span>
-                      <span>Compare municipalities in <strong>Analysis → Compare</strong></span>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-primary flex items-center justify-center text-xs font-medium">4</span>
+                      <span>Compare municipalities in <strong className="dark:text-dark-text">Analysis → Compare</strong></span>
                     </li>
                   </ol>
                 </div>
 
-                <div className="pt-4 border-t border-surface-200">
-                  <h3 className="font-medium text-surface-900 mb-2">Need more help?</h3>
-                  <p className="text-sm text-surface-600 mb-3">
+                <div className="pt-4 border-t border-surface-200 dark:border-dark-border">
+                  <h3 className="font-medium text-surface-900 dark:text-dark-text mb-2">Need more help?</h3>
+                  <p className="text-sm text-surface-600 dark:text-dark-text-muted mb-3">
                     Visit the Help & Support page or contact our support team.
                   </p>
                   <div className="flex gap-2">

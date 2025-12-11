@@ -6,6 +6,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -48,6 +49,19 @@ const config: Config = {
           800: '#292524',
           900: '#1c1917',
         },
+        // Dark mode specific colors
+        dark: {
+          bg: '#0F2235',
+          primary: '#06B6D4',
+          'primary-hover': '#0891B2',
+          'primary-text': '#0F2235',
+          surface: '#1A3349',
+          'surface-light': '#234057',
+          'surface-lighter': '#2D5066',
+          border: '#2D5066',
+          text: '#F1F5F9',
+          'text-muted': '#94A3B8',
+        },
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
@@ -56,6 +70,8 @@ const config: Config = {
       boxShadow: {
         'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
         'glow': '0 0 20px rgba(13, 148, 136, 0.15)',
+        'dark-soft': '0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2)',
+        'dark-glow': '0 0 20px rgba(6, 182, 212, 0.2)',
       },
       animation: {
         'slide-in': 'slideIn 0.3s ease-out',
@@ -81,4 +97,3 @@ const config: Config = {
   plugins: [],
 }
 export default config
-

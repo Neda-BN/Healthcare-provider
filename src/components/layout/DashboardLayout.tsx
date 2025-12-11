@@ -43,10 +43,10 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
   }, [])
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-screen bg-surface-50 dark:bg-dark-bg">
       {/* Desktop Sidebar */}
       <aside 
-        className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:border-r lg:border-surface-200 lg:overflow-hidden transition-all duration-200 ease-in-out ${
+        className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:border-r lg:border-surface-200 dark:lg:border-dark-border lg:overflow-hidden transition-all duration-200 ease-in-out ${
           sidebarCollapsed ? 'lg:w-[60px]' : 'lg:w-60'
         }`}
       >
@@ -65,7 +65,7 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/50 dark:bg-black/70 z-40 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
@@ -77,9 +77,9 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
             >
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="absolute top-3 right-3 p-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 transition-colors z-10"
+                className="absolute top-3 right-3 p-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 dark:bg-dark-surface-light dark:hover:bg-dark-surface-lighter transition-colors z-10"
               >
-                <X className="w-4 h-4 text-surface-600" />
+                <X className="w-4 h-4 text-surface-600 dark:text-dark-text" />
               </button>
               <Sidebar onClose={() => setSidebarOpen(false)} userRole={user.role} />
             </motion.aside>

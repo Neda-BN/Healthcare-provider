@@ -956,14 +956,14 @@ function Modal({ children, onClose, size = 'md' }: { children: React.ReactNode; 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className={`relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto`}
+        className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto`}
       >
         {children}
       </motion.div>
