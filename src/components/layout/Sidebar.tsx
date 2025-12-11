@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
   FileText,
@@ -26,7 +25,6 @@ import {
   List,
   ScrollText,
   GitCompare,
-  Mail,
   Cog,
   Sun,
   Moon,
@@ -53,7 +51,7 @@ const navigation: NavItem[] = [
     name: 'Surveys',
     icon: ClipboardList,
     children: [
-      { name: 'Create New', href: '/surveys/builder', icon: PenSquare },
+      { name: 'Survey Templates', href: '/surveys/builder', icon: PenSquare },
       { name: 'Send Survey', href: '/surveys/send', icon: Send },
       { name: 'All Surveys', href: '/municipalities/report', icon: List },
     ],
@@ -221,12 +219,7 @@ export default function Sidebar({
         <item.icon className={`w-4 h-4 flex-shrink-0 ${active || hasActiveChild ? 'text-primary-600 dark:text-dark-primary' : ''}`} />
         <span className="flex-1">{item.name}</span>
         {hasChildren && (
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronDown className="w-3.5 h-3.5 text-surface-400 dark:text-dark-text-muted" />
-          </motion.div>
+          <ChevronDown className={`w-3.5 h-3.5 text-surface-400 dark:text-dark-text-muted transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
         )}
       </div>
     )
@@ -239,23 +232,14 @@ export default function Sidebar({
           content
         )}
         
-        <AnimatePresence>
-          {hasChildren && isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <div className="mt-0.5 space-y-0.5 border-l border-surface-200 dark:border-dark-border ml-4">
-                {filteredChildren!.map((child) => (
-                  <NavItemComponent key={child.name} item={child} depth={depth + 1} />
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Submenu - No Framer Motion */}
+        {hasChildren && isExpanded && (
+          <div className="mt-0.5 space-y-0.5 border-l border-surface-200 dark:border-dark-border ml-4">
+            {filteredChildren!.map((child) => (
+              <NavItemComponent key={child.name} item={child} depth={depth + 1} />
+            ))}
+          </div>
+        )}
       </div>
     )
   }
@@ -269,14 +253,9 @@ export default function Sidebar({
             <Heart className="w-4 h-4 text-white dark:text-dark-primary-text" />
           </div>
           {!collapsed && (
-            <motion.h1 
-              className="text-xs font-display font-semibold text-surface-900 dark:text-dark-text whitespace-nowrap"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
+            <h1 className="text-xs font-display font-semibold text-surface-900 dark:text-dark-text whitespace-nowrap">
               Healthcare Provider
-            </motion.h1>
+            </h1>
           )}
         </Link>
       </div>

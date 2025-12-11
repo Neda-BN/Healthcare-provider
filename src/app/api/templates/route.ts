@@ -53,7 +53,9 @@ export async function POST(request: NextRequest) {
         },
       },
       include: {
-        questions: true,
+        questions: {
+          orderBy: { orderIndex: 'asc' },
+        },
       },
     })
 
@@ -103,7 +105,9 @@ export async function PUT(request: NextRequest) {
         },
       },
       include: {
-        questions: true,
+        questions: {
+          orderBy: { orderIndex: 'asc' },
+        },
       },
     })
 

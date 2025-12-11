@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
@@ -57,35 +56,26 @@ export default function DashboardLayout({ children, municipalities, user }: Dash
         />
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 dark:bg-black/70 z-40 lg:hidden"
+      {/* Mobile Sidebar Overlay - No Framer Motion */}
+      {sidebarOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-40 lg:hidden animate-fade-in"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <aside
+            className="fixed inset-y-0 left-0 z-50 w-60 lg:hidden animate-slide-in"
+          >
+            <button
               onClick={() => setSidebarOpen(false)}
-            />
-            <motion.aside
-              initial={{ x: -260 }}
-              animate={{ x: 0 }}
-              exit={{ x: -260 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 z-50 w-60 lg:hidden"
+              className="absolute top-3 right-3 p-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 dark:bg-dark-surface-light dark:hover:bg-dark-surface-lighter transition-colors z-10"
             >
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="absolute top-3 right-3 p-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 dark:bg-dark-surface-light dark:hover:bg-dark-surface-lighter transition-colors z-10"
-              >
-                <X className="w-4 h-4 text-surface-600 dark:text-dark-text" />
-              </button>
-              <Sidebar onClose={() => setSidebarOpen(false)} userRole={user.role} />
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+              <X className="w-4 h-4 text-surface-600 dark:text-dark-text" />
+            </button>
+            <Sidebar onClose={() => setSidebarOpen(false)} userRole={user.role} />
+          </aside>
+        </>
+      )}
 
       {/* Main Content Area */}
       <div className={`min-h-screen transition-all duration-200 ease-in-out ${

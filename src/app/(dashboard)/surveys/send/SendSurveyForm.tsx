@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   Send,
   Building2,
@@ -16,7 +15,6 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
-  Trash2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -217,11 +215,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
       </div>
 
       {result ? (
-        <motion.div
-          className="card"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <div className="card animate-fade-in">
           <div className={`flex flex-col items-center py-8 ${result.success ? 'text-green-600 dark:text-green-400' : 'text-accent-600 dark:text-accent-400'}`}>
             {result.success ? (
               <CheckCircle className="w-16 h-16 mb-4" />
@@ -258,7 +252,7 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
               </a>
             </div>
           )}
-        </motion.div>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Template Selection */}
@@ -359,80 +353,71 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
               </button>
             </div>
 
-            <AnimatePresence>
-              {showEmailList && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-4 space-y-4">
-                    {/* Add email input */}
-                    <div>
-                      <label className="label">Add Additional Email</label>
-                      <div className="flex gap-2">
-                        <input
-                          type="email"
-                          value={newEmail}
-                          onChange={(e) => setNewEmail(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddEmail())}
-                          className="input flex-1"
-                          placeholder="additional@email.com"
-                        />
-                        <button type="button" onClick={handleAddEmail} className="btn-secondary">
-                          <Plus className="w-4 h-4" />
-                        </button>
+            {showEmailList && (
+              <div className="mt-4 space-y-4">
+                {/* Add email input */}
+                <div>
+                  <label className="label">Add Additional Email</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddEmail())}
+                      className="input flex-1"
+                      placeholder="additional@email.com"
+                    />
+                    <button type="button" onClick={handleAddEmail} className="btn-secondary">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Email list */}
+                {selectedEmails.length > 0 ? (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="label mb-0">Email List ({selectedEmails.length})</label>
+                      <p className="text-xs text-surface-500 dark:text-dark-text-muted">Click × to remove an email</p>
+                    </div>
+                    <div className="max-h-48 overflow-y-auto bg-surface-50 dark:bg-dark-surface-light rounded-lg p-3">
+                      <div className="flex flex-wrap gap-2">
+                        {selectedEmails.map((email) => (
+                          <span
+                            key={email}
+                            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm ${
+                              additionalEmails.includes(email)
+                                ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
+                                : 'bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border text-surface-700 dark:text-dark-text'
+                            }`}
+                          >
+                            {email}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveEmail(email)}
+                              className="p-0.5 hover:bg-surface-200 dark:hover:bg-dark-surface-lighter rounded-full"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
                       </div>
                     </div>
-
-                    {/* Email list */}
-                    {selectedEmails.length > 0 ? (
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="label mb-0">Email List ({selectedEmails.length})</label>
-                          <p className="text-xs text-surface-500 dark:text-dark-text-muted">Click × to remove an email</p>
-                        </div>
-                        <div className="max-h-48 overflow-y-auto bg-surface-50 dark:bg-dark-surface-light rounded-lg p-3">
-                          <div className="flex flex-wrap gap-2">
-                            {selectedEmails.map((email) => (
-                              <span
-                                key={email}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm ${
-                                  additionalEmails.includes(email)
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
-                                    : 'bg-white dark:bg-dark-surface border border-surface-200 dark:border-dark-border text-surface-700 dark:text-dark-text'
-                                }`}
-                              >
-                                {email}
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveEmail(email)}
-                                  className="p-0.5 hover:bg-surface-200 dark:hover:bg-dark-surface-lighter rounded-full"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-6 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
-                        <Users className="w-10 h-10 text-surface-300 dark:text-dark-text-muted mx-auto mb-2" />
-                        <p className="text-surface-500 dark:text-dark-text-muted text-sm">
-                          {selectedMunicipalities.length === 0
-                            ? 'Select municipalities above to load email recipients'
-                            : isLoadingAnyEmails
-                            ? 'Loading email recipients...'
-                            : 'No email recipients found. Upload emails for the selected municipalities or add them manually.'}
-                        </p>
-                      </div>
-                    )}
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                ) : (
+                  <div className="text-center py-6 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
+                    <Users className="w-10 h-10 text-surface-300 dark:text-dark-text-muted mx-auto mb-2" />
+                    <p className="text-surface-500 dark:text-dark-text-muted text-sm">
+                      {selectedMunicipalities.length === 0
+                        ? 'Select municipalities above to load email recipients'
+                        : isLoadingAnyEmails
+                        ? 'Loading email recipients...'
+                        : 'No email recipients found. Upload emails for the selected municipalities or add them manually.'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Summary when collapsed */}
             {!showEmailList && selectedEmails.length === 0 && selectedMunicipalities.length > 0 && (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+// Removed framer-motion to fix DOM reconciliation issues
 import {
   Building2,
   Plus,
@@ -530,7 +530,7 @@ export default function ManageMunicipalitiesPage() {
       </div>
 
       {/* Create Municipality Modal */}
-      <AnimatePresence>
+      {/* Modal */}
         {showCreateModal && (
           <Modal onClose={() => { setShowCreateModal(false); resetForm() }}>
             <div className="p-6">
@@ -592,10 +592,9 @@ export default function ManageMunicipalitiesPage() {
             </div>
           </Modal>
         )}
-      </AnimatePresence>
 
       {/* Edit Municipality Modal */}
-      <AnimatePresence>
+      {/* Modal */}
         {showEditModal && selectedMunicipality && (
           <Modal onClose={() => { setShowEditModal(false); resetForm() }}>
             <div className="p-6">
@@ -656,10 +655,9 @@ export default function ManageMunicipalitiesPage() {
             </div>
           </Modal>
         )}
-      </AnimatePresence>
 
       {/* Unified Email Recipients Modal (View + Upload in one) */}
-      <AnimatePresence>
+      {/* Modal */}
         {showEmailsModal && selectedMunicipality && (
           <Modal onClose={closeEmailsModal} size="lg">
             <div className="p-6">
@@ -906,10 +904,9 @@ export default function ManageMunicipalitiesPage() {
             </div>
           </Modal>
         )}
-      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      <AnimatePresence>
+      {/* Modal */}
         {showDeleteConfirm && selectedMunicipality && (
           <Modal onClose={() => { setShowDeleteConfirm(false); setSelectedMunicipality(null) }}>
             <div className="p-6">
@@ -937,7 +934,6 @@ export default function ManageMunicipalitiesPage() {
             </div>
           </Modal>
         )}
-      </AnimatePresence>
     </div>
   )
 }
@@ -952,21 +948,21 @@ function Modal({ children, onClose, size = 'md' }: { children: React.ReactNode; 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div
+      <div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
-      <motion.div
+      <div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto`}
       >
         {children}
-      </motion.div>
+      </div>
     </div>
   )
 }

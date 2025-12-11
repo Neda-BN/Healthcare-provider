@@ -1,41 +1,35 @@
 import { prisma } from '@/lib/prisma'
-import QuestionBuilder from './QuestionBuilder'
+import SurveyTemplatesList from './SurveyTemplatesList'
 
-async function getTemplateData() {
-  const template = await prisma.surveyTemplate.findFirst({
-    where: { isDefault: true },
+async function getTemplatesData() {
+  const templates = await prisma.surveyTemplate.findMany({
+    where: { active: true },
     include: {
       questions: {
         orderBy: { orderIndex: 'asc' },
       },
+      _count: {
+        select: { surveys: true },
+      },
     },
+    orderBy: { updatedAt: 'desc' },
   })
 
-  return template
+  return templates.map((template) => ({
+    id: template.id,
+    name: template.name,
+    description: template.description || '',
+    version: template.version,
+    isDefault: template.isDefault,
+    questionCount: template.questions.length,
+    surveyCount: template._count.surveys,
+    createdAt: template.createdAt.toISOString(),
+    updatedAt: template.updatedAt.toISOString(),
+  }))
 }
 
-export default async function QuestionBuilderPage() {
-  const template = await getTemplateData()
+export default async function SurveyTemplatesPage() {
+  const templates = await getTemplatesData()
 
-  return (
-    <QuestionBuilder
-      initialTemplate={template ? {
-        id: template.id,
-        name: template.name,
-        description: template.description || '',
-        questions: template.questions.map(q => ({
-          id: q.id,
-          questionCode: q.questionCode,
-          questionText: q.questionText,
-          questionType: q.questionType as 'RATING' | 'YESNO' | 'TEXT' | 'LONGTEXT',
-          category: q.category || '',
-          orderIndex: q.orderIndex,
-          required: q.required,
-          minValue: q.minValue,
-          maxValue: q.maxValue,
-        })),
-      } : null}
-    />
-  )
+  return <SurveyTemplatesList initialTemplates={templates} />
 }
-

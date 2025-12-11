@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, Reorder } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   Plus,
-  GripVertical,
   Trash2,
   Edit3,
   Save,
@@ -14,6 +14,11 @@ import {
   AlignLeft,
   ToggleLeft,
   FileText,
+  ArrowLeft,
+  Check,
+  Send,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -33,11 +38,13 @@ interface Template {
   id: string
   name: string
   description: string
+  version: number
+  isDefault: boolean
   questions: Question[]
 }
 
-interface QuestionBuilderProps {
-  initialTemplate: Template | null
+interface TemplateEditorProps {
+  initialTemplate: Template
 }
 
 const questionTypeIcons = {
@@ -54,18 +61,13 @@ const questionTypeLabels = {
   LONGTEXT: 'Long Text',
 }
 
-export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProps) {
-  const [template, setTemplate] = useState<Template>(
-    initialTemplate || {
-      id: '',
-      name: 'New Survey Template',
-      description: '',
-      questions: [],
-    }
-  )
+export default function TemplateEditor({ initialTemplate }: TemplateEditorProps) {
+  const router = useRouter()
+  const [template, setTemplate] = useState<Template>(initialTemplate)
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
   const [showPreview, setShowPreview] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
 
   const handleAddQuestion = () => {
     const newQuestion: Question = {
@@ -96,6 +98,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
       })
     }
     setEditingQuestion(null)
+    setHasChanges(true)
     toast.success('Question saved')
   }
 
@@ -106,69 +109,137 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
         .filter((q) => q.id !== id)
         .map((q, i) => ({ ...q, orderIndex: i })),
     })
+    setHasChanges(true)
     toast.success('Question deleted')
   }
 
-  const handleReorder = (newOrder: Question[]) => {
+  const handleMoveQuestion = (index: number, direction: 'up' | 'down') => {
+    const newQuestions = [...template.questions]
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    
+    if (newIndex < 0 || newIndex >= newQuestions.length) return
+    
+    const temp = newQuestions[index]
+    newQuestions[index] = newQuestions[newIndex]
+    newQuestions[newIndex] = temp
+    
+    const reorderedQuestions = newQuestions.map((q, i) => ({ ...q, orderIndex: i }))
+    
     setTemplate({
       ...template,
-      questions: newOrder.map((q, i) => ({ ...q, orderIndex: i })),
+      questions: reorderedQuestions,
     })
+    setHasChanges(true)
   }
 
   const handleSaveTemplate = async () => {
     setSaving(true)
     try {
       const res = await fetch('/api/templates', {
-        method: template.id ? 'PUT' : 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(template),
       })
       if (!res.ok) throw new Error('Failed to save template')
       const data = await res.json()
-      setTemplate({ ...template, id: data.id })
-      toast.success('Template saved successfully')
+      
+      // Update local state with server response
+      setTemplate({
+        ...template,
+        version: data.version,
+        questions: data.questions.map((q: any) => ({
+          id: q.id,
+          questionCode: q.questionCode,
+          questionText: q.questionText,
+          questionType: q.questionType as 'RATING' | 'YESNO' | 'TEXT' | 'LONGTEXT',
+          category: q.category || '',
+          orderIndex: q.orderIndex,
+          required: q.required,
+          minValue: q.minValue,
+          maxValue: q.maxValue,
+        })),
+      })
+      
+      setHasChanges(false)
+      toast.success('Survey saved successfully')
     } catch (error) {
-      toast.error('Failed to save template')
+      toast.error('Failed to save survey')
     } finally {
       setSaving(false)
     }
   }
 
-  // Group questions by category
+  const handleTemplateInfoChange = (field: 'name' | 'description', value: string) => {
+    setTemplate({ ...template, [field]: value })
+    setHasChanges(true)
+  }
+
   const categories = Array.from(new Set(template.questions.map((q) => q.category))).filter(Boolean) as string[]
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">Question Builder</h1>
-          <p className="text-surface-500 dark:text-dark-text-muted mt-1">Create and manage survey questions</p>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/surveys/builder"
+            className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
+          </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">
+                Edit Survey
+              </h1>
+              {hasChanges && (
+                <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full">
+                  Unsaved changes
+                </span>
+              )}
+            </div>
+            <p className="text-surface-500 dark:text-dark-text-muted mt-1">
+              {template.name} • Version {template.version}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => setShowPreview(true)} className="btn-secondary">
             <Eye className="w-4 h-4" />
             Preview
           </button>
-          <button onClick={handleSaveTemplate} disabled={saving} className="btn-primary">
-            <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Template'}
+          <Link href={`/surveys/send?template=${template.id}`} className="btn-secondary">
+            <Send className="w-4 h-4" />
+            Send Survey
+          </Link>
+          <button onClick={handleSaveTemplate} disabled={saving || !hasChanges} className="btn-primary">
+            {saving ? (
+              <>
+                <Save className="w-4 h-4 animate-pulse" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Check className="w-4 h-4" />
+                Save Changes
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {/* Template Info */}
       <div className="card">
+        <h2 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-4">Survey Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="label">Template Name</label>
+            <label className="label">Survey Name</label>
             <input
               type="text"
               value={template.name}
-              onChange={(e) => setTemplate({ ...template, name: e.target.value })}
+              onChange={(e) => handleTemplateInfoChange('name', e.target.value)}
               className="input"
-              placeholder="Enter template name"
+              placeholder="Enter survey name"
             />
           </div>
           <div>
@@ -176,7 +247,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
             <input
               type="text"
               value={template.description}
-              onChange={(e) => setTemplate({ ...template, description: e.target.value })}
+              onChange={(e) => handleTemplateInfoChange('description', e.target.value)}
               className="input"
               placeholder="Brief description"
             />
@@ -197,21 +268,31 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
         </div>
 
         {template.questions.length > 0 ? (
-          <Reorder.Group
-            axis="y"
-            values={template.questions}
-            onReorder={handleReorder}
-            className="space-y-2"
-          >
-            {template.questions.map((question) => {
+          <div className="space-y-2">
+            {template.questions.map((question, index) => {
               const Icon = questionTypeIcons[question.questionType]
               return (
-                <Reorder.Item
+                <div
                   key={question.id}
-                  value={question}
-                  className="flex items-center gap-3 p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg border border-surface-200 dark:border-dark-border cursor-move hover:border-primary-300 dark:hover:border-dark-primary transition-colors"
+                  className="flex items-center gap-3 p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg border border-surface-200 dark:border-dark-border hover:border-primary-300 dark:hover:border-dark-primary transition-colors"
                 >
-                  <GripVertical className="w-5 h-5 text-surface-400 dark:text-dark-text-muted flex-shrink-0" />
+                  <div className="flex flex-col gap-0.5">
+                    <button
+                      onClick={() => handleMoveQuestion(index, 'up')}
+                      disabled={index === 0}
+                      className="p-1 rounded hover:bg-surface-200 dark:hover:bg-dark-surface-lighter disabled:opacity-30 disabled:cursor-not-allowed text-surface-400 dark:text-dark-text-muted"
+                    >
+                      <ChevronUp className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleMoveQuestion(index, 'down')}
+                      disabled={index === template.questions.length - 1}
+                      className="p-1 rounded hover:bg-surface-200 dark:hover:bg-dark-surface-lighter disabled:opacity-30 disabled:cursor-not-allowed text-surface-400 dark:text-dark-text-muted"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-sm text-primary-600 dark:text-dark-primary bg-primary-50 dark:bg-dark-primary/20 px-2 py-0.5 rounded">
@@ -224,7 +305,9 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
                         <span className="badge-warning text-xs">Optional</span>
                       )}
                     </div>
-                    <p className="text-surface-700 dark:text-dark-text mt-1 truncate">{question.questionText || 'No question text'}</p>
+                    <p className="text-surface-700 dark:text-dark-text mt-1 truncate">
+                      {question.questionText || 'No question text'}
+                    </p>
                     <div className="flex items-center gap-2 mt-1 text-xs text-surface-500 dark:text-dark-text-muted">
                       <Icon className="w-3 h-3" />
                       {questionTypeLabels[question.questionType]}
@@ -244,15 +327,18 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                </Reorder.Item>
+                </div>
               )
             })}
-          </Reorder.Group>
+          </div>
         ) : (
           <div className="text-center py-12 bg-surface-50 dark:bg-dark-surface-light rounded-lg border-2 border-dashed border-surface-200 dark:border-dark-border">
             <FileText className="w-12 h-12 mx-auto text-surface-300 dark:text-dark-text-muted mb-4" />
-            <p className="text-surface-500 dark:text-dark-text-muted">No questions yet</p>
-            <button onClick={handleAddQuestion} className="btn-primary btn-sm mt-4">
+            <p className="text-surface-500 dark:text-dark-text-muted mb-2">No questions yet</p>
+            <p className="text-sm text-surface-400 dark:text-dark-text-muted mb-4">
+              Add questions to build your survey
+            </p>
+            <button onClick={handleAddQuestion} className="btn-primary btn-sm">
               <Plus className="w-4 h-4" />
               Add your first question
             </button>
@@ -260,7 +346,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
         )}
       </div>
 
-      {/* Question Editor Modal */}
+      {/* Question Editor Modal - No Framer Motion */}
       {editingQuestion && (
         <QuestionEditor
           question={editingQuestion}
@@ -270,7 +356,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
         />
       )}
 
-      {/* Preview Modal */}
+      {/* Preview Modal - No Framer Motion */}
       {showPreview && (
         <PreviewModal
           template={template}
@@ -281,7 +367,7 @@ export default function QuestionBuilder({ initialTemplate }: QuestionBuilderProp
   )
 }
 
-// Question Editor Component
+// Question Editor Component - Pure React, no Framer Motion
 function QuestionEditor({
   question,
   categories,
@@ -297,17 +383,11 @@ function QuestionEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <div 
         className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-lg max-h-[90vh] overflow-auto"
-      >
+      <div className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-lg max-h-[90vh] overflow-auto animate-fade-in">
         <div className="flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border">
           <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">
             {question.id.startsWith('new-') ? 'Add Question' : 'Edit Question'}
@@ -365,12 +445,14 @@ function QuestionEditor({
                 return (
                   <button
                     key={type}
-                    onClick={() => setForm({
-                      ...form,
-                      questionType: type,
-                      minValue: type === 'RATING' ? 1 : null,
-                      maxValue: type === 'RATING' ? 10 : null,
-                    })}
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        questionType: type,
+                        minValue: type === 'RATING' ? 1 : null,
+                        maxValue: type === 'RATING' ? 10 : null,
+                      })
+                    }
                     className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                       form.questionType === type
                         ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-dark-primary dark:bg-dark-primary/20 dark:text-dark-primary'
@@ -399,7 +481,7 @@ function QuestionEditor({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light rounded-b-2xl">
           <button onClick={onClose} className="btn-secondary">
             Cancel
           </button>
@@ -408,12 +490,12 @@ function QuestionEditor({
             Save Question
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
-// Preview Modal Component
+// Preview Modal Component - Pure React, no Framer Motion
 function PreviewModal({
   template,
   onClose,
@@ -425,17 +507,11 @@ function PreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <div 
         className="absolute inset-0 bg-black/50 dark:bg-black/70"
         onClick={onClose}
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-2xl max-h-[90vh] overflow-auto"
-      >
+      <div className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-2xl max-h-[90vh] overflow-auto animate-fade-in">
         <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border bg-white dark:bg-dark-surface">
           <div>
             <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">{template.name}</h2>
@@ -447,28 +523,34 @@ function PreviewModal({
         </div>
 
         <div className="p-6 space-y-6">
-          {categories.length > 0 ? (
-            categories.map((category) => (
-              <div key={category}>
-                <h3 className="text-lg font-semibold text-primary-700 dark:text-dark-primary mb-4">{category}</h3>
-                <div className="space-y-4">
-                  {template.questions
-                    .filter((q) => q.category === category)
-                    .map((q) => (
-                      <QuestionPreview key={q.id} question={q} />
-                    ))}
+          {template.questions.length > 0 ? (
+            categories.length > 0 ? (
+              categories.map((category) => (
+                <div key={category}>
+                  <h3 className="text-lg font-semibold text-primary-700 dark:text-dark-primary mb-4">{category}</h3>
+                  <div className="space-y-4">
+                    {template.questions
+                      .filter((q) => q.category === category)
+                      .map((q) => (
+                        <QuestionPreview key={q.id} question={q} />
+                      ))}
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="space-y-4">
+                {template.questions.map((q) => (
+                  <QuestionPreview key={q.id} question={q} />
+                ))}
               </div>
-            ))
+            )
           ) : (
-            <div className="space-y-4">
-              {template.questions.map((q) => (
-                <QuestionPreview key={q.id} question={q} />
-              ))}
+            <div className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
+              No questions in this survey yet
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -488,24 +570,28 @@ function QuestionPreview({ question }: { question: Question }) {
           </p>
           <div className="mt-3">
             {question.questionType === 'RATING' && (
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap">
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <button
-                    key={n}
-                    className="rating-btn"
-                    disabled
-                  >
+                  <button key={n} className="rating-btn" disabled>
                     {n}
                   </button>
                 ))}
-                <button className="rating-btn rating-btn-na" disabled>N/A</button>
+                <button className="rating-btn rating-btn-na" disabled>
+                  N/A
+                </button>
               </div>
             )}
             {question.questionType === 'YESNO' && (
               <div className="flex gap-2">
-                <button className="btn-secondary btn-sm" disabled>Yes</button>
-                <button className="btn-secondary btn-sm" disabled>No</button>
-                <button className="btn-secondary btn-sm" disabled>N/A</button>
+                <button className="btn-secondary btn-sm" disabled>
+                  Yes
+                </button>
+                <button className="btn-secondary btn-sm" disabled>
+                  No
+                </button>
+                <button className="btn-secondary btn-sm" disabled>
+                  N/A
+                </button>
               </div>
             )}
             {question.questionType === 'TEXT' && (
