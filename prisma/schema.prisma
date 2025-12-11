@@ -1,0 +1,248 @@
+// Prisma schema for Healthcare Provider Survey System
+// For local demo: SQLite (file:./dev.db)
+// For production: Switch to PostgreSQL by changing datasource
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USER MANAGEMENT
+// ==========================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("CAREGIVER") // ADMIN or CAREGIVER
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  active       Boolean  @default(true)
+
+  // Relations
+  surveys      Survey[]
+  sentEmails   SurveyEmail[]
+
+  @@index([email])
+  @@index([role])
+}
+
+// ==========================================
+// MUNICIPALITIES
+// ==========================================
+
+model Municipality {
+  id              String   @id @default(uuid())
+  name            String
+  organizationNumber String?
+  contactEmail    String?
+  contactPhone    String?
+  address         String?
+  city            String?
+  postalCode      String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  active          Boolean  @default(true)
+
+  // Framework agreement details
+  frameworkAgreementStart DateTime?
+  frameworkAgreementEnd   DateTime?
+  frameworkAgreementNotes String?
+
+  // Relations
+  surveys         Survey[]
+  placements      Placement[]
+
+  @@index([name])
+}
+
+// ==========================================
+// PLACEMENTS (Care placements within municipalities)
+// ==========================================
+
+model Placement {
+  id              String   @id @default(uuid())
+  municipalityId  String
+  municipality    Municipality @relation(fields: [municipalityId], references: [id])
+  placementNumber String?
+  clientInitials  String?  // For privacy, only initials
+  startDate       DateTime?
+  endDate         DateTime?
+  status          String   @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([municipalityId])
+  @@index([status])
+}
+
+// ==========================================
+// SURVEY TEMPLATES
+// ==========================================
+
+model SurveyTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  version     Int      @default(1)
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+
+  // Relations
+  questions   SurveyQuestion[]
+  surveys     Survey[]
+
+  @@index([isDefault])
+}
+
+model SurveyQuestion {
+  id           String   @id @default(uuid())
+  templateId   String
+  template     SurveyTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  
+  questionCode String   // e.g., "Q3a", "Q4", "Q19"
+  questionText String
+  questionType String   // RATING, YESNO, TEXT, LONGTEXT
+  category     String?  // Category/section name
+  orderIndex   Int
+  required     Boolean  @default(true)
+  minValue     Int?     // For RATING: minimum value (usually 1)
+  maxValue     Int?     // For RATING: maximum value (usually 10)
+  options      String?  // JSON array for single choice options
+  helpText     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  responses    SurveyResponse[]
+
+  @@index([templateId])
+  @@index([orderIndex])
+}
+
+// ==========================================
+// SURVEYS (Instances sent to municipalities)
+// ==========================================
+
+model Survey {
+  id             String   @id @default(uuid())
+  templateId     String
+  template       SurveyTemplate @relation(fields: [templateId], references: [id])
+  municipalityId String
+  municipality   Municipality @relation(fields: [municipalityId], references: [id])
+  createdById    String
+  createdBy      User @relation(fields: [createdById], references: [id])
+  
+  title          String
+  status         String   @default("DRAFT") // DRAFT, SENT, PARTIAL, COMPLETED, CLOSED
+  sentAt         DateTime?
+  dueDate        DateTime?
+  completedAt    DateTime?
+  notes          String?
+  
+  // Email tracking
+  recipientEmails String  // JSON array of recipient emails
+  parseReplies    Boolean @default(true)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  responses      SurveyResponse[]
+  emails         SurveyEmail[]
+
+  @@index([municipalityId])
+  @@index([status])
+  @@index([createdById])
+  @@index([sentAt])
+}
+
+model SurveyResponse {
+  id           String   @id @default(uuid())
+  surveyId     String
+  survey       Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     SurveyQuestion @relation(fields: [questionId], references: [id])
+  
+  // Response data
+  ratingValue  Int?     // For RATING questions (1-10)
+  textValue    String?  // For TEXT/LONGTEXT questions
+  boolValue    Boolean? // For YESNO questions
+  naValue      Boolean  @default(false) // If N/A was selected
+  
+  // Metadata
+  respondentEmail String?
+  respondedAt     DateTime @default(now())
+  source          String   @default("EMAIL") // EMAIL, WEB, MANUAL
+  rawEmailContent String?  // Store original email content for reference
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([surveyId])
+  @@index([questionId])
+  @@unique([surveyId, questionId]) // One response per question per survey
+}
+
+// ==========================================
+// EMAIL TRACKING
+// ==========================================
+
+model SurveyEmail {
+  id          String   @id @default(uuid())
+  surveyId    String
+  survey      Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  sentById    String
+  sentBy      User @relation(fields: [sentById], references: [id])
+  
+  recipientEmail String
+  subject        String
+  bodyHtml       String
+  bodyText       String
+  
+  // Reply tracking
+  replyToAddress String   // Unique reply address for tracking
+  hasReply       Boolean  @default(false)
+  replyReceivedAt DateTime?
+  replyContent   String?
+  
+  // Delivery status
+  status         String   @default("QUEUED") // QUEUED, SENT, DELIVERED, BOUNCED, REPLIED
+  sentAt         DateTime?
+  deliveredAt    DateTime?
+  errorMessage   String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([surveyId])
+  @@index([replyToAddress])
+  @@index([status])
+}
+
+// ==========================================
+// SYSTEM SETTINGS
+// ==========================================
+
+model SystemSetting {
+  id       String @id @default(uuid())
+  key      String @unique
+  value    String
+  category String @default("GENERAL")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
