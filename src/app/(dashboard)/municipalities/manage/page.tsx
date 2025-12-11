@@ -16,9 +16,9 @@ import {
   FileSpreadsheet,
   FileText,
   Users,
-  Eye,
   ChevronDown,
   ChevronUp,
+  ArrowLeft,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -48,9 +48,11 @@ export default function ManageMunicipalitiesPage() {
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [showUploadModal, setShowUploadModal] = useState(false)
   const [showEmailsModal, setShowEmailsModal] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  
+  // Email modal view state: 'list' or 'upload'
+  const [emailModalView, setEmailModalView] = useState<'list' | 'upload'>('list')
   
   // Selected municipality
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null)
@@ -258,8 +260,15 @@ export default function ManageMunicipalitiesPage() {
       if (res.ok) {
         const data = await res.json()
         toast.success(`Saved ${data.added} emails. Total: ${data.total}`)
-        setShowUploadModal(false)
+        // Refresh emails and go back to list view
+        await fetchMunicipalityEmails(selectedMunicipality.id)
+        // Update the municipality count in state
+        setSelectedMunicipality(prev => prev ? {
+          ...prev,
+          _count: { ...prev._count, emails: data.total }
+        } : null)
         resetUploadForm()
+        setEmailModalView('list')
         fetchMunicipalities()
       } else {
         const data = await res.json()
@@ -296,17 +305,20 @@ export default function ManageMunicipalitiesPage() {
     setShowEditModal(true)
   }
 
-  // Open upload modal
-  const openUploadModal = (municipality: Municipality) => {
-    setSelectedMunicipality(municipality)
-    setShowUploadModal(true)
-  }
-
-  // Open emails modal
-  const openEmailsModal = async (municipality: Municipality) => {
+  // Open emails modal (unified for viewing and uploading)
+  const openEmailsModal = async (municipality: Municipality, startWithUpload = false) => {
     setSelectedMunicipality(municipality)
     await fetchMunicipalityEmails(municipality.id)
+    setEmailModalView(startWithUpload ? 'upload' : 'list')
     setShowEmailsModal(true)
+  }
+
+  // Close emails modal
+  const closeEmailsModal = () => {
+    setShowEmailsModal(false)
+    setMunicipalityEmails([])
+    setEmailModalView('list')
+    resetUploadForm()
   }
 
   // Reset form
@@ -438,7 +450,7 @@ export default function ManageMunicipalitiesPage() {
                       <td>
                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
-                            onClick={() => openUploadModal(municipality)}
+                            onClick={() => openEmailsModal(municipality, true)}
                             className="p-2 hover:bg-primary-50 rounded-lg transition-colors"
                             title="Upload email list"
                           >
@@ -603,215 +615,238 @@ export default function ManageMunicipalitiesPage() {
         )}
       </AnimatePresence>
 
-      {/* Upload Emails Modal */}
-      <AnimatePresence>
-        {showUploadModal && selectedMunicipality && (
-          <Modal onClose={() => { setShowUploadModal(false); resetUploadForm() }} size="lg">
-            <div className="p-6">
-              <h2 className="text-xl font-display font-bold text-surface-900 mb-2">
-                Upload Email List
-              </h2>
-              <p className="text-surface-500 mb-4">
-                for <span className="font-medium text-surface-700">{selectedMunicipality.name}</span>
-              </p>
-
-              {/* File upload area */}
-              {!parsedEmails ? (
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-surface-300 rounded-xl p-8 text-center hover:border-primary-400 transition-colors">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".csv,.xlsx,.xls,.txt"
-                      onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                      className="hidden"
-                      id="file-upload"
-                    />
-                    <label htmlFor="file-upload" className="cursor-pointer">
-                      <div className="flex justify-center mb-4">
-                        <div className="p-4 bg-primary-50 rounded-full">
-                          <Upload className="w-8 h-8 text-primary-600" />
-                        </div>
-                      </div>
-                      <p className="text-surface-900 font-medium mb-1">Click to upload a file</p>
-                      <p className="text-sm text-surface-500">or drag and drop</p>
-                    </label>
-                  </div>
-
-                  {uploadFile && (
-                    <div className="flex items-center justify-between p-3 bg-surface-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        {uploadFile.name.endsWith('.csv') && <FileSpreadsheet className="w-5 h-5 text-green-600" />}
-                        {(uploadFile.name.endsWith('.xlsx') || uploadFile.name.endsWith('.xls')) && <FileSpreadsheet className="w-5 h-5 text-blue-600" />}
-                        {uploadFile.name.endsWith('.txt') && <FileText className="w-5 h-5 text-surface-600" />}
-                        <div>
-                          <p className="font-medium text-surface-900">{uploadFile.name}</p>
-                          <p className="text-xs text-surface-500">{(uploadFile.size / 1024).toFixed(1)} KB</p>
-                        </div>
-                      </div>
-                      <button onClick={resetUploadForm} className="p-1 hover:bg-surface-200 rounded">
-                        <X className="w-4 h-4 text-surface-500" />
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="bg-surface-50 rounded-lg p-4">
-                    <h4 className="font-medium text-surface-900 mb-2">Supported Formats</h4>
-                    <ul className="text-sm text-surface-600 space-y-1">
-                      <li>• <strong>CSV</strong> - Comma-separated values</li>
-                      <li>• <strong>XLSX/XLS</strong> - Excel spreadsheet</li>
-                      <li>• <strong>TXT</strong> - Plain text (one email per line)</li>
-                    </ul>
-                    <p className="text-xs text-surface-500 mt-2">
-                      The system will automatically detect and extract all valid email addresses.
-                    </p>
-                  </div>
-
-                  <div className="flex justify-end gap-3 pt-4 border-t border-surface-200">
-                    <button onClick={() => { setShowUploadModal(false); resetUploadForm() }} className="btn-secondary">
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleFileUpload}
-                      disabled={!uploadFile || uploadParsing}
-                      className="btn-primary"
-                    >
-                      {uploadParsing ? 'Parsing...' : 'Parse File'}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Preview parsed emails */
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                    <Check className="w-6 h-6 text-green-600" />
-                    <div>
-                      <p className="font-medium text-green-900">
-                        Found {parsedEmails.count} valid email addresses
-                      </p>
-                      <p className="text-sm text-green-700">from {parsedEmails.fileName}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-medium text-surface-900 mb-2">Preview (first 20)</h4>
-                    <div className="max-h-48 overflow-y-auto bg-surface-50 rounded-lg p-3">
-                      <div className="flex flex-wrap gap-2">
-                        {parsedEmails.emails.slice(0, 20).map((email) => (
-                          <span key={email} className="px-2 py-1 bg-white border border-surface-200 rounded text-sm">
-                            {email}
-                          </span>
-                        ))}
-                        {parsedEmails.emails.length > 20 && (
-                          <span className="px-2 py-1 bg-surface-100 rounded text-sm text-surface-500">
-                            +{parsedEmails.emails.length - 20} more
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {selectedMunicipality._count.emails > 0 && (
-                    <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
-                      <AlertCircle className="w-5 h-5 text-amber-600" />
-                      <div className="flex-1">
-                        <p className="text-sm text-amber-800">
-                          This municipality already has {selectedMunicipality._count.emails} emails.
-                        </p>
-                      </div>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={replaceExisting}
-                          onChange={(e) => setReplaceExisting(e.target.checked)}
-                          className="rounded border-surface-300 text-primary-600 focus:ring-primary-500"
-                        />
-                        <span className="text-sm font-medium text-amber-800">Replace all</span>
-                      </label>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between gap-3 pt-4 border-t border-surface-200">
-                    <button
-                      onClick={() => {
-                        setParsedEmails(null)
-                        setUploadFile(null)
-                        if (fileInputRef.current) fileInputRef.current.value = ''
-                      }}
-                      className="btn-secondary"
-                    >
-                      Upload Different File
-                    </button>
-                    <div className="flex gap-3">
-                      <button onClick={() => { setShowUploadModal(false); resetUploadForm() }} className="btn-secondary">
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleSaveEmails}
-                        disabled={uploadSaving}
-                        className="btn-primary"
-                      >
-                        {uploadSaving ? 'Saving...' : `Save ${parsedEmails.count} Emails`}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Modal>
-        )}
-      </AnimatePresence>
-
-      {/* View Emails Modal */}
+      {/* Unified Email Recipients Modal (View + Upload in one) */}
       <AnimatePresence>
         {showEmailsModal && selectedMunicipality && (
-          <Modal onClose={() => { setShowEmailsModal(false); setMunicipalityEmails([]) }} size="lg">
+          <Modal onClose={closeEmailsModal} size="lg">
             <div className="p-6">
+              {/* Header */}
               <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-xl font-display font-bold text-surface-900">
-                    Email Recipients
-                  </h2>
-                  <p className="text-surface-500">
-                    {selectedMunicipality.name} • {municipalityEmails.length} emails
-                  </p>
-                </div>
-                <button
-                  onClick={() => openUploadModal(selectedMunicipality)}
-                  className="btn-primary btn-sm"
-                >
-                  <Upload className="w-4 h-4" />
-                  Upload More
-                </button>
-              </div>
-
-              {municipalityEmails.length > 0 ? (
-                <div className="max-h-96 overflow-y-auto bg-surface-50 rounded-lg p-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {municipalityEmails.map((email) => (
-                      <div key={email} className="flex items-center gap-2 px-3 py-2 bg-white border border-surface-200 rounded-lg">
-                        <Mail className="w-4 h-4 text-surface-400" />
-                        <span className="text-sm text-surface-700 truncate">{email}</span>
-                      </div>
-                    ))}
+                <div className="flex items-center gap-3">
+                  {emailModalView === 'upload' && (
+                    <button
+                      onClick={() => {
+                        setEmailModalView('list')
+                        resetUploadForm()
+                      }}
+                      className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors"
+                    >
+                      <ArrowLeft className="w-5 h-5 text-surface-600" />
+                    </button>
+                  )}
+                  <div>
+                    <h2 className="text-xl font-display font-bold text-surface-900">
+                      {emailModalView === 'list' ? 'Email Recipients' : 'Upload Email List'}
+                    </h2>
+                    <p className="text-surface-500">
+                      {selectedMunicipality.name} • {municipalityEmails.length} emails
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div className="text-center py-12 bg-surface-50 rounded-lg">
-                  <Users className="w-12 h-12 text-surface-300 mx-auto mb-4" />
-                  <p className="text-surface-600 mb-4">No email recipients yet</p>
-                  <button onClick={() => openUploadModal(selectedMunicipality)} className="btn-primary btn-sm">
+                {emailModalView === 'list' && (
+                  <button
+                    onClick={() => setEmailModalView('upload')}
+                    className="btn-primary btn-sm"
+                  >
                     <Upload className="w-4 h-4" />
-                    Upload Email List
+                    Upload Emails
                   </button>
-                </div>
-              )}
-
-              <div className="flex justify-end mt-6 pt-4 border-t border-surface-200">
-                <button onClick={() => { setShowEmailsModal(false); setMunicipalityEmails([]) }} className="btn-secondary">
-                  Close
-                </button>
+                )}
               </div>
+
+              {/* Content */}
+              {emailModalView === 'list' ? (
+                /* Email List View */
+                <>
+                  {municipalityEmails.length > 0 ? (
+                    <div className="max-h-96 overflow-y-auto bg-surface-50 rounded-lg p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {municipalityEmails.map((email) => (
+                          <div key={email} className="flex items-center gap-2 px-3 py-2 bg-white border border-surface-200 rounded-lg">
+                            <Mail className="w-4 h-4 text-surface-400" />
+                            <span className="text-sm text-surface-700 truncate">{email}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 bg-surface-50 rounded-lg">
+                      <Users className="w-12 h-12 text-surface-300 mx-auto mb-4" />
+                      <p className="text-surface-600 mb-4">No email recipients yet</p>
+                      <button 
+                        onClick={() => setEmailModalView('upload')} 
+                        className="btn-primary btn-sm"
+                      >
+                        <Upload className="w-4 h-4" />
+                        Upload Email List
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end mt-6 pt-4 border-t border-surface-200">
+                    <button onClick={closeEmailsModal} className="btn-secondary">
+                      Close
+                    </button>
+                  </div>
+                </>
+              ) : (
+                /* Upload View */
+                <>
+                  {!parsedEmails ? (
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-surface-300 rounded-xl p-8 text-center hover:border-primary-400 transition-colors">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".csv,.xlsx,.xls,.txt"
+                          onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                          className="hidden"
+                          id="file-upload"
+                        />
+                        <label htmlFor="file-upload" className="cursor-pointer">
+                          <div className="flex justify-center mb-4">
+                            <div className="p-4 bg-primary-50 rounded-full">
+                              <Upload className="w-8 h-8 text-primary-600" />
+                            </div>
+                          </div>
+                          <p className="text-surface-900 font-medium mb-1">Click to upload a file</p>
+                          <p className="text-sm text-surface-500">or drag and drop</p>
+                        </label>
+                      </div>
+
+                      {uploadFile && (
+                        <div className="flex items-center justify-between p-3 bg-surface-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {uploadFile.name.endsWith('.csv') && <FileSpreadsheet className="w-5 h-5 text-green-600" />}
+                            {(uploadFile.name.endsWith('.xlsx') || uploadFile.name.endsWith('.xls')) && <FileSpreadsheet className="w-5 h-5 text-blue-600" />}
+                            {uploadFile.name.endsWith('.txt') && <FileText className="w-5 h-5 text-surface-600" />}
+                            <div>
+                              <p className="font-medium text-surface-900">{uploadFile.name}</p>
+                              <p className="text-xs text-surface-500">{(uploadFile.size / 1024).toFixed(1)} KB</p>
+                            </div>
+                          </div>
+                          <button onClick={resetUploadForm} className="p-1 hover:bg-surface-200 rounded">
+                            <X className="w-4 h-4 text-surface-500" />
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="bg-surface-50 rounded-lg p-4">
+                        <h4 className="font-medium text-surface-900 mb-2">Supported Formats</h4>
+                        <ul className="text-sm text-surface-600 space-y-1">
+                          <li>• <strong>CSV</strong> - Comma-separated values</li>
+                          <li>• <strong>XLSX/XLS</strong> - Excel spreadsheet</li>
+                          <li>• <strong>TXT</strong> - Plain text (one email per line)</li>
+                        </ul>
+                        <p className="text-xs text-surface-500 mt-2">
+                          The system will automatically detect and extract all valid email addresses.
+                        </p>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-4 border-t border-surface-200">
+                        <button 
+                          onClick={() => {
+                            setEmailModalView('list')
+                            resetUploadForm()
+                          }} 
+                          className="btn-secondary"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleFileUpload}
+                          disabled={!uploadFile || uploadParsing}
+                          className="btn-primary"
+                        >
+                          {uploadParsing ? 'Parsing...' : 'Parse File'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Preview parsed emails */
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                        <Check className="w-6 h-6 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-900">
+                            Found {parsedEmails.count} valid email addresses
+                          </p>
+                          <p className="text-sm text-green-700">from {parsedEmails.fileName}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium text-surface-900 mb-2">Preview (first 20)</h4>
+                        <div className="max-h-48 overflow-y-auto bg-surface-50 rounded-lg p-3">
+                          <div className="flex flex-wrap gap-2">
+                            {parsedEmails.emails.slice(0, 20).map((email) => (
+                              <span key={email} className="px-2 py-1 bg-white border border-surface-200 rounded text-sm">
+                                {email}
+                              </span>
+                            ))}
+                            {parsedEmails.emails.length > 20 && (
+                              <span className="px-2 py-1 bg-surface-100 rounded text-sm text-surface-500">
+                                +{parsedEmails.emails.length - 20} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {municipalityEmails.length > 0 && (
+                        <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
+                          <AlertCircle className="w-5 h-5 text-amber-600" />
+                          <div className="flex-1">
+                            <p className="text-sm text-amber-800">
+                              This municipality already has {municipalityEmails.length} emails.
+                            </p>
+                          </div>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={replaceExisting}
+                              onChange={(e) => setReplaceExisting(e.target.checked)}
+                              className="rounded border-surface-300 text-primary-600 focus:ring-primary-500"
+                            />
+                            <span className="text-sm font-medium text-amber-800">Replace all</span>
+                          </label>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between gap-3 pt-4 border-t border-surface-200">
+                        <button
+                          onClick={() => {
+                            setParsedEmails(null)
+                            setUploadFile(null)
+                            if (fileInputRef.current) fileInputRef.current.value = ''
+                          }}
+                          className="btn-secondary"
+                        >
+                          Upload Different File
+                        </button>
+                        <div className="flex gap-3">
+                          <button 
+                            onClick={() => {
+                              setEmailModalView('list')
+                              resetUploadForm()
+                            }} 
+                            className="btn-secondary"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleSaveEmails}
+                            disabled={uploadSaving}
+                            className="btn-primary"
+                          >
+                            {uploadSaving ? 'Saving...' : `Save ${parsedEmails.count} Emails`}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </Modal>
         )}
@@ -879,4 +914,3 @@ function Modal({ children, onClose, size = 'md' }: { children: React.ReactNode; 
     </>
   )
 }
-
