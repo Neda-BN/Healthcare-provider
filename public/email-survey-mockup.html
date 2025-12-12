@@ -1245,46 +1245,6 @@
           </div>
         </div>
 
-        <!-- What Happens Next -->
-        <div class="next-steps">
-          <h3>Vad händer nu?</h3>
-          <div class="steps-timeline">
-            <div class="step" style="--delay: 0.8s">
-              <div class="step-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div class="step-content">
-                <strong>Bekräftelse skickad</strong>
-                <span>En bekräftelse har skickats till din e-post</span>
-              </div>
-            </div>
-            <div class="step" style="--delay: 1s">
-              <div class="step-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div class="step-content">
-                <strong>Analys pågår</strong>
-                <span>Dina svar analyseras tillsammans med andra</span>
-              </div>
-            </div>
-            <div class="step" style="--delay: 1.2s">
-              <div class="step-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div class="step-content">
-                <strong>Förbättringar genomförs</strong>
-                <span>Verksamheten använder feedback för förbättring</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Interactive Feedback -->
         <div class="feedback-section">
           <h3>Hur upplevde du undersökningen?</h3>
@@ -1518,80 +1478,6 @@
       font-size: 12px;
       color: #57534e;
       font-weight: 500;
-    }
-
-    /* Next Steps */
-    .next-steps {
-      margin-bottom: 32px;
-    }
-
-    .next-steps h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #1c1917;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .steps-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      background: #fafaf9;
-      border-radius: 12px;
-      border: 1px solid #e7e5e4;
-      animation: slideIn 0.4s ease-out var(--delay) both;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .step-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .step-icon svg {
-      width: 22px;
-      height: 22px;
-      color: white;
-    }
-
-    .step-content {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .step-content strong {
-      font-size: 14px;
-      color: #1c1917;
-      margin-bottom: 2px;
-    }
-
-    .step-content span {
-      font-size: 13px;
-      color: #78716c;
     }
 
     /* Emoji Feedback */
