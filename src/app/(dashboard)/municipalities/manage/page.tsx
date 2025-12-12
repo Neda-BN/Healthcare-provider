@@ -29,6 +29,8 @@ interface Municipality {
   organizationNumber: string | null
   businessType: string | null
   contactEmail: string | null
+  frameworkAgreementStart: string | null
+  frameworkAgreementEnd: string | null
   _count: {
     emails: number
     surveys: number
@@ -64,6 +66,8 @@ export default function ManageMunicipalitiesPage() {
   const [formName, setFormName] = useState('')
   const [formOrgNumber, setFormOrgNumber] = useState('')
   const [formBusinessType, setFormBusinessType] = useState('')
+  const [formAgreementStart, setFormAgreementStart] = useState('')
+  const [formAgreementEnd, setFormAgreementEnd] = useState('')
   const [formSaving, setFormSaving] = useState(false)
   
   // Business type options
@@ -130,6 +134,8 @@ export default function ManageMunicipalitiesPage() {
           name: formName,
           organizationNumber: formOrgNumber,
           businessType: formBusinessType,
+          frameworkAgreementStart: formAgreementStart || null,
+          frameworkAgreementEnd: formAgreementEnd || null,
         }),
       })
 
@@ -166,6 +172,8 @@ export default function ManageMunicipalitiesPage() {
           name: formName,
           organizationNumber: formOrgNumber,
           businessType: formBusinessType,
+          frameworkAgreementStart: formAgreementStart || null,
+          frameworkAgreementEnd: formAgreementEnd || null,
         }),
       })
 
@@ -317,6 +325,8 @@ export default function ManageMunicipalitiesPage() {
     setFormName(municipality.name)
     setFormOrgNumber(municipality.organizationNumber || '')
     setFormBusinessType(municipality.businessType || '')
+    setFormAgreementStart(municipality.frameworkAgreementStart ? municipality.frameworkAgreementStart.split('T')[0] : '')
+    setFormAgreementEnd(municipality.frameworkAgreementEnd ? municipality.frameworkAgreementEnd.split('T')[0] : '')
     setShowEditModal(true)
   }
 
@@ -343,6 +353,8 @@ export default function ManageMunicipalitiesPage() {
     setFormName('')
     setFormOrgNumber('')
     setFormBusinessType('')
+    setFormAgreementStart('')
+    setFormAgreementEnd('')
     setSelectedMunicipality(null)
   }
 
@@ -410,6 +422,7 @@ export default function ManageMunicipalitiesPage() {
             <tr>
               <th style={{ width: '40px' }}></th>
               <th>Municipality</th>
+              <th>Business Type</th>
               <th>Email Recipients</th>
               <th>Surveys</th>
               <th>Placements</th>
@@ -419,7 +432,7 @@ export default function ManageMunicipalitiesPage() {
           <tbody>
             {filteredMunicipalities.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
+                <td colSpan={7} className="text-center py-8 text-surface-500 dark:text-dark-text-muted">
                   {searchQuery ? 'No municipalities found matching your search' : 'No municipalities yet. Click "Add Municipality" to create one.'}
                 </td>
               </tr>
@@ -444,6 +457,15 @@ export default function ManageMunicipalitiesPage() {
                         <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
                         <span className="font-medium text-surface-900 dark:text-dark-text">{municipality.name}</span>
                       </div>
+                    </td>
+                    <td>
+                      {municipality.businessType ? (
+                        <span className="inline-flex px-2.5 py-1 bg-surface-100 dark:bg-dark-surface-light rounded-full text-sm font-medium text-surface-700 dark:text-dark-text">
+                          {businessTypeOptions.find(opt => opt.value === municipality.businessType)?.label || municipality.businessType}
+                        </span>
+                      ) : (
+                        <span className="text-surface-400 dark:text-dark-text-muted text-sm">—</span>
+                      )}
                     </td>
                     <td>
                       <button
@@ -488,7 +510,7 @@ export default function ManageMunicipalitiesPage() {
                   {/* Expanded email preview row */}
                   {expandedId === municipality.id && (
                     <tr className="bg-surface-50 dark:bg-dark-surface-light">
-                      <td colSpan={6} className="px-4 py-3">
+                      <td colSpan={7} className="px-4 py-3">
                         <div className="ml-10">
                           <div className="text-sm font-medium text-surface-700 dark:text-dark-text mb-2">
                             Email Recipients ({municipality._count.emails})
@@ -564,6 +586,26 @@ export default function ManageMunicipalitiesPage() {
                     ))}
                   </select>
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 dark:text-dark-text mb-1">Agreement Start Date</label>
+                    <input
+                      type="date"
+                      value={formAgreementStart}
+                      onChange={(e) => setFormAgreementStart(e.target.value)}
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 dark:text-dark-text mb-1">Agreement End Date</label>
+                    <input
+                      type="date"
+                      value={formAgreementEnd}
+                      onChange={(e) => setFormAgreementEnd(e.target.value)}
+                      className="input w-full"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
                 <button 
@@ -626,6 +668,26 @@ export default function ManageMunicipalitiesPage() {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 dark:text-dark-text mb-1">Agreement Start Date</label>
+                    <input
+                      type="date"
+                      value={formAgreementStart}
+                      onChange={(e) => setFormAgreementStart(e.target.value)}
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 dark:text-dark-text mb-1">Agreement End Date</label>
+                    <input
+                      type="date"
+                      value={formAgreementEnd}
+                      onChange={(e) => setFormAgreementEnd(e.target.value)}
+                      className="input w-full"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200 dark:border-dark-border dark:border-dark-border">
@@ -940,17 +1002,11 @@ function Modal({ children, onClose, size = 'md' }: { children: React.ReactNode; 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/50 dark:bg-black/70"
+        className="absolute inset-0 bg-black/50 dark:bg-black/70 animate-fade-in"
         onClick={onClose}
       />
       <div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto`}
+        className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft max-h-[90vh] overflow-y-auto animate-scale-in`}
       >
         {children}
       </div>

@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, description, organizationNumber, businessType, contactEmail, contactPhone, address, city, postalCode, notes } = body
+    const { name, description, organizationNumber, businessType, contactEmail, contactPhone, address, city, postalCode, notes, frameworkAgreementStart, frameworkAgreementEnd } = body
 
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Municipality name is required' }, { status: 400 })
@@ -60,6 +60,8 @@ export async function POST(request: NextRequest) {
         city: city?.trim() || null,
         postalCode: postalCode?.trim() || null,
         notes: notes?.trim() || null,
+        frameworkAgreementStart: frameworkAgreementStart ? new Date(frameworkAgreementStart) : null,
+        frameworkAgreementEnd: frameworkAgreementEnd ? new Date(frameworkAgreementEnd) : null,
       },
       include: {
         _count: {

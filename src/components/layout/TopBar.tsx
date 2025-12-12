@@ -11,7 +11,23 @@ import {
   Menu,
   X,
   HelpCircle,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  BarChart3,
 } from 'lucide-react'
+
+interface Notification {
+  id: string
+  type: 'success' | 'warning' | 'info' | 'alert'
+  title: string
+  message: string
+  time: string
+  read: boolean
+  link?: string
+}
 
 interface Municipality {
   id: string
@@ -37,19 +53,100 @@ export default function TopBar({
 }: TopBarProps) {
   const router = useRouter()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [helpModalOpen, setHelpModalOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const notificationsRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown when clicking outside
+  // Sample notifications about survey statistics
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: '1',
+      type: 'success',
+      title: 'Survey Response Rate Increased',
+      message: 'Nordic Care AB response rate increased to 87% (+12% from last month)',
+      time: '10 min ago',
+      read: false,
+      link: '/municipality/nordic-care',
+    },
+    {
+      id: '2',
+      type: 'warning',
+      title: 'Low Response Rate Alert',
+      message: 'Problem Care AB has only 45% response rate. Consider sending a reminder.',
+      time: '1 hour ago',
+      read: false,
+      link: '/surveys/send',
+    },
+    {
+      id: '3',
+      type: 'info',
+      title: 'New Survey Completed',
+      message: 'Average Joe Omsorg completed the quarterly satisfaction survey.',
+      time: '2 hours ago',
+      read: false,
+      link: '/reports',
+    },
+    {
+      id: '4',
+      type: 'alert',
+      title: 'Agreement Expiring Soon',
+      message: 'Problem Care AB framework agreement expires in 30 days.',
+      time: '5 hours ago',
+      read: true,
+      link: '/municipalities/framework',
+    },
+    {
+      id: '5',
+      type: 'success',
+      title: 'Quality Score Improved',
+      message: 'Overall quality index improved by 0.8 points this quarter.',
+      time: '1 day ago',
+      read: true,
+      link: '/analyse',
+    },
+  ])
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setDropdownOpen(false)
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false)
+      }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    )
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+  }
+
+  const getNotificationIcon = (type: Notification['type']) => {
+    switch (type) {
+      case 'success':
+        return <TrendingUp className="w-5 h-5 text-green-500" />
+      case 'warning':
+        return <TrendingDown className="w-5 h-5 text-amber-500" />
+      case 'info':
+        return <BarChart3 className="w-5 h-5 text-primary-500 dark:text-dark-primary" />
+      case 'alert':
+        return <AlertTriangle className="w-5 h-5 text-accent-500" />
+      default:
+        return <Bell className="w-5 h-5 text-surface-500" />
+    }
+  }
 
   const handleMunicipalitySelect = (municipality: Municipality) => {
     onMunicipalityChange?.(municipality)
@@ -140,10 +237,100 @@ export default function TopBar({
             </button>
 
             {/* Notifications */}
-            <button className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors relative">
-              <Bell className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-accent-500 rounded-full" />
-            </button>
+            <div className="relative" ref={notificationsRef}>
+              <button 
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors relative"
+              >
+                <Bell className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-accent-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notificationsOpen && (
+                <div className="absolute top-full right-0 mt-2 w-96 bg-white dark:bg-dark-surface rounded-xl shadow-lg dark:shadow-dark-soft border border-surface-200 dark:border-dark-border overflow-hidden z-50 animate-fade-in">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light">
+                    <div className="flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                      <h3 className="font-semibold text-surface-900 dark:text-dark-text">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <span className="px-2 py-0.5 text-xs font-medium bg-accent-100 text-accent-700 dark:bg-accent-900/30 dark:text-accent-400 rounded-full">
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllAsRead}
+                        className="text-xs text-primary-600 hover:text-primary-700 dark:text-dark-primary dark:hover:text-dark-primary-hover font-medium"
+                      >
+                        Mark all as read
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Notifications List */}
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`px-4 py-3 border-b border-surface-100 dark:border-dark-border hover:bg-surface-50 dark:hover:bg-dark-surface-light transition-colors cursor-pointer ${
+                          !notification.read ? 'bg-primary-50/50 dark:bg-dark-primary/10' : ''
+                        }`}
+                        onClick={() => {
+                          markAsRead(notification.id)
+                          if (notification.link) {
+                            router.push(notification.link)
+                            setNotificationsOpen(false)
+                          }
+                        }}
+                      >
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 mt-0.5">
+                            {getNotificationIcon(notification.type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <p className={`text-sm font-medium ${!notification.read ? 'text-surface-900 dark:text-dark-text' : 'text-surface-700 dark:text-dark-text-muted'}`}>
+                                {notification.title}
+                              </p>
+                              {!notification.read && (
+                                <span className="flex-shrink-0 w-2 h-2 bg-primary-500 dark:bg-dark-primary rounded-full mt-1.5" />
+                              )}
+                            </div>
+                            <p className="text-sm text-surface-600 dark:text-dark-text-muted mt-0.5 line-clamp-2">
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center gap-1 mt-1.5">
+                              <Clock className="w-3 h-3 text-surface-400 dark:text-dark-text-muted" />
+                              <span className="text-xs text-surface-400 dark:text-dark-text-muted">
+                                {notification.time}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-3 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light">
+                    <Link
+                      href="/reports"
+                      className="flex items-center justify-center gap-2 text-sm text-primary-600 hover:text-primary-700 dark:text-dark-primary dark:hover:text-dark-primary-hover font-medium"
+                      onClick={() => setNotificationsOpen(false)}
+                    >
+                      <BarChart3 className="w-4 h-4" />
+                      View all survey reports
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* User avatar */}
             <div className="flex items-center gap-3 pl-3 border-l border-surface-200 dark:border-dark-border">

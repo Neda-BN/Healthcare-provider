@@ -125,3 +125,5 @@ export default async function MunicipalityPage({ params }: PageProps) {
   return <MunicipalityDashboard data={data} />
 }
 
+
+

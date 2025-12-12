@@ -57,6 +57,7 @@ async function main() {
       data: {
         name: 'Nordic Care AB',
         organizationNumber: '556123-4567',
+        businessType: 'HVB',
         contactEmail: 'kommun@nordiccare.se',
         contactPhone: '+46 8 123 45 67',
         address: 'Storgatan 1',
@@ -71,6 +72,7 @@ async function main() {
       data: {
         name: 'Problem Care AB',
         organizationNumber: '556234-5678',
+        businessType: 'LSS',
         contactEmail: 'kontakt@problemcare.se',
         contactPhone: '+46 31 234 56 78',
         address: 'Problemgatan 42',
@@ -85,6 +87,7 @@ async function main() {
       data: {
         name: 'Average Joe Omsorg',
         organizationNumber: '556345-6789',
+        businessType: 'ELDERLY_CARE',
         contactEmail: 'info@averagejoe.se',
         contactPhone: '+46 40 345 67 89',
         address: 'Medelvagen 10',
@@ -413,4 +416,6 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
+
+
 

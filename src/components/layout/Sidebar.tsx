@@ -120,7 +120,22 @@ export default function Sidebar({
     return false
   }
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
+  // Check if a specific href is active - use exact match for menu items
+  const isActive = (href: string) => {
+    // Exact match
+    if (pathname === href) return true
+    
+    // For dynamic routes like /municipality/[id], check if it starts with the href
+    // But NOT for static routes that have siblings (like /municipalities which has /municipalities/manage)
+    const staticParentRoutes = ['/municipalities', '/surveys', '/admin', '/analysis']
+    if (staticParentRoutes.includes(href)) {
+      // Only exact match for these parent routes
+      return pathname === href
+    }
+    
+    // For other routes, allow child path matching (e.g., /surveys/builder/123)
+    return pathname.startsWith(href + '/')
+  }
 
   const handleLogout = async () => {
     try {
@@ -253,7 +268,7 @@ export default function Sidebar({
             <Heart className="w-4 h-4 text-white dark:text-dark-primary-text" />
           </div>
           {!collapsed && (
-            <h1 className="text-xs font-display font-semibold text-surface-900 dark:text-dark-text whitespace-nowrap">
+            <h1 className="text-base font-display font-semibold text-surface-900 dark:text-dark-text whitespace-nowrap">
               Healthcare Provider
             </h1>
           )}
