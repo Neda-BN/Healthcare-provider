@@ -162,27 +162,16 @@ async function main() {
   console.log(`   ✓ Created ${placements.length} placements`)
 
   // ==========================================
-  // CREATE SURVEY TEMPLATES (Including HVB and LSS defaults)
+  // CREATE SURVEY TEMPLATES (HVB and LSS)
   // ==========================================
   console.log('📝 Creating survey templates with questions...')
 
-  // Main template (existing)
-  const template = await prisma.surveyTemplate.create({
-    data: {
-      name: 'Nordic Care Quality Index',
-      description: 'Comprehensive quality assessment survey based on the Nordic Care Index methodology.',
-      isDefault: true,
-      surveyType: 'CUSTOM',
-      version: 1,
-    },
-  })
-
-  // HVB Survey Template
+  // HVB Survey Template (default)
   const hvbTemplate = await prisma.surveyTemplate.create({
     data: {
       name: 'HVB Kvalitetsundersökning',
-      description: 'Standardiserad enkät för HVB-verksamhet (Hem för vård eller boende). 20 fördefinierade frågor.',
-      isDefault: false,
+      description: 'Standardiserad enkät för HVB-verksamhet (Hem för vård eller boende). 21 fördefinierade frågor.',
+      isDefault: true,
       surveyType: 'HVB',
       version: 1,
     },
@@ -289,100 +278,6 @@ async function main() {
 
   console.log(`   ✓ Created LSS template with ${lssQuestions.length} questions`)
 
-  // Survey questions based on the Nordic Care Index structure
-  const questions = [
-    // Information about service
-    { code: 'Q3a', text: 'Hur väl har du fått information om tjänsten och dess innehåll?', type: 'RATING', category: 'Information om tjänsten', order: 1 },
-    { code: 'Q3b', text: 'Hur väl har du fått information om boendets regler och rutiner?', type: 'RATING', category: 'Information om tjänsten', order: 2 },
-    { code: 'Q3_comment', text: 'Kommentar till information om tjänsten', type: 'LONGTEXT', category: 'Information om tjänsten', order: 3 },
-    
-    // Reception & Introduction
-    { code: 'Q4a', text: 'Hur väl blev du mottagen vid ankomst?', type: 'RATING', category: 'Mottagning & introduktion', order: 4 },
-    { code: 'Q4b', text: 'Hur väl introducerades du till personal och andra boende?', type: 'RATING', category: 'Mottagning & introduktion', order: 5 },
-    { code: 'Q4c', text: 'Hur väl fick du en rundvisning av boendet?', type: 'RATING', category: 'Mottagning & introduktion', order: 6 },
-    { code: 'Q4_comment', text: 'Kommentar till mottagning och introduktion', type: 'LONGTEXT', category: 'Mottagning & introduktion', order: 7 },
-    
-    // Implementation plan
-    { code: 'Q5a', text: 'Hur väl har genomförandeplanen upprättats tillsammans med dig?', type: 'RATING', category: 'Genomförandeplan', order: 8 },
-    { code: 'Q5b', text: 'Hur väl är genomförandeplanen anpassad efter dina behov?', type: 'RATING', category: 'Genomförandeplan', order: 9 },
-    { code: 'Q5c', text: 'Hur väl följs genomförandeplanen upp?', type: 'RATING', category: 'Genomförandeplan', order: 10 },
-    { code: 'Q5_comment', text: 'Kommentar till genomförandeplan', type: 'LONGTEXT', category: 'Genomförandeplan', order: 11 },
-    
-    // Care efforts
-    { code: 'Q6a', text: 'Hur väl bemöts du av personalen?', type: 'RATING', category: 'Omsorgsinsatser', order: 12 },
-    { code: 'Q6b', text: 'Hur väl tillgodoses dina dagliga behov?', type: 'RATING', category: 'Omsorgsinsatser', order: 13 },
-    { code: 'Q6c', text: 'Hur trygg känner du dig på boendet?', type: 'RATING', category: 'Omsorgsinsatser', order: 14 },
-    { code: 'Q6d', text: 'Hur väl respekteras din integritet?', type: 'RATING', category: 'Omsorgsinsatser', order: 15 },
-    { code: 'Q6_comment', text: 'Kommentar till omsorgsinsatser', type: 'LONGTEXT', category: 'Omsorgsinsatser', order: 16 },
-    
-    // Motivation
-    { code: 'Q7a', text: 'Hur väl motiveras du till positiv förändring?', type: 'RATING', category: 'Motivation', order: 17 },
-    { code: 'Q7b', text: 'Hur väl stöttas du i att nå dina mål?', type: 'RATING', category: 'Motivation', order: 18 },
-    { code: 'Q7_comment', text: 'Kommentar till motivation', type: 'LONGTEXT', category: 'Motivation', order: 19 },
-    
-    // Social control
-    { code: 'Q8a', text: 'Hur väl hanteras konflikter på boendet?', type: 'RATING', category: 'Social kontroll', order: 20 },
-    { code: 'Q8b', text: 'Hur säker känner du dig från våld och hot?', type: 'RATING', category: 'Social kontroll', order: 21 },
-    { code: 'Q8_comment', text: 'Kommentar till social kontroll', type: 'LONGTEXT', category: 'Social kontroll', order: 22 },
-    
-    // Work & studies
-    { code: 'Q9a', text: 'Hur väl får du stöd med arbete eller praktik?', type: 'RATING', category: 'Arbete & studier', order: 23 },
-    { code: 'Q9b', text: 'Hur väl får du stöd med studier?', type: 'RATING', category: 'Arbete & studier', order: 24 },
-    { code: 'Q9_comment', text: 'Kommentar till arbete och studier', type: 'LONGTEXT', category: 'Arbete & studier', order: 25 },
-    
-    // Leisure activities
-    { code: 'Q10a', text: 'Hur väl erbjuds du meningsfulla fritidsaktiviteter?', type: 'RATING', category: 'Fritidsaktiviteter', order: 26 },
-    { code: 'Q10b', text: 'Hur väl kan du delta i aktiviteter utanför boendet?', type: 'RATING', category: 'Fritidsaktiviteter', order: 27 },
-    { code: 'Q10_comment', text: 'Kommentar till fritidsaktiviteter', type: 'LONGTEXT', category: 'Fritidsaktiviteter', order: 28 },
-    
-    // Network work
-    { code: 'Q11a', text: 'Hur väl stöttas du i kontakt med familj och närstående?', type: 'RATING', category: 'Nätverksarbete', order: 29 },
-    { code: 'Q11b', text: 'Hur väl involveras ditt nätverk i din vård?', type: 'RATING', category: 'Nätverksarbete', order: 30 },
-    { code: 'Q11_comment', text: 'Kommentar till nätverksarbete', type: 'LONGTEXT', category: 'Nätverksarbete', order: 31 },
-    
-    // Follow-up/reporting
-    { code: 'Q12a', text: 'Hur väl hålls uppdragsgivaren informerad om din utveckling?', type: 'RATING', category: 'Uppföljning/rapportering', order: 32 },
-    { code: 'Q12b', text: 'Hur väl deltar du i uppföljningsmöten?', type: 'RATING', category: 'Uppföljning/rapportering', order: 33 },
-    { code: 'Q12_comment', text: 'Kommentar till uppföljning', type: 'LONGTEXT', category: 'Uppföljning/rapportering', order: 34 },
-    
-    // Discharge
-    { code: 'Q13a', text: 'Hur väl förbereds du för utskrivning?', type: 'RATING', category: 'Utskrivning', order: 35 },
-    { code: 'Q13b', text: 'Hur väl planeras din eftervård?', type: 'RATING', category: 'Utskrivning', order: 36 },
-    { code: 'Q13_comment', text: 'Kommentar till utskrivning', type: 'LONGTEXT', category: 'Utskrivning', order: 37 },
-    
-    // Placement suitability
-    { code: 'Q14a', text: 'Hur lämplig är placeringen för dina behov?', type: 'RATING', category: 'Placerings lämplighet', order: 38 },
-    { code: 'Q14b', text: 'Hur väl matchades du till rätt boende?', type: 'RATING', category: 'Placerings lämplighet', order: 39 },
-    { code: 'Q14_comment', text: 'Kommentar till placerings lämplighet', type: 'LONGTEXT', category: 'Placerings lämplighet', order: 40 },
-    
-    // Overall assessment
-    { code: 'Q19', text: 'Hur nöjd är du övergripande med placeringen?', type: 'RATING', category: 'Övergripande bedömning', order: 41 },
-    { code: 'Q19_comment', text: 'Övergripande kommentarer och förbättringsförslag', type: 'LONGTEXT', category: 'Övergripande bedömning', order: 42 },
-    
-    // Additional questions
-    { code: 'Q_recommend', text: 'Skulle du rekommendera denna placering till andra?', type: 'YESNO', category: 'Övergripande bedömning', order: 43 },
-  ]
-
-  await Promise.all(
-    questions.map((q) =>
-      prisma.surveyQuestion.create({
-        data: {
-          templateId: template.id,
-          questionCode: q.code,
-          questionText: q.text,
-          questionType: q.type,
-          category: q.category,
-          orderIndex: q.order,
-          required: q.type !== 'LONGTEXT',
-          minValue: q.type === 'RATING' ? 1 : null,
-          maxValue: q.type === 'RATING' ? 10 : null,
-        },
-      })
-    )
-  )
-
-  console.log(`   ✓ Created template with ${questions.length} questions`)
-
   // ==========================================
   // CREATE SURVEYS WITH RESPONSES
   // ==========================================
@@ -394,9 +289,9 @@ async function main() {
     return Math.max(1, Math.min(10, value))
   }
 
-  // Get all questions for responses
+  // Get all questions for responses (using HVB template)
   const allQuestions = await prisma.surveyQuestion.findMany({
-    where: { templateId: template.id },
+    where: { templateId: hvbTemplate.id },
     orderBy: { orderIndex: 'asc' },
   })
 
@@ -433,7 +328,7 @@ async function main() {
     for (let i = 0; i < data.count; i++) {
       const survey = await prisma.survey.create({
         data: {
-          templateId: template.id,
+          templateId: hvbTemplate.id,
           municipalityId: data.municipality.id,
           createdById: i % 2 === 0 ? adminUser.id : municipalityUser.id,
           title: `${data.title} - ${i + 1}`,
@@ -494,7 +389,7 @@ async function main() {
   await prisma.systemSetting.createMany({
     data: [
       { key: 'company_name', value: 'Health Care Provider', category: 'BRANDING' },
-      { key: 'default_survey_template', value: template.id, category: 'SURVEY' },
+      { key: 'default_survey_template', value: hvbTemplate.id, category: 'SURVEY' },
       { key: 'email_reminder_days', value: '7', category: 'EMAIL' },
       { key: 'require_all_questions', value: 'false', category: 'SURVEY' },
     ],
