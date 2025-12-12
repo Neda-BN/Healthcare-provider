@@ -30,7 +30,25 @@ async function getMunicipalityData(id: string) {
 
   if (!municipality) return null
 
-  // Calculate stats
+  // Fetch other municipalities' data for comparison
+  const otherMunicipalities = await prisma.municipality.findMany({
+    where: { 
+      id: { not: id },
+      active: true,
+    },
+    include: {
+      surveys: {
+        where: { status: 'COMPLETED' },
+        include: {
+          responses: {
+            include: { question: true },
+          },
+        },
+      },
+    },
+  })
+
+  // Calculate stats for current municipality
   const completedSurveys = municipality.surveys.filter((s) => s.status === 'COMPLETED')
   const allRatings = completedSurveys.flatMap((s) =>
     s.responses.filter((r) => r.ratingValue !== null).map((r) => r.ratingValue!)
@@ -39,7 +57,7 @@ async function getMunicipalityData(id: string) {
     ? Math.round((allRatings.reduce((a, b) => a + b, 0) / allRatings.length) * 10) / 10
     : 0
 
-  // Category breakdown
+  // Category breakdown for current municipality
   const categoryStats: Record<string, { total: number; count: number }> = {}
   completedSurveys.forEach((survey) => {
     survey.responses.forEach((r) => {
@@ -59,6 +77,28 @@ async function getMunicipalityData(id: string) {
       average: stats.count > 0 ? Math.round((stats.total / stats.count) * 10) / 10 : 0,
     }))
     .sort((a, b) => b.average - a.average)
+
+  // Calculate category averages for OTHER municipalities
+  const otherCategoryStats: Record<string, { total: number; count: number }> = {}
+  otherMunicipalities.forEach((otherMuni) => {
+    otherMuni.surveys.forEach((survey) => {
+      survey.responses.forEach((r) => {
+        if (r.ratingValue !== null && r.question.category) {
+          if (!otherCategoryStats[r.question.category]) {
+            otherCategoryStats[r.question.category] = { total: 0, count: 0 }
+          }
+          otherCategoryStats[r.question.category].total += r.ratingValue
+          otherCategoryStats[r.question.category].count++
+        }
+      })
+    })
+  })
+
+  const otherMunicipalitiesAverages = Object.entries(otherCategoryStats)
+    .map(([category, stats]) => ({
+      category,
+      average: stats.count > 0 ? Math.round((stats.total / stats.count) * 10) / 10 : 0,
+    }))
 
   // Strengths and weaknesses
   const strengths = categoryAverages.slice(0, 3)
@@ -99,6 +139,7 @@ async function getMunicipalityData(id: string) {
       activePlacements: municipality.placements.filter((p) => p.status === 'ACTIVE').length,
     },
     categoryAverages,
+    otherMunicipalitiesAverages,
     strengths,
     weaknesses,
     recentComments,

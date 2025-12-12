@@ -49,6 +49,7 @@ interface MunicipalityData {
     activePlacements: number
   }
   categoryAverages: Array<{ category: string; average: number }>
+  otherMunicipalitiesAverages: Array<{ category: string; average: number }>
   strengths: Array<{ category: string; average: number }>
   weaknesses: Array<{ category: string; average: number }>
   recentComments: Array<{
@@ -69,17 +70,33 @@ interface MunicipalityData {
 }
 
 export default function MunicipalityDashboard({ data }: { data: MunicipalityData }) {
-  const { municipality, stats, categoryAverages, strengths, weaknesses, recentComments, surveys } = data
+  const { municipality, stats, categoryAverages, otherMunicipalitiesAverages, strengths, weaknesses, recentComments, surveys } = data
   const { theme } = useTheme()
   const isDark = theme === 'dark'
 
+  // Get all unique categories from both datasets
+  const allCategories = Array.from(new Set([
+    ...categoryAverages.map(c => c.category),
+    ...otherMunicipalitiesAverages.map(c => c.category)
+  ]))
+
+  // Create lookup maps for easy access
+  const currentMuniMap = new Map(categoryAverages.map(c => [c.category, c.average]))
+  const otherMuniMap = new Map(otherMunicipalitiesAverages.map(c => [c.category, c.average]))
+
   const chartData = {
-    labels: categoryAverages.map((c) => c.category),
+    labels: allCategories,
     datasets: [
       {
-        label: 'Average Score',
-        data: categoryAverages.map((c) => c.average),
-        backgroundColor: isDark ? 'rgba(6, 182, 212, 0.8)' : 'rgba(13, 148, 136, 0.8)',
+        label: municipality.name,
+        data: allCategories.map(cat => currentMuniMap.get(cat) || 0),
+        backgroundColor: isDark ? 'rgba(6, 182, 212, 0.9)' : 'rgba(13, 148, 136, 0.9)',
+        borderRadius: 6,
+      },
+      {
+        label: 'Other Municipalities Average',
+        data: allCategories.map(cat => otherMuniMap.get(cat) || 0),
+        backgroundColor: isDark ? 'rgba(148, 163, 184, 0.5)' : 'rgba(120, 113, 108, 0.4)',
         borderRadius: 6,
       },
     ],
@@ -89,7 +106,16 @@ export default function MunicipalityDashboard({ data }: { data: MunicipalityData
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: false },
+      legend: { 
+        display: true,
+        position: 'top' as const,
+        labels: {
+          color: isDark ? '#E2E8F0' : '#44403c',
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
+          padding: 20,
+        },
+      },
     },
     scales: {
       y: {
