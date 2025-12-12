@@ -200,120 +200,130 @@ export const HVB_QUESTIONS: PredefinedQuestion[] = [
 
 // LSS (Lagen om stöd och service till vissa funktionshindrade)
 // Law on support and service for certain people with disabilities
+// Note: LSS surveys use the same standardized questions as HVB surveys
 export const LSS_QUESTIONS: PredefinedQuestion[] = [
-  // Category: Background Information
+  // Category: Interview Information
   {
     questionCode: 'L1',
-    questionText: 'Vilken insats enligt LSS gäller denna enkät?',
+    questionText: 'Är aktuell placering pågående i verksamheten just nu?',
     questionType: 'TEXT',
-    category: 'Bakgrundsinformation',
+    category: 'Kommentar om intervjun',
     required: true,
   },
   {
     questionCode: 'L2',
-    questionText: 'Hur länge har klienten haft denna insats?',
+    questionText: 'Vilken typ av placering gäller det (familj, vuxen, barn, par, förälder och barn, akutplacering, behandling, utredning, vård etc.)?',
     questionType: 'TEXT',
-    category: 'Bakgrundsinformation',
+    category: 'Kommentar om intervjun',
     required: true,
   },
-  // Category: Information Quality
+  // Category: Information and Reception
   {
-    questionCode: 'L3',
-    questionText: 'Om Du fick betygsätta den information som ni fick om verksamheten innan ert beslut, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionCode: 'L3a',
+    questionText: 'Om Du fick betygsätta den information som ni fick om verksamheten, innan ert beslut om placering, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Informationskvalitet',
+    category: 'Information och mottagande',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
   {
-    questionCode: 'L4',
-    questionText: 'Hur fick du kännedom om verksamheten?',
+    questionCode: 'L3b',
+    questionText: 'Hur fick du kännedom om verksamheten (placeringsservice, kollega, broschyr, utskick etc.)?',
     questionType: 'TEXT',
-    category: 'Informationskvalitet',
+    category: 'Information och mottagande',
     required: true,
   },
-  // Category: Individual Support
+  {
+    questionCode: 'L4',
+    questionText: 'Om Du fick betygsätta mottagande och introduktion av er klient, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionType: 'RATING',
+    category: 'Information och mottagande',
+    required: true,
+    minValue: 1,
+    maxValue: 10,
+  },
+  // Category: Care Quality
   {
     questionCode: 'L5',
-    questionText: 'Om Du fick betygsätta verksamhetens arbete med klientens individuella plan, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens arbete kring klientens genomförandeplan (upprättande, revideringar, arbetet enligt denna plan etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Individuellt stöd',
+    category: 'Vårdkvalitet',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
   {
     questionCode: 'L6',
-    questionText: 'Om Du fick betygsätta hur väl klientens behov av självbestämmande och integritet tillgodoses, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens omvårdnadsinsatser gentemot klienten (kost, logi, dagliga rutiner etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Individuellt stöd',
+    category: 'Vårdkvalitet',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
   {
     questionCode: 'L7',
-    questionText: 'Om Du fick betygsätta verksamhetens stöd för klientens delaktighet i samhället, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens arbete med att motivera klienten till samverkan enligt den individuellt upprättade behandlingsplanen, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Individuellt stöd',
+    category: 'Vårdkvalitet',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
-  // Category: Daily Life
   {
     questionCode: 'L8',
-    questionText: 'Om Du fick betygsätta verksamhetens stöd i dagliga aktiviteter (personlig hygien, måltider, fritid), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens sociala kontroll av klienten (kontroll av destruktivt beteende, kriminalitet, missbruk och begränsning av rörelsefrihet), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Dagligt liv',
+    category: 'Vårdkvalitet',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
+  // Category: Activities
   {
     questionCode: 'L9',
-    questionText: 'Om Du fick betygsätta boendemiljön och dess anpassning till klientens behov, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta möjligheten till arbete och studier för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Dagligt liv',
+    category: 'Aktiviteter',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
-  // Category: Communication
   {
     questionCode: 'L10',
-    questionText: 'Om Du fick betygsätta verksamhetens kommunikation med dig som handläggare, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta möjligheten till fritidsaktiviteter för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Kommunikation',
+    category: 'Aktiviteter',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
+  // Category: Family Relations
   {
     questionCode: 'L11',
-    questionText: 'Om Du fick betygsätta verksamhetens samarbete med anhöriga/närstående, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens arbete med klientens föräldrar/anhöriga (anhörigboende, umgängesmöjligheter och övrig kontakt), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Kommunikation',
+    category: 'Anhörigkontakt',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
-  // Category: Staff Competence
+  // Category: Follow-up
   {
     questionCode: 'L12',
-    questionText: 'Om Du fick betygsätta personalens kompetens och bemötande, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta uppföljning och rapportering kring klienten från verksamhetens sida (regelbundna möten, muntlig information, skriftliga rapporter etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Personalkompetens',
+    category: 'Uppföljning',
     required: true,
     minValue: 1,
     maxValue: 10,
   },
   {
     questionCode: 'L13',
-    questionText: 'Om Du fick betygsätta personalkontinuiteten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta verksamhetens planering och genomförande av utslussning av klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
-    category: 'Personalkompetens',
+    category: 'Uppföljning',
     required: true,
     minValue: 1,
     maxValue: 10,
@@ -321,7 +331,7 @@ export const LSS_QUESTIONS: PredefinedQuestion[] = [
   // Category: Overall Assessment
   {
     questionCode: 'L14',
-    questionText: 'Om Du fick betygsätta hur väl insatsen motsvarar klientens behov, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
+    questionText: 'Om Du fick betygsätta denna placering ifråga om hur väl den passade/matchade klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
     category: 'Helhetsbedömning',
     required: true,
@@ -330,7 +340,7 @@ export const LSS_QUESTIONS: PredefinedQuestion[] = [
   },
   {
     questionCode: 'L15',
-    questionText: 'Skulle Du rekommendera denna verksamhet för liknande insatser?',
+    questionText: 'Skulle Du i ett liknande ärende rekommendera en placering inom samma verksamhet?',
     questionType: 'YESNO',
     category: 'Helhetsbedömning',
     required: true,
@@ -351,6 +361,13 @@ export const LSS_QUESTIONS: PredefinedQuestion[] = [
   },
   {
     questionCode: 'L18',
+    questionText: 'Är det någon typ av tjänst eller kompetens som Du saknar hos den här verksamheten i samband med placeringar?',
+    questionType: 'YESNO',
+    category: 'Helhetsbedömning',
+    required: true,
+  },
+  {
+    questionCode: 'L19',
     questionText: 'Med utgångspunkt från Dina erfarenheter, vilket betyg mellan 1 och 10 skulle Du då ge verksamheten som en helhetsbedömning, där 1 = mycket dåligt och 10 = bästa tänkbara?',
     questionType: 'RATING',
     category: 'Helhetsbedömning',
@@ -359,7 +376,7 @@ export const LSS_QUESTIONS: PredefinedQuestion[] = [
     maxValue: 10,
   },
   {
-    questionCode: 'L19',
+    questionCode: 'L20',
     questionText: 'Övriga kommentarer och synpunkter.',
     questionType: 'LONGTEXT',
     category: 'Övriga kommentarer',
@@ -402,8 +419,8 @@ export const SURVEY_TYPE_INFO = {
   LSS: {
     label: 'LSS-enkät',
     labelEn: 'LSS Survey',
-    description: 'Lagen om stöd och service - 19 fördefinierade frågor',
-    descriptionEn: 'Support and service law - 19 predefined questions',
+    description: 'Lagen om stöd och service - 21 fördefinierade frågor',
+    descriptionEn: 'Support and service law - 21 predefined questions',
     icon: 'users',
     color: 'green',
     questionCount: LSS_QUESTIONS.length,
