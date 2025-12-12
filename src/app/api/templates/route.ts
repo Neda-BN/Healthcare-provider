@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, description, questions } = body
+    const { name, description, surveyType, questions } = body
 
     if (!name) {
       return NextResponse.json({ error: 'Template name is required' }, { status: 400 })
@@ -39,13 +39,14 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         description,
+        surveyType: surveyType || 'CUSTOM',
         questions: {
           create: questions.map((q: any, index: number) => ({
             questionCode: q.questionCode,
             questionText: q.questionText,
             questionType: q.questionType,
             category: q.category,
-            orderIndex: index,
+            orderIndex: q.orderIndex ?? index,
             required: q.required ?? true,
             minValue: q.minValue,
             maxValue: q.maxValue,
@@ -74,7 +75,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { id, name, description, questions } = body
+    const { id, name, description, surveyType, questions } = body
 
     if (!id) {
       return NextResponse.json({ error: 'Template ID is required' }, { status: 400 })
@@ -90,6 +91,7 @@ export async function PUT(request: NextRequest) {
       data: {
         name,
         description,
+        ...(surveyType && { surveyType }),
         version: { increment: 1 },
         questions: {
           create: questions.map((q: any, index: number) => ({

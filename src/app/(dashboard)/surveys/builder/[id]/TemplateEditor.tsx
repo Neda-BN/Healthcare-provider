@@ -19,6 +19,8 @@ import {
   Send,
   ChevronUp,
   ChevronDown,
+  Home,
+  Users,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -40,6 +42,7 @@ interface Template {
   description: string
   version: number
   isDefault: boolean
+  surveyType?: 'HVB' | 'LSS' | 'CUSTOM'
   questions: Question[]
 }
 
@@ -192,6 +195,16 @@ export default function TemplateEditor({ initialTemplate }: TemplateEditorProps)
               <h1 className="text-2xl font-display font-bold text-surface-900 dark:text-dark-text">
                 Edit Survey
               </h1>
+              {template.surveyType && template.surveyType !== 'CUSTOM' && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  template.surveyType === 'HVB'
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                }`}>
+                  {template.surveyType === 'HVB' ? <Home className="w-3 h-3" /> : <Users className="w-3 h-3" />}
+                  {template.surveyType}
+                </span>
+              )}
               {hasChanges && (
                 <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full">
                   Unsaved changes

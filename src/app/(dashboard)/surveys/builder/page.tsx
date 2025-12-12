@@ -21,6 +21,7 @@ async function getTemplatesData() {
     description: template.description || '',
     version: template.version,
     isDefault: template.isDefault,
+    surveyType: template.surveyType as 'HVB' | 'LSS' | 'CUSTOM',
     questionCount: template.questions.length,
     surveyCount: template._count.surveys,
     createdAt: template.createdAt.toISOString(),

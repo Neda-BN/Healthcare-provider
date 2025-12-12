@@ -162,18 +162,130 @@ async function main() {
   console.log(`   ✓ Created ${placements.length} placements`)
 
   // ==========================================
-  // CREATE SURVEY TEMPLATE
+  // CREATE SURVEY TEMPLATES (Including HVB and LSS defaults)
   // ==========================================
-  console.log('📝 Creating survey template with questions...')
+  console.log('📝 Creating survey templates with questions...')
 
+  // Main template (existing)
   const template = await prisma.surveyTemplate.create({
     data: {
       name: 'Nordic Care Quality Index',
       description: 'Comprehensive quality assessment survey based on the Nordic Care Index methodology.',
       isDefault: true,
+      surveyType: 'CUSTOM',
       version: 1,
     },
   })
+
+  // HVB Survey Template
+  const hvbTemplate = await prisma.surveyTemplate.create({
+    data: {
+      name: 'HVB Kvalitetsundersökning',
+      description: 'Standardiserad enkät för HVB-verksamhet (Hem för vård eller boende). 20 fördefinierade frågor.',
+      isDefault: false,
+      surveyType: 'HVB',
+      version: 1,
+    },
+  })
+
+  // HVB Questions
+  const hvbQuestions = [
+    { code: 'Q1', text: 'Är aktuell placering pågående i verksamheten just nu?', type: 'TEXT', category: 'Kommentar om intervjun', order: 0 },
+    { code: 'Q2', text: 'Vilken typ av placering gäller det (familj, vuxen, barn, par, förälder och barn, akutplacering, behandling, utredning, vård etc.)?', type: 'TEXT', category: 'Kommentar om intervjun', order: 1 },
+    { code: 'Q3a', text: 'Om Du fick betygsätta den information som ni fick om verksamheten, innan ert beslut om placering, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Information och mottagande', order: 2 },
+    { code: 'Q3b', text: 'Hur fick du kännedom om verksamheten (placeringsservice, kollega, broschyr, utskick etc.)?', type: 'TEXT', category: 'Information och mottagande', order: 3 },
+    { code: 'Q4', text: 'Om Du fick betygsätta mottagande och introduktion av er klient, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Information och mottagande', order: 4 },
+    { code: 'Q5', text: 'Om Du fick betygsätta verksamhetens arbete kring klientens genomförandeplan (upprättande, revideringar, arbetet enligt denna plan etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Vårdkvalitet', order: 5 },
+    { code: 'Q6', text: 'Om Du fick betygsätta verksamhetens omvårdnadsinsatser gentemot klienten (kost, logi, dagliga rutiner etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Vårdkvalitet', order: 6 },
+    { code: 'Q7', text: 'Om Du fick betygsätta verksamhetens arbete med att motivera klienten till samverkan enligt den individuellt upprättade behandlingsplanen, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Vårdkvalitet', order: 7 },
+    { code: 'Q8', text: 'Om Du fick betygsätta verksamhetens sociala kontroll av klienten (kontroll av destruktivt beteende, kriminalitet, missbruk och begränsning av rörelsefrihet), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Vårdkvalitet', order: 8 },
+    { code: 'Q9', text: 'Om Du fick betygsätta möjligheten till arbete och studier för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Aktiviteter', order: 9 },
+    { code: 'Q10', text: 'Om Du fick betygsätta möjligheten till fritidsaktiviteter för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Aktiviteter', order: 10 },
+    { code: 'Q11', text: 'Om Du fick betygsätta verksamhetens arbete med klientens föräldrar/anhöriga (anhörigboende, umgängesmöjligheter och övrig kontakt), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Anhörigkontakt', order: 11 },
+    { code: 'Q12', text: 'Om Du fick betygsätta uppföljning och rapportering kring klienten från verksamhetens sida (regelbundna möten, muntlig information, skriftliga rapporter etc.), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Uppföljning', order: 12 },
+    { code: 'Q13', text: 'Om Du fick betygsätta verksamhetens planering och genomförande av utslussning av klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Uppföljning', order: 13 },
+    { code: 'Q14', text: 'Om Du fick betygsätta denna placering ifråga om hur väl den passade/matchade klienten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Helhetsbedömning', order: 14 },
+    { code: 'Q15', text: 'Skulle Du i ett liknande ärende rekommendera en placering inom samma verksamhet?', type: 'YESNO', category: 'Helhetsbedömning', order: 15 },
+    { code: 'Q16', text: 'Vilka anser Du är verksamhetens starkaste sidor?', type: 'TEXT', category: 'Helhetsbedömning', order: 16 },
+    { code: 'Q17', text: 'Vilka anser Du är verksamhetens svagaste sidor?', type: 'TEXT', category: 'Helhetsbedömning', order: 17 },
+    { code: 'Q18', text: 'Är det någon typ av tjänst eller kompetens som Du saknar hos den här verksamheten i samband med placeringar?', type: 'YESNO', category: 'Helhetsbedömning', order: 18 },
+    { code: 'Q19', text: 'Med utgångspunkt från Dina erfarenheter, vilket betyg mellan 1 och 10 skulle Du då ge verksamheten som en helhetsbedömning, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Helhetsbedömning', order: 19 },
+    { code: 'Q20', text: 'Övriga kommentarer och synpunkter.', type: 'LONGTEXT', category: 'Övriga kommentarer', order: 20 },
+  ]
+
+  await Promise.all(
+    hvbQuestions.map((q) =>
+      prisma.surveyQuestion.create({
+        data: {
+          templateId: hvbTemplate.id,
+          questionCode: q.code,
+          questionText: q.text,
+          questionType: q.type,
+          category: q.category,
+          orderIndex: q.order,
+          required: q.type !== 'LONGTEXT',
+          minValue: q.type === 'RATING' ? 1 : null,
+          maxValue: q.type === 'RATING' ? 10 : null,
+        },
+      })
+    )
+  )
+
+  console.log(`   ✓ Created HVB template with ${hvbQuestions.length} questions`)
+
+  // LSS Survey Template
+  const lssTemplate = await prisma.surveyTemplate.create({
+    data: {
+      name: 'LSS Kvalitetsundersökning',
+      description: 'Standardiserad enkät för LSS-verksamhet (Lagen om stöd och service). 19 fördefinierade frågor.',
+      isDefault: false,
+      surveyType: 'LSS',
+      version: 1,
+    },
+  })
+
+  // LSS Questions
+  const lssQuestions = [
+    { code: 'L1', text: 'Vilken insats enligt LSS gäller denna enkät?', type: 'TEXT', category: 'Bakgrundsinformation', order: 0 },
+    { code: 'L2', text: 'Hur länge har klienten haft denna insats?', type: 'TEXT', category: 'Bakgrundsinformation', order: 1 },
+    { code: 'L3', text: 'Om Du fick betygsätta den information som ni fick om verksamheten innan ert beslut, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Informationskvalitet', order: 2 },
+    { code: 'L4', text: 'Hur fick du kännedom om verksamheten?', type: 'TEXT', category: 'Informationskvalitet', order: 3 },
+    { code: 'L5', text: 'Om Du fick betygsätta verksamhetens arbete med klientens individuella plan, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Individuellt stöd', order: 4 },
+    { code: 'L6', text: 'Om Du fick betygsätta hur väl klientens behov av självbestämmande och integritet tillgodoses, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Individuellt stöd', order: 5 },
+    { code: 'L7', text: 'Om Du fick betygsätta verksamhetens stöd för klientens delaktighet i samhället, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Individuellt stöd', order: 6 },
+    { code: 'L8', text: 'Om Du fick betygsätta verksamhetens stöd i dagliga aktiviteter (personlig hygien, måltider, fritid), vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Dagligt liv', order: 7 },
+    { code: 'L9', text: 'Om Du fick betygsätta boendemiljön och dess anpassning till klientens behov, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Dagligt liv', order: 8 },
+    { code: 'L10', text: 'Om Du fick betygsätta verksamhetens kommunikation med dig som handläggare, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Kommunikation', order: 9 },
+    { code: 'L11', text: 'Om Du fick betygsätta verksamhetens samarbete med anhöriga/närstående, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Kommunikation', order: 10 },
+    { code: 'L12', text: 'Om Du fick betygsätta personalens kompetens och bemötande, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Personalkompetens', order: 11 },
+    { code: 'L13', text: 'Om Du fick betygsätta personalkontinuiteten, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Personalkompetens', order: 12 },
+    { code: 'L14', text: 'Om Du fick betygsätta hur väl insatsen motsvarar klientens behov, vilket betyg mellan 1 och 10 skulle Du då sätta, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Helhetsbedömning', order: 13 },
+    { code: 'L15', text: 'Skulle Du rekommendera denna verksamhet för liknande insatser?', type: 'YESNO', category: 'Helhetsbedömning', order: 14 },
+    { code: 'L16', text: 'Vilka anser Du är verksamhetens starkaste sidor?', type: 'TEXT', category: 'Helhetsbedömning', order: 15 },
+    { code: 'L17', text: 'Vilka anser Du är verksamhetens svagaste sidor?', type: 'TEXT', category: 'Helhetsbedömning', order: 16 },
+    { code: 'L18', text: 'Med utgångspunkt från Dina erfarenheter, vilket betyg mellan 1 och 10 skulle Du då ge verksamheten som en helhetsbedömning, där 1 = mycket dåligt och 10 = bästa tänkbara?', type: 'RATING', category: 'Helhetsbedömning', order: 17 },
+    { code: 'L19', text: 'Övriga kommentarer och synpunkter.', type: 'LONGTEXT', category: 'Övriga kommentarer', order: 18 },
+  ]
+
+  await Promise.all(
+    lssQuestions.map((q) =>
+      prisma.surveyQuestion.create({
+        data: {
+          templateId: lssTemplate.id,
+          questionCode: q.code,
+          questionText: q.text,
+          questionType: q.type,
+          category: q.category,
+          orderIndex: q.order,
+          required: q.type !== 'LONGTEXT',
+          minValue: q.type === 'RATING' ? 1 : null,
+          maxValue: q.type === 'RATING' ? 10 : null,
+        },
+      })
+    )
+  )
+
+  console.log(`   ✓ Created LSS template with ${lssQuestions.length} questions`)
 
   // Survey questions based on the Nordic Care Index structure
   const questions = [

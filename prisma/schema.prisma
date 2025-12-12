@@ -113,6 +113,7 @@ model SurveyTemplate {
   description String?
   version     Int      @default(1)
   isDefault   Boolean  @default(false)
+  surveyType  String   @default("CUSTOM") // HVB, LSS, or CUSTOM
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   active      Boolean  @default(true)
@@ -122,6 +123,7 @@ model SurveyTemplate {
   surveys     Survey[]
 
   @@index([isDefault])
+  @@index([surveyType])
 }
 
 model SurveyQuestion {

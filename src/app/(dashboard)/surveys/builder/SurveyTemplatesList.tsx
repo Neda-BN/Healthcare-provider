@@ -17,9 +17,14 @@ import {
   Send,
   X,
   Copy,
+  Home,
+  Users,
+  ArrowRight,
+  CheckCircle2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
+import { SurveyType, SURVEY_TYPE_INFO, getQuestionsForType } from '@/lib/survey-templates'
 
 interface TemplateSummary {
   id: string
@@ -27,6 +32,7 @@ interface TemplateSummary {
   description: string
   version: number
   isDefault: boolean
+  surveyType?: SurveyType
   questionCount: number
   surveyCount: number
   createdAt: string
@@ -51,6 +57,8 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
   // New survey form state
   const [newSurveyName, setNewSurveyName] = useState('')
   const [newSurveyDescription, setNewSurveyDescription] = useState('')
+  const [selectedSurveyType, setSelectedSurveyType] = useState<SurveyType | null>(null)
+  const [createStep, setCreateStep] = useState<'type' | 'details'>('type')
 
   const filteredTemplates = templates.filter(
     (t) =>
@@ -64,15 +72,28 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
       return
     }
 
+    if (!selectedSurveyType) {
+      toast.error('Please select a survey type')
+      return
+    }
+
     setIsLoading(true)
     try {
+      // Get predefined questions based on survey type
+      const predefinedQuestions = getQuestionsForType(selectedSurveyType)
+      const questionsWithOrder = predefinedQuestions.map((q, index) => ({
+        ...q,
+        orderIndex: index,
+      }))
+
       const res = await fetch('/api/templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newSurveyName,
           description: newSurveyDescription,
-          questions: [],
+          surveyType: selectedSurveyType,
+          questions: questionsWithOrder,
         }),
       })
 
@@ -82,9 +103,7 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
       toast.success('Survey created successfully')
       
       // Close modal first, then navigate
-      setShowCreateModal(false)
-      setNewSurveyName('')
-      setNewSurveyDescription('')
+      resetCreateModal()
       
       // Small delay to let React finish state updates before navigation
       setTimeout(() => {
@@ -95,6 +114,30 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const resetCreateModal = () => {
+    setShowCreateModal(false)
+    setNewSurveyName('')
+    setNewSurveyDescription('')
+    setSelectedSurveyType(null)
+    setCreateStep('type')
+  }
+
+  const handleSelectType = (type: SurveyType) => {
+    setSelectedSurveyType(type)
+    // Auto-fill name based on type
+    if (type === 'HVB') {
+      setNewSurveyName('HVB Kvalitetsundersökning')
+      setNewSurveyDescription('Kvalitetsmätning för HVB-verksamhet')
+    } else if (type === 'LSS') {
+      setNewSurveyName('LSS Kvalitetsundersökning')
+      setNewSurveyDescription('Kvalitetsmätning för LSS-verksamhet')
+    } else {
+      setNewSurveyName('')
+      setNewSurveyDescription('')
+    }
+    setCreateStep('details')
   }
 
   const handleDeleteTemplate = async (id: string) => {
@@ -239,18 +282,28 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
               onClick={() => router.push(`/surveys/builder/${template.id}`)}
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              {/* Default badge */}
-              {template.isDefault && (
-                <div className="absolute top-3 right-3">
+              {/* Type and Default badges */}
+              <div className="absolute top-3 right-3 flex items-center gap-2">
+                {template.surveyType && template.surveyType !== 'CUSTOM' && (
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                    template.surveyType === 'HVB'
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                      : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  }`}>
+                    {template.surveyType === 'HVB' ? <Home className="w-3 h-3" /> : <Users className="w-3 h-3" />}
+                    {template.surveyType}
+                  </span>
+                )}
+                {template.isDefault && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                     <Star className="w-3 h-3" />
                     Default
                   </span>
-                </div>
-              )}
+                )}
+              </div>
 
               {/* More options menu */}
-              <div className="absolute top-3 right-3" style={{ right: template.isDefault ? '80px' : '12px' }}>
+              <div className="absolute top-12 right-3">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -370,65 +423,212 @@ export default function SurveyTemplatesList({ initialTemplates }: SurveyTemplate
         </div>
       )}
 
-      {/* Create Modal - No Framer Motion */}
+      {/* Create Modal - Two Step Process */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 dark:bg-black/70"
-            onClick={() => setShowCreateModal(false)}
+            onClick={resetCreateModal}
           />
-          <div className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-md animate-fade-in">
+          <div className="relative bg-white dark:bg-dark-surface rounded-2xl shadow-xl dark:shadow-dark-soft w-full max-w-2xl animate-fade-in">
             <div className="flex items-center justify-between p-6 border-b border-surface-200 dark:border-dark-border">
-              <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">
-                Create New Survey
-              </h2>
+              <div className="flex items-center gap-3">
+                {createStep === 'details' && (
+                  <button
+                    onClick={() => setCreateStep('type')}
+                    className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light"
+                  >
+                    <ArrowRight className="w-5 h-5 text-surface-500 dark:text-dark-text-muted rotate-180" />
+                  </button>
+                )}
+                <div>
+                  <h2 className="text-xl font-display font-bold text-surface-900 dark:text-dark-text">
+                    {createStep === 'type' ? 'Välj enkättyp' : 'Enkätdetaljer'}
+                  </h2>
+                  <p className="text-sm text-surface-500 dark:text-dark-text-muted">
+                    {createStep === 'type' 
+                      ? 'Choose Survey Type - Select a template or start from scratch' 
+                      : `${selectedSurveyType === 'CUSTOM' ? 'Manual' : selectedSurveyType} - Configure your survey`
+                    }
+                  </p>
+                </div>
+              </div>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={resetCreateModal}
                 className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-dark-surface-light"
               >
                 <X className="w-5 h-5 text-surface-500 dark:text-dark-text-muted" />
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="label">Survey Name *</label>
-                <input
-                  type="text"
-                  value={newSurveyName}
-                  onChange={(e) => setNewSurveyName(e.target.value)}
-                  className="input"
-                  placeholder="e.g., Municipality Satisfaction Survey 2024"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="label">Description (Optional)</label>
-                <textarea
-                  value={newSurveyDescription}
-                  onChange={(e) => setNewSurveyDescription(e.target.value)}
-                  className="input min-h-[100px]"
-                  placeholder="Brief description of this survey..."
-                />
-              </div>
-            </div>
+            {createStep === 'type' ? (
+              // Step 1: Select Survey Type
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Custom/Manual Option */}
+                  <button
+                    onClick={() => handleSelectType('CUSTOM')}
+                    className="group relative flex flex-col items-center p-6 rounded-xl border-2 border-surface-200 dark:border-dark-border hover:border-surface-400 dark:hover:border-dark-primary/50 transition-all text-left"
+                  >
+                    <div className="w-14 h-14 rounded-full bg-surface-100 dark:bg-dark-surface-light flex items-center justify-center mb-4 group-hover:bg-surface-200 dark:group-hover:bg-dark-surface-lighter transition-colors">
+                      <Edit3 className="w-7 h-7 text-surface-500 dark:text-dark-text-muted" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-1">
+                      Skapa manuellt
+                    </h3>
+                    <p className="text-sm text-surface-500 dark:text-dark-text-muted text-center">
+                      Start from scratch
+                    </p>
+                    <span className="mt-3 text-xs text-surface-400 dark:text-dark-text-muted">
+                      0 questions
+                    </span>
+                  </button>
 
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light rounded-b-2xl">
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="btn-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateSurvey}
-                disabled={isLoading || !newSurveyName.trim()}
-                className="btn-primary"
-              >
-                <Plus className="w-4 h-4" />
-                {isLoading ? 'Creating...' : 'Create Survey'}
-              </button>
-            </div>
+                  {/* HVB Option */}
+                  <button
+                    onClick={() => handleSelectType('HVB')}
+                    className="group relative flex flex-col items-center p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 bg-blue-50/50 dark:bg-blue-900/20 transition-all text-left"
+                  >
+                    <div className="absolute top-3 right-3">
+                      <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400 rounded-full">
+                        Recommended
+                      </span>
+                    </div>
+                    <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-4 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                      <Home className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-1">
+                      HVB-enkät
+                    </h3>
+                    <p className="text-sm text-surface-500 dark:text-dark-text-muted text-center">
+                      Hem för vård eller boende
+                    </p>
+                    <span className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-medium">
+                      {SURVEY_TYPE_INFO.HVB.questionCount} questions
+                    </span>
+                  </button>
+
+                  {/* LSS Option */}
+                  <button
+                    onClick={() => handleSelectType('LSS')}
+                    className="group relative flex flex-col items-center p-6 rounded-xl border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 bg-green-50/50 dark:bg-green-900/20 transition-all text-left"
+                  >
+                    <div className="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center mb-4 group-hover:bg-green-200 dark:group-hover:bg-green-800/50 transition-colors">
+                      <Users className="w-7 h-7 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-surface-900 dark:text-dark-text mb-1">
+                      LSS-enkät
+                    </h3>
+                    <p className="text-sm text-surface-500 dark:text-dark-text-muted text-center">
+                      Stöd och service
+                    </p>
+                    <span className="mt-3 text-xs text-green-600 dark:text-green-400 font-medium">
+                      {SURVEY_TYPE_INFO.LSS.questionCount} questions
+                    </span>
+                  </button>
+                </div>
+
+                {/* Info Box */}
+                <div className="mt-6 p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg border border-surface-200 dark:border-dark-border">
+                  <h4 className="font-medium text-surface-900 dark:text-dark-text mb-2 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-primary-500 dark:text-dark-primary" />
+                    After creating:
+                  </h4>
+                  <ul className="text-sm text-surface-600 dark:text-dark-text-muted space-y-1 ml-6">
+                    <li>• Add new questions at any time</li>
+                    <li>• Edit or remove predefined questions (HVB/LSS)</li>
+                    <li>• Reorder questions as needed</li>
+                    <li>• Preview before sending</li>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              // Step 2: Survey Details
+              <div className="p-6 space-y-4">
+                {/* Selected Type Badge */}
+                <div className="flex items-center gap-2 mb-4">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${
+                    selectedSurveyType === 'HVB' 
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                      : selectedSurveyType === 'LSS'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-surface-100 text-surface-700 dark:bg-dark-surface-light dark:text-dark-text'
+                  }`}>
+                    {selectedSurveyType === 'HVB' && <Home className="w-4 h-4" />}
+                    {selectedSurveyType === 'LSS' && <Users className="w-4 h-4" />}
+                    {selectedSurveyType === 'CUSTOM' && <Edit3 className="w-4 h-4" />}
+                    {selectedSurveyType === 'HVB' ? 'HVB Survey' : selectedSurveyType === 'LSS' ? 'LSS Survey' : 'Manual'}
+                  </span>
+                  <span className="text-sm text-surface-500 dark:text-dark-text-muted">
+                    {getQuestionsForType(selectedSurveyType!).length} predefined questions
+                  </span>
+                </div>
+
+                <div>
+                  <label className="label">Survey Name *</label>
+                  <input
+                    type="text"
+                    value={newSurveyName}
+                    onChange={(e) => setNewSurveyName(e.target.value)}
+                    className="input"
+                    placeholder="e.g., Municipality Quality Survey 2024"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="label">Description (Optional)</label>
+                  <textarea
+                    value={newSurveyDescription}
+                    onChange={(e) => setNewSurveyDescription(e.target.value)}
+                    className="input min-h-[100px]"
+                    placeholder="Brief description of this survey..."
+                  />
+                </div>
+
+                {/* Preview of questions for HVB/LSS */}
+                {selectedSurveyType && selectedSurveyType !== 'CUSTOM' && (
+                  <div className="mt-4">
+                    <label className="label">Predefined Questions Preview</label>
+                    <div className="max-h-[200px] overflow-y-auto border border-surface-200 dark:border-dark-border rounded-lg divide-y divide-surface-100 dark:divide-dark-border">
+                      {getQuestionsForType(selectedSurveyType).slice(0, 5).map((q, i) => (
+                        <div key={i} className="p-3 flex items-start gap-2 text-sm">
+                          <span className="font-mono text-xs text-primary-600 dark:text-dark-primary bg-primary-50 dark:bg-dark-primary/20 px-1.5 py-0.5 rounded">
+                            {q.questionCode}
+                          </span>
+                          <span className="text-surface-700 dark:text-dark-text line-clamp-1 flex-1">
+                            {q.questionText}
+                          </span>
+                        </div>
+                      ))}
+                      {getQuestionsForType(selectedSurveyType!).length > 5 && (
+                        <div className="p-3 text-center text-sm text-surface-500 dark:text-dark-text-muted">
+                          + {getQuestionsForType(selectedSurveyType!).length - 5} more questions
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {createStep === 'details' && (
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-surface-light rounded-b-2xl">
+                <button
+                  onClick={resetCreateModal}
+                  className="btn-secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateSurvey}
+                  disabled={isLoading || !newSurveyName.trim()}
+                  className="btn-primary"
+                >
+                  <Plus className="w-4 h-4" />
+                  {isLoading ? 'Creating...' : 'Create Survey'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -26,6 +26,7 @@ async function getTemplateData(id: string) {
     description: template.description || '',
     version: template.version,
     isDefault: template.isDefault,
+    surveyType: template.surveyType as 'HVB' | 'LSS' | 'CUSTOM',
     questions: template.questions.map((q) => ({
       id: q.id,
       questionCode: q.questionCode,
