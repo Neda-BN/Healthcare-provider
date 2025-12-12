@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kvalitetsundersökning - Healthcare Provider</title>
+  <style>
+    /* Email-safe CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f5f4;
+      color: #1c1917;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    /* Email Container */
+    .email-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Email Header */
+    .email-header {
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .email-header .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .email-header .logo-icon {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .email-header .logo-icon svg {
+      width: 28px;
+      height: 28px;
+      color: white;
+    }
+
+    .email-header h1 {
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .email-header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+    }
+
+    /* Survey Info Banner */
+    .survey-info {
+      background-color: #f0fdfa;
+      border-bottom: 1px solid #99f6e4;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .survey-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .survey-info-item svg {
+      width: 18px;
+      height: 18px;
+      color: #0d9488;
+    }
+
+    .survey-info-item span {
+      font-size: 13px;
+      color: #0f766e;
+      font-weight: 500;
+    }
+
+    /* Email Body */
+    .email-body {
+      padding: 32px;
+    }
+
+    .intro-text {
+      background-color: #fafaf9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      border-left: 4px solid #0d9488;
+    }
+
+    .intro-text h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1917;
+      margin-bottom: 8px;
+    }
+
+    .intro-text p {
+      font-size: 14px;
+      color: #57534e;
+    }
+
+    /* Section Styles */
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e7e5e4;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .section-icon svg {
+      width: 20px;
+      height: 20px;
+      color: white;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1c1917;
+    }
+
+    /* Question Styles */
+    .question {
+      background-color: #fafaf9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #e7e5e4;
+      transition: border-color 0.2s;
+    }
+
+    .question:hover {
+      border-color: #0d9488;
+    }
+
+    .question-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background-color: #0d9488;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+
+    .question-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1c1917;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .question-text .required {
+      color: #dc2626;
+      margin-left: 4px;
+    }
+
+    /* Rating Scale */
+    .rating-scale {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .rating-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+
+    .rating-scale-labels span {
+      font-size: 11px;
+      color: #78716c;
+    }
+
+    .rating-btn {
+      width: 44px;
+      height: 44px;
+      border: 2px solid #d6d3d1;
+      border-radius: 10px;
+      background-color: white;
+      color: #57534e;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rating-btn:hover {
+      border-color: #0d9488;
+      background-color: #f0fdfa;
+      color: #0d9488;
+    }
+
+    .rating-btn.selected {
+      background-color: #0d9488;
+      border-color: #0d9488;
+      color: white;
+    }
+
+    .rating-btn-na {
+      padding: 0 16px;
+      width: auto;
+      font-size: 12px;
+    }
+
+    /* Text Input */
+    .text-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #d6d3d1;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1c1917;
+      background-color: white;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: #0d9488;
+    }
+
+    .text-input::placeholder {
+      color: #a8a29e;
+    }
+
+    textarea.text-input {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* Yes/No Buttons */
+    .yes-no-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .yes-no-btn {
+      flex: 1;
+      padding: 14px 24px;
+      border: 2px solid #d6d3d1;
+      border-radius: 10px;
+      background-color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .yes-no-btn:hover {
+      border-color: #0d9488;
+    }
+
+    .yes-no-btn.yes:hover, .yes-no-btn.yes.selected {
+      background-color: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+    }
+
+    .yes-no-btn.no:hover, .yes-no-btn.no.selected {
+      background-color: #fee2e2;
+      border-color: #ef4444;
+      color: #dc2626;
+    }
+
+    .yes-no-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Submit Section */
+    .submit-section {
+      background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 32px;
+      border: 2px solid #99f6e4;
+    }
+
+    .submit-section h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 8px;
+    }
+
+    .submit-section p {
+      font-size: 14px;
+      color: #0d9488;
+      margin-bottom: 24px;
+    }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 48px;
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.5);
+    }
+
+    .submit-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Email Footer */
+    .email-footer {
+      background-color: #1c1917;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .email-footer .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .email-footer .footer-logo svg {
+      width: 24px;
+      height: 24px;
+      color: #0d9488;
+    }
+
+    .email-footer .footer-logo span {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .email-footer p {
+      color: #a8a29e;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .email-footer a {
+      color: #0d9488;
+      text-decoration: none;
+    }
+
+    .email-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Privacy Notice */
+    .privacy-notice {
+      background-color: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .privacy-notice svg {
+      width: 20px;
+      height: 20px;
+      color: #d97706;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .privacy-notice p {
+      font-size: 12px;
+      color: #92400e;
+      line-height: 1.5;
+    }
+
+    /* Progress Indicator */
+    .progress-bar {
+      height: 4px;
+      background-color: #e7e5e4;
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0d9488 0%, #14b8a6 100%);
+      width: 0%;
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .email-header {
+        padding: 24px 20px;
+      }
+
+      .email-body {
+        padding: 20px;
+      }
+
+      .survey-info {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .rating-scale {
+        justify-content: center;
+      }
+
+      .rating-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 12px;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 14px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- Email Header -->
+    <div class="email-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+      </div>
+      <h1>Kvalitetsundersökning</h1>
+      <p>Nordic Care Quality Index - Uppföljning av placering</p>
+    </div>
+
+    <!-- Survey Info Banner -->
+    <div class="survey-info">
+      <div class="survey-info-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        <span>Nordic Care AB</span>
+      </div>
+      <div class="survey-info-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Svarsdatum: 2025-01-15</span>
+      </div>
+      <div class="survey-info-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Ca. 10 min</span>
+      </div>
+    </div>
+
+    <!-- Email Body -->
+    <div class="email-body">
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+
+      <!-- Introduction -->
+      <div class="intro-text">
+        <h2>Hej!</h2>
+        <p>Vi vill gärna höra dina synpunkter om den aktuella placeringen. Din feedback hjälper oss att förbättra kvaliteten på våra tjänster. Undersökningen tar cirka 10 minuter att genomföra. Alla svar behandlas konfidentiellt.</p>
+      </div>
+
+      <!-- Section 1: Kommentar om intervjun -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Kommentar om intervjun</h3>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">1</span>
+            Är aktuell placering pågående i verksamheten just nu?<span class="required">*</span>
+          </p>
+          <input type="text" class="text-input" placeholder="Skriv ditt svar här...">
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">2</span>
+            Vilken typ av placering gäller det (familj, vuxen, barn, par, förälder och barn, akutplacering, behandling, utredning, vård etc.)?<span class="required">*</span>
+          </p>
+          <input type="text" class="text-input" placeholder="Skriv ditt svar här...">
+        </div>
+      </div>
+
+      <!-- Section 2: Information om verksamheten -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Information om verksamheten</h3>
+        </div>
+
+        <!-- Question 3a -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">3a</span>
+            Om Du fick betygsätta den information som ni fick om verksamheten, innan ert beslut om placering, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+
+        <!-- Question 3b -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">3b</span>
+            Hur fick du kännedom om verksamheten (placeringsservice, kollega, broschyr, utskick etc.)?
+          </p>
+          <input type="text" class="text-input" placeholder="Skriv ditt svar här...">
+        </div>
+      </div>
+
+      <!-- Section 3: Mottagande & introduktion -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Mottagande & introduktion</h3>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">4</span>
+            Om Du fick betygsätta mottagande och introduktion av er klient, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Genomförandeplan -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+          </div>
+          <h3 class="section-title">Genomförandeplan</h3>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">5</span>
+            Om Du fick betygsätta verksamhetens arbete kring klientens genomförandeplan (upprättande, revideringar, arbetet enligt denna plan etc.), vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Omvårdnadsinsatser -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Omvårdnadsinsatser</h3>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">6</span>
+            Om Du fick betygsätta verksamhetens omvårdnadsinsatser gentemot klienten (kost, logi, dagliga rutiner etc.), vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Motivation -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Motivation</h3>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">7</span>
+            Om Du fick betygsätta verksamhetens arbete med att motivera klienten till samverkan enligt den individuellt upprättade behandlingsplanen, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Social kontroll -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Social kontroll</h3>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">8</span>
+            Om Du fick betygsätta verksamhetens sociala kontroll av klienten (kontroll av destruktivt beteende, kriminalitet, missbruk och begränsning av rörelsefrihet), vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: Arbete & studier -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Arbete & studier</h3>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">9</span>
+            Om Du fick betygsätta möjligheten till arbete och studier för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 9: Fritidsaktiviteter -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Fritidsaktiviteter</h3>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">10</span>
+            Om Du fick betygsätta möjligheten till fritidsaktiviteter för klienten, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 10: Nätverksarbete -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Nätverksarbete</h3>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">11</span>
+            Om Du fick betygsätta verksamhetens arbete med klientens föräldrar/anhöriga (anhörigboende, umgängesmöjligheter och övrig kontakt), vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 11: Uppföljning & rapportering -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Uppföljning & rapportering</h3>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">12</span>
+            Om Du fick betygsätta uppföljning och rapportering kring klienten från verksamhetens sida (regelbundna möten, muntlig information, skriftliga rapporter etc.), vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 12: Utslussning -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </div>
+          <h3 class="section-title">Utslussning</h3>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">13</span>
+            Om Du fick betygsätta verksamhetens planering och genomförande av utslussning av klienten, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 13: Placerings lämplighet -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Placerings lämplighet</h3>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">14</span>
+            Om Du fick betygsätta denna placering ifråga om hur väl den passade/matchade klienten, vilket betyg mellan 1 och 10 skulle Du då sätta?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">15</span>
+            Skulle Du i ett liknande ärende rekommendera en placering inom samma verksamhet?<span class="required">*</span>
+          </p>
+          <div class="yes-no-group">
+            <button class="yes-no-btn yes" onclick="selectYesNo(this, 'yes')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Ja
+            </button>
+            <button class="yes-no-btn no" onclick="selectYesNo(this, 'no')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Nej
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 14: Styrkor & svagheter -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Styrkor & svagheter</h3>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">16</span>
+            Vilka anser Du är verksamhetens starkaste sidor?
+          </p>
+          <input type="text" class="text-input" placeholder="Skriv ditt svar här...">
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">17</span>
+            Vilka anser Du är verksamhetens svagaste sidor?
+          </p>
+          <input type="text" class="text-input" placeholder="Skriv ditt svar här...">
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">18</span>
+            Är det någon typ av tjänst eller kompetens som Du saknar hos den här verksamheten i samband med placeringar?<span class="required">*</span>
+          </p>
+          <div class="yes-no-group">
+            <button class="yes-no-btn yes" onclick="selectYesNo(this, 'yes')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Ja
+            </button>
+            <button class="yes-no-btn no" onclick="selectYesNo(this, 'no')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Nej
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 15: Helhetsbedömning -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          </div>
+          <h3 class="section-title">Övergripande bedömning</h3>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">19</span>
+            Med utgångspunkt från Dina erfarenheter, vilket betyg mellan 1 och 10 skulle Du då ge verksamheten som en helhetsbedömning?<span class="required">*</span>
+          </p>
+          <div class="rating-scale-labels">
+            <span>1 = Mycket dåligt</span>
+            <span>10 = Bästa tänkbara</span>
+          </div>
+          <div class="rating-scale">
+            <button class="rating-btn" onclick="selectRating(this)">1</button>
+            <button class="rating-btn" onclick="selectRating(this)">2</button>
+            <button class="rating-btn" onclick="selectRating(this)">3</button>
+            <button class="rating-btn" onclick="selectRating(this)">4</button>
+            <button class="rating-btn" onclick="selectRating(this)">5</button>
+            <button class="rating-btn" onclick="selectRating(this)">6</button>
+            <button class="rating-btn" onclick="selectRating(this)">7</button>
+            <button class="rating-btn" onclick="selectRating(this)">8</button>
+            <button class="rating-btn" onclick="selectRating(this)">9</button>
+            <button class="rating-btn" onclick="selectRating(this)">10</button>
+            <button class="rating-btn rating-btn-na" onclick="selectRating(this)">Vet ej</button>
+          </div>
+        </div>
+
+        <!-- Final Comment -->
+        <div class="question">
+          <p class="question-text">
+            <span class="question-number">✎</span>
+            Övriga kommentarer och synpunkter
+          </p>
+          <textarea class="text-input" placeholder="Dela med dig av eventuella ytterligare kommentarer eller synpunkter..."></textarea>
+        </div>
+      </div>
+
+      <!-- Privacy Notice -->
+      <div class="privacy-notice">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <p>
+          <strong>Integritetsinformation:</strong> Dina svar behandlas konfidentiellt och lagras säkert enligt GDPR. 
+          Resultaten används endast för att förbättra kvaliteten på våra tjänster. 
+          Kontakta <a href="mailto:support@healthcare-provider.se">support@healthcare-provider.se</a> om du har frågor.
+        </p>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="submit-section">
+        <h3>Tack för att du tar dig tid!</h3>
+        <p>Klicka på knappen nedan för att skicka in dina svar.</p>
+        <button class="submit-btn" onclick="submitSurvey()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+          Skicka in undersökning
+        </button>
+      </div>
+    </div>
+
+    <!-- Email Footer -->
+    <div class="email-footer">
+      <div class="footer-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <span>Healthcare Provider</span>
+      </div>
+      <p>Nordic Care Quality Index - Kvalitetsundersökning</p>
+      <p>
+        <a href="mailto:support@healthcare-provider.se">support@healthcare-provider.se</a> | 
+        <a href="tel:+46812345678">+46 8 123 45 67</a>
+      </p>
+      <p style="margin-top: 16px; color: #78716c;">
+        © 2025 Healthcare Provider. Alla rättigheter förbehållna.
+      </p>
+    </div>
+  </div>
+
+  <!-- Success/Thank You Page Overlay -->
+  <div id="success-overlay" class="success-overlay">
+    <div class="success-container">
+      <!-- Animated Checkmark -->
+      <div class="success-checkmark">
+        <svg class="checkmark-circle" viewBox="0 0 52 52">
+          <circle class="checkmark-circle-bg" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+
+      <!-- Success Content -->
+      <div class="success-content">
+        <h1 class="success-title">Tack för ditt svar!</h1>
+        <p class="success-subtitle">Din undersökning har skickats in</p>
+        
+        <!-- Animated Stats -->
+        <div class="success-stats">
+          <div class="stat-card" style="--delay: 0.2s">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+            </div>
+            <div class="stat-value" id="questions-answered">0</div>
+            <div class="stat-label">Frågor besvarade</div>
+          </div>
+          <div class="stat-card" style="--delay: 0.4s">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="stat-value" id="time-spent">0:00</div>
+            <div class="stat-label">Tid spenderad</div>
+          </div>
+          <div class="stat-card" style="--delay: 0.6s">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+            </div>
+            <div class="stat-value" id="avg-rating">0.0</div>
+            <div class="stat-label">Genomsnittligt betyg</div>
+          </div>
+        </div>
+
+        <!-- What Happens Next -->
+        <div class="next-steps">
+          <h3>Vad händer nu?</h3>
+          <div class="steps-timeline">
+            <div class="step" style="--delay: 0.8s">
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div class="step-content">
+                <strong>Bekräftelse skickad</strong>
+                <span>En bekräftelse har skickats till din e-post</span>
+              </div>
+            </div>
+            <div class="step" style="--delay: 1s">
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div class="step-content">
+                <strong>Analys pågår</strong>
+                <span>Dina svar analyseras tillsammans med andra</span>
+              </div>
+            </div>
+            <div class="step" style="--delay: 1.2s">
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="step-content">
+                <strong>Förbättringar genomförs</strong>
+                <span>Verksamheten använder feedback för förbättring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Feedback -->
+        <div class="feedback-section">
+          <h3>Hur upplevde du undersökningen?</h3>
+          <div class="emoji-feedback">
+            <button class="emoji-btn" onclick="selectEmoji(this, 'bad')" title="Dålig">
+              <span>😞</span>
+              <small>Dålig</small>
+            </button>
+            <button class="emoji-btn" onclick="selectEmoji(this, 'okay')" title="Okej">
+              <span>😐</span>
+              <small>Okej</small>
+            </button>
+            <button class="emoji-btn" onclick="selectEmoji(this, 'good')" title="Bra">
+              <span>🙂</span>
+              <small>Bra</small>
+            </button>
+            <button class="emoji-btn" onclick="selectEmoji(this, 'great')" title="Utmärkt">
+              <span>😊</span>
+              <small>Utmärkt</small>
+            </button>
+            <button class="emoji-btn" onclick="selectEmoji(this, 'amazing')" title="Fantastisk">
+              <span>🤩</span>
+              <small>Fantastisk</small>
+            </button>
+          </div>
+          <div id="emoji-response" class="emoji-response"></div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+          <p>Dela gärna länken med kollegor som också behöver fylla i undersökningen:</p>
+          <div class="share-box">
+            <input type="text" id="share-link" value="https://healthcare-provider.se/survey/abc123" readonly>
+            <button class="copy-btn" onclick="copyLink()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span id="copy-text">Kopiera</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="success-actions">
+          <button class="action-btn secondary" onclick="downloadPDF()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Ladda ner kopia (PDF)
+          </button>
+          <button class="action-btn primary" onclick="closeSuccess()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Stäng
+          </button>
+        </div>
+
+        <!-- Confetti Container -->
+        <div id="confetti-container"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="success-footer">
+        <div class="footer-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span>Healthcare Provider</span>
+        </div>
+        <p>Tack för att du hjälper oss att förbättra kvaliteten på våra tjänster!</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Success Page Styles */
+    .success-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      z-index: 9999;
+      display: none;
+      overflow-y: auto;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .success-overlay.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .success-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    /* Animated Checkmark */
+    .success-checkmark {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 24px;
+    }
+
+    .checkmark-circle {
+      width: 100%;
+      height: 100%;
+      stroke-width: 2;
+      stroke: white;
+      fill: none;
+    }
+
+    .checkmark-circle-bg {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark-check {
+      stroke: white;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+    }
+
+    @keyframes stroke {
+      100% { stroke-dashoffset: 0; }
+    }
+
+    /* Success Content */
+    .success-content {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .success-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f766e;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: slideUp 0.5s ease-out 0.3s both;
+    }
+
+    .success-subtitle {
+      font-size: 18px;
+      color: #57534e;
+      text-align: center;
+      margin-bottom: 32px;
+      animation: slideUp 0.5s ease-out 0.4s both;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Stats Cards */
+    .success-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #99f6e4;
+      animation: popIn 0.4s ease-out var(--delay) both;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      background: #0d9488;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f766e;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #57534e;
+      font-weight: 500;
+    }
+
+    /* Next Steps */
+    .next-steps {
+      margin-bottom: 32px;
+    }
+
+    .next-steps h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .steps-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #fafaf9;
+      border-radius: 12px;
+      border: 1px solid #e7e5e4;
+      animation: slideIn 0.4s ease-out var(--delay) both;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .step-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-icon svg {
+      width: 22px;
+      height: 22px;
+      color: white;
+    }
+
+    .step-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-content strong {
+      font-size: 14px;
+      color: #1c1917;
+      margin-bottom: 2px;
+    }
+
+    .step-content span {
+      font-size: 13px;
+      color: #78716c;
+    }
+
+    /* Emoji Feedback */
+    .feedback-section {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .feedback-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 16px;
+    }
+
+    .emoji-feedback {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .emoji-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #fafaf9;
+      border: 2px solid #e7e5e4;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .emoji-btn span {
+      font-size: 32px;
+      transition: transform 0.2s;
+    }
+
+    .emoji-btn small {
+      font-size: 11px;
+      color: #78716c;
+      font-weight: 500;
+    }
+
+    .emoji-btn:hover {
+      border-color: #0d9488;
+      background: #f0fdfa;
+      transform: translateY(-4px);
+    }
+
+    .emoji-btn:hover span {
+      transform: scale(1.2);
+    }
+
+    .emoji-btn.selected {
+      border-color: #0d9488;
+      background: #ccfbf1;
+    }
+
+    .emoji-response {
+      font-size: 14px;
+      color: #0f766e;
+      font-weight: 500;
+      min-height: 24px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Share Section */
+    .share-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: #fafaf9;
+      border-radius: 12px;
+      border: 1px solid #e7e5e4;
+    }
+
+    .share-section p {
+      font-size: 13px;
+      color: #57534e;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .share-box {
+      display: flex;
+      gap: 8px;
+    }
+
+    .share-box input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #d6d3d1;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #57534e;
+      background: white;
+    }
+
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: #0d9488;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #0f766e;
+    }
+
+    .copy-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .copy-btn.copied {
+      background: #22c55e;
+    }
+
+    /* Action Buttons */
+    .success-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .action-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
+    }
+
+    .action-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.5);
+    }
+
+    .action-btn.secondary {
+      background: white;
+      color: #0f766e;
+      border: 2px solid #0d9488;
+    }
+
+    .action-btn.secondary:hover {
+      background: #f0fdfa;
+    }
+
+    /* Confetti */
+    #confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        opacity: 1;
+        transform: translateY(-100px) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+
+    /* Success Footer */
+    .success-footer {
+      text-align: center;
+      padding: 32px 20px;
+      color: white;
+    }
+
+    .success-footer .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .success-footer .footer-logo svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .success-footer .footer-logo span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .success-footer p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .success-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .emoji-feedback {
+        flex-wrap: wrap;
+      }
+
+      .emoji-btn {
+        padding: 10px 12px;
+      }
+
+      .emoji-btn span {
+        font-size: 24px;
+      }
+
+      .success-actions {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .share-box {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <script>
+    // Track start time
+    let startTime = Date.now();
+
+    // Interactive functionality for the mockup
+    function selectRating(button) {
+      const parent = button.closest('.rating-scale');
+      parent.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      updateProgress();
+    }
+
+    function selectYesNo(button, value) {
+      const parent = button.closest('.yes-no-group');
+      parent.querySelectorAll('.yes-no-btn').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const totalQuestions = 20;
+      const answeredRatings = document.querySelectorAll('.rating-btn.selected').length;
+      const answeredYesNo = document.querySelectorAll('.yes-no-btn.selected').length;
+      const answered = answeredRatings + answeredYesNo;
+      const progress = Math.min((answered / totalQuestions) * 100, 100);
+      document.querySelector('.progress-bar-fill').style.width = progress + '%';
+    }
+
+    function submitSurvey() {
+      // Calculate stats
+      const answeredRatings = document.querySelectorAll('.rating-btn.selected');
+      const answeredYesNo = document.querySelectorAll('.yes-no-btn.selected');
+      const totalAnswered = answeredRatings.length + answeredYesNo.length;
+
+      // Calculate time spent
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      const minutes = Math.floor(timeSpent / 60);
+      const seconds = timeSpent % 60;
+
+      // Calculate average rating
+      let totalRating = 0;
+      let ratingCount = 0;
+      answeredRatings.forEach(btn => {
+        const value = parseInt(btn.textContent);
+        if (!isNaN(value)) {
+          totalRating += value;
+          ratingCount++;
+        }
+      });
+      const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0.0';
+
+      // Update stats with animation
+      document.getElementById('questions-answered').textContent = totalAnswered;
+      document.getElementById('time-spent').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('avg-rating').textContent = avgRating;
+
+      // Show success page
+      document.getElementById('success-overlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      // Trigger confetti
+      createConfetti();
+    }
+
+    function createConfetti() {
+      const container = document.getElementById('confetti-container');
+      const colors = ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4', '#fcd34d', '#fbbf24', '#f472b6'];
+      
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+          container.appendChild(confetti);
+
+          // Remove confetti after animation
+          setTimeout(() => confetti.remove(), 5000);
+        }, i * 30);
+      }
+    }
+
+    function selectEmoji(button, value) {
+      document.querySelectorAll('.emoji-btn').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+
+      const responses = {
+        'bad': 'Tack för din feedback! Vi beklagar att upplevelsen inte var bra. 💙',
+        'okay': 'Tack! Vi jobbar på att förbättra undersökningen. 👍',
+        'good': 'Trevligt att höra! Tack för din feedback! 😊',
+        'great': 'Fantastiskt! Vi är glada att du hade en bra upplevelse! 🎉',
+        'amazing': 'Wow, tack så mycket! Det värmer våra hjärtan! 💚'
+      };
+
+      document.getElementById('emoji-response').textContent = responses[value];
+    }
+
+    function copyLink() {
+      const linkInput = document.getElementById('share-link');
+      linkInput.select();
+      document.execCommand('copy');
+
+      const btn = document.querySelector('.copy-btn');
+      const text = document.getElementById('copy-text');
+      btn.classList.add('copied');
+      text.textContent = 'Kopierad!';
+
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        text.textContent = 'Kopiera';
+      }, 2000);
+    }
+
+    function downloadPDF() {
+      alert('PDF-nedladdning startar...\n\n(Detta är en mockup - i en riktig implementation skulle en PDF genereras med dina svar.)');
+    }
+
+    function closeSuccess() {
+      document.getElementById('success-overlay').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  </script>
+</body>
+</html>
+
