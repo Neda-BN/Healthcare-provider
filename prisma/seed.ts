@@ -24,7 +24,7 @@ async function main() {
   console.log('👤 Creating users...')
   
   const adminPassword = await bcrypt.hash('admin123', 10)
-  const caregiverPassword = await bcrypt.hash('caregiver123', 10)
+  const municipalityPassword = await bcrypt.hash('municipality123', 10)
 
   const adminUser = await prisma.user.create({
     data: {
@@ -35,17 +35,17 @@ async function main() {
     },
   })
 
-  const caregiverUser = await prisma.user.create({
+  const municipalityUser = await prisma.user.create({
     data: {
-      email: 'caregiver@healthcare-provider.se',
-      passwordHash: caregiverPassword,
-      name: 'Karl Karlsson',
+      email: 'municipality@healthcare-provider.se',
+      passwordHash: municipalityPassword,
+      name: 'Maria Kommun',
       role: 'CAREGIVER',
     },
   })
 
   console.log(`   ✓ Created admin: ${adminUser.email}`)
-  console.log(`   ✓ Created caregiver: ${caregiverUser.email}`)
+  console.log(`   ✓ Created municipality: ${municipalityUser.email}`)
 
   // ==========================================
   // CREATE MUNICIPALITIES
@@ -321,7 +321,7 @@ async function main() {
         data: {
           templateId: template.id,
           municipalityId: data.municipality.id,
-          createdById: i % 2 === 0 ? adminUser.id : caregiverUser.id,
+          createdById: i % 2 === 0 ? adminUser.id : municipalityUser.id,
           title: `${data.title} - ${i + 1}`,
           status: 'COMPLETED',
           sentAt: new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000), // Random date in last 6 months
@@ -403,8 +403,8 @@ async function main() {
   console.log(`   • ${await prisma.surveyResponse.count()} responses`)
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
   console.log('\n🔑 Demo Login Credentials:')
-  console.log('   Admin:     admin@healthcare-provider.se / admin123')
-  console.log('   Caregiver: caregiver@healthcare-provider.se / caregiver123')
+  console.log('   Admin:        admin@healthcare-provider.se / admin123')
+  console.log('   Municipality: municipality@healthcare-provider.se / municipality123')
   console.log('\n🚀 Run "npm run dev" to start the application!')
 }
 

@@ -15,6 +15,13 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
+  Eye,
+  ExternalLink,
+  Maximize2,
+  Minimize2,
+  Monitor,
+  Smartphone,
+  ArrowLeft,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -64,6 +71,11 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
   const [parseReplies, setParseReplies] = useState(true)
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message: string; surveyIds?: string[] } | null>(null)
+  
+  // Demo mode states
+  const [showDemoMode, setShowDemoMode] = useState(false)
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop')
+  const [isPreviewFullscreen, setIsPreviewFullscreen] = useState(false)
 
   // Fetch emails for a municipality
   const fetchMunicipalityEmails = async (municipalityId: string) => {
@@ -215,44 +227,284 @@ export default function SendSurveyForm({ municipalities, templates }: SendSurvey
       </div>
 
       {result ? (
-        <div className="card animate-fade-in">
-          <div className={`flex flex-col items-center py-8 ${result.success ? 'text-green-600 dark:text-green-400' : 'text-accent-600 dark:text-accent-400'}`}>
-            {result.success ? (
-              <CheckCircle className="w-16 h-16 mb-4" />
-            ) : (
-              <AlertCircle className="w-16 h-16 mb-4" />
-            )}
-            <h2 className="text-xl font-semibold mb-2">
-              {result.success ? 'Surveys Sent!' : 'Failed to Send'}
-            </h2>
-            <p className="text-surface-600 dark:text-dark-text-muted text-center mb-6">{result.message}</p>
-            <div className="flex gap-3">
-              <button onClick={() => setResult(null)} className="btn-secondary">
-                Send More
-              </button>
-              <button onClick={() => router.push('/dashboard')} className="btn-primary">
-                Go to Dashboard
-              </button>
-            </div>
-          </div>
-
-          {result.success && (
-            <div className="mt-6 p-4 bg-primary-50 dark:bg-dark-primary/20 rounded-lg">
-              <h3 className="font-medium text-primary-800 dark:text-dark-primary mb-2">📧 Demo: View Emails</h3>
-              <p className="text-sm text-primary-700 dark:text-dark-text-muted mb-3">
-                If you&apos;re running Maildev locally (npm run maildev), you can view the sent emails at:
-              </p>
-              <a
-                href="http://localhost:1080"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary btn-sm inline-flex"
+        showDemoMode && result.success ? (
+          /* Demo Mode - Split View */
+          <div className="animate-fade-in">
+            {/* Demo Mode Header */}
+            <div className="flex items-center justify-between mb-6">
+              <button
+                onClick={() => setShowDemoMode(false)}
+                className="flex items-center gap-2 text-surface-600 dark:text-dark-text-muted hover:text-surface-900 dark:hover:text-dark-text transition-colors"
               >
-                Open Maildev (localhost:1080)
-              </a>
+                <ArrowLeft className="w-4 h-4" />
+                Back to Summary
+              </button>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-surface-500 dark:text-dark-text-muted mr-2">Preview:</span>
+                <button
+                  onClick={() => setPreviewDevice('desktop')}
+                  className={`p-2 rounded-lg transition-colors ${previewDevice === 'desktop' ? 'bg-primary-100 dark:bg-dark-primary/20 text-primary-600 dark:text-dark-primary' : 'text-surface-400 dark:text-dark-text-muted hover:bg-surface-100 dark:hover:bg-dark-surface-light'}`}
+                  title="Desktop view"
+                >
+                  <Monitor className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setPreviewDevice('mobile')}
+                  className={`p-2 rounded-lg transition-colors ${previewDevice === 'mobile' ? 'bg-primary-100 dark:bg-dark-primary/20 text-primary-600 dark:text-dark-primary' : 'text-surface-400 dark:text-dark-text-muted hover:bg-surface-100 dark:hover:bg-dark-surface-light'}`}
+                  title="Mobile view"
+                >
+                  <Smartphone className="w-5 h-5" />
+                </button>
+                <div className="w-px h-6 bg-surface-200 dark:bg-dark-border mx-1" />
+                <button
+                  onClick={() => setIsPreviewFullscreen(!isPreviewFullscreen)}
+                  className="p-2 rounded-lg text-surface-400 dark:text-dark-text-muted hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
+                  title={isPreviewFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                >
+                  {isPreviewFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+                </button>
+                <a
+                  href="/email-survey-mockup.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-surface-400 dark:text-dark-text-muted hover:bg-surface-100 dark:hover:bg-dark-surface-light transition-colors"
+                  title="Open in new tab"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                </a>
+              </div>
             </div>
-          )}
-        </div>
+
+            <div className={`grid gap-6 ${isPreviewFullscreen ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
+              {/* Left Side - Survey Summary (hidden in fullscreen) */}
+              {!isPreviewFullscreen && (
+                <div className="lg:col-span-1 space-y-4">
+                  {/* Success Card */}
+                  <div className="card bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                        <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-green-800 dark:text-green-300">Survey Sent!</h3>
+                        <p className="text-sm text-green-600 dark:text-green-400">{result.message}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Survey Details */}
+                  <div className="card">
+                    <h4 className="font-semibold text-surface-900 dark:text-dark-text mb-3">Survey Details</h4>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-surface-500 dark:text-dark-text-muted">Template</span>
+                        <span className="font-medium text-surface-900 dark:text-dark-text">
+                          {templates.find(t => t.id === selectedTemplate)?.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-surface-500 dark:text-dark-text-muted">Recipients</span>
+                        <span className="font-medium text-surface-900 dark:text-dark-text">{selectedEmails.length}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-surface-500 dark:text-dark-text-muted">Municipalities</span>
+                        <span className="font-medium text-surface-900 dark:text-dark-text">{selectedMunicipalities.length}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recipients List */}
+                  <div className="card">
+                    <h4 className="font-semibold text-surface-900 dark:text-dark-text mb-3">Recipients</h4>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {selectedMunicipalities.map(id => {
+                        const m = municipalities.find(mun => mun.id === id)
+                        return (
+                          <div key={id} className="flex items-center gap-2 text-sm">
+                            <Building2 className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                            <span className="text-surface-700 dark:text-dark-text">{m?.name}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2">
+                    <button onClick={() => { setResult(null); setShowDemoMode(false) }} className="btn-secondary w-full">
+                      Send Another Survey
+                    </button>
+                    <button onClick={() => router.push('/dashboard')} className="btn-primary w-full">
+                      Go to Dashboard
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Right Side - Email Preview */}
+              <div className={isPreviewFullscreen ? 'col-span-1' : 'lg:col-span-2'}>
+                <div className="card p-0 overflow-hidden">
+                  {/* Preview Header */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-surface-50 dark:bg-dark-surface-light border-b border-surface-200 dark:border-dark-border">
+                    <div className="flex items-center gap-2">
+                      <Eye className="w-4 h-4 text-primary-600 dark:text-dark-primary" />
+                      <span className="font-medium text-surface-900 dark:text-dark-text">Email Preview</span>
+                      <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium rounded-full">
+                        Demo Mode
+                      </span>
+                    </div>
+                    <span className="text-xs text-surface-500 dark:text-dark-text-muted">
+                      This is how recipients will see the survey
+                    </span>
+                  </div>
+
+                  {/* Email Preview Frame */}
+                  <div className={`bg-surface-100 dark:bg-dark-bg p-4 flex justify-center ${isPreviewFullscreen ? 'min-h-[80vh]' : 'min-h-[600px]'}`}>
+                    <div 
+                      className={`bg-white dark:bg-dark-surface rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${
+                        previewDevice === 'mobile' 
+                          ? 'w-[375px]' 
+                          : 'w-full max-w-[700px]'
+                      }`}
+                    >
+                      {/* Fake Email Client Header */}
+                      <div className="bg-surface-800 dark:bg-dark-surface-light px-4 py-3 text-white">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-3 h-3 rounded-full bg-red-500" />
+                          <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                          <div className="w-3 h-3 rounded-full bg-green-500" />
+                        </div>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex">
+                            <span className="text-surface-400 w-16">From:</span>
+                            <span>survey@healthcare-provider.se</span>
+                          </div>
+                          <div className="flex">
+                            <span className="text-surface-400 w-16">To:</span>
+                            <span>{selectedEmails[0] || 'recipient@municipality.se'}</span>
+                          </div>
+                          <div className="flex">
+                            <span className="text-surface-400 w-16">Subject:</span>
+                            <span className="font-medium">Kvalitetsundersökning - Nordic Care Quality Index</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Email Content (iframe) */}
+                      <iframe
+                        src="/email-survey-mockup.html"
+                        className={`w-full border-0 ${isPreviewFullscreen ? 'h-[70vh]' : 'h-[500px]'}`}
+                        title="Survey Email Preview"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Preview Footer */}
+                  <div className="px-4 py-3 bg-surface-50 dark:bg-dark-surface-light border-t border-surface-200 dark:border-dark-border">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-surface-500 dark:text-dark-text-muted">
+                        💡 This preview shows the complete survey flow. Recipients can answer directly in the email.
+                      </p>
+                      <a
+                        href="/email-survey-mockup.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary-600 dark:text-dark-primary hover:underline flex items-center gap-1"
+                      >
+                        Open full preview
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fullscreen close button */}
+            {isPreviewFullscreen && (
+              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+                <button
+                  onClick={() => setIsPreviewFullscreen(false)}
+                  className="btn-secondary shadow-lg"
+                >
+                  <Minimize2 className="w-4 h-4" />
+                  Exit Fullscreen
+                </button>
+                <button
+                  onClick={() => { setResult(null); setShowDemoMode(false) }}
+                  className="btn-primary shadow-lg"
+                >
+                  Send Another Survey
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Standard Result View */
+          <div className="card animate-fade-in">
+            <div className={`flex flex-col items-center py-8 ${result.success ? 'text-green-600 dark:text-green-400' : 'text-accent-600 dark:text-accent-400'}`}>
+              {result.success ? (
+                <CheckCircle className="w-16 h-16 mb-4" />
+              ) : (
+                <AlertCircle className="w-16 h-16 mb-4" />
+              )}
+              <h2 className="text-xl font-semibold mb-2">
+                {result.success ? 'Surveys Sent!' : 'Failed to Send'}
+              </h2>
+              <p className="text-surface-600 dark:text-dark-text-muted text-center mb-6">{result.message}</p>
+              <div className="flex gap-3">
+                <button onClick={() => setResult(null)} className="btn-secondary">
+                  Send More
+                </button>
+                <button onClick={() => router.push('/dashboard')} className="btn-primary">
+                  Go to Dashboard
+                </button>
+              </div>
+            </div>
+
+            {result.success && (
+              <>
+                {/* Demo Mode CTA */}
+                <div className="mt-6 p-6 bg-gradient-to-r from-primary-50 to-teal-50 dark:from-dark-primary/20 dark:to-teal-900/20 rounded-xl border-2 border-primary-200 dark:border-dark-primary/50">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary-100 dark:bg-dark-primary/30 rounded-xl">
+                      <Eye className="w-8 h-8 text-primary-600 dark:text-dark-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-primary-900 dark:text-dark-text mb-1">🎯 Demo Mode Available</h3>
+                      <p className="text-sm text-primary-700 dark:text-dark-text-muted mb-4">
+                        See exactly what recipients will receive! Preview the complete email survey flow, including how they can respond directly in the email.
+                      </p>
+                      <button
+                        onClick={() => setShowDemoMode(true)}
+                        className="btn-primary"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Email Preview
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Maildev info */}
+                <div className="mt-4 p-4 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
+                  <h3 className="font-medium text-surface-800 dark:text-dark-text mb-2">📧 Local Development</h3>
+                  <p className="text-sm text-surface-600 dark:text-dark-text-muted mb-3">
+                    If you&apos;re running Maildev locally, you can view actual sent emails at:
+                  </p>
+                  <a
+                    href="http://localhost:1080"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary btn-sm inline-flex"
+                  >
+                    Open Maildev (localhost:1080)
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+        )
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Template Selection */}

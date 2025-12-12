@@ -216,10 +216,10 @@ export default function LoginPage() {
                 </div>
                 <div className="flex justify-between items-center p-3 bg-surface-50 dark:bg-dark-surface-light rounded-lg">
                   <div>
-                    <span className="font-medium text-surface-700 dark:text-dark-text">Caregiver</span>
-                    <p className="text-surface-500 dark:text-dark-text-muted text-xs">caregiver@healthcare-provider.se</p>
+                    <span className="font-medium text-surface-700 dark:text-dark-text">Municipality</span>
+                    <p className="text-surface-500 dark:text-dark-text-muted text-xs">municipality@healthcare-provider.se</p>
                   </div>
-                  <code className="text-xs bg-surface-200 dark:bg-dark-surface px-2 py-1 rounded text-surface-700 dark:text-dark-text">caregiver123</code>
+                  <code className="text-xs bg-surface-200 dark:bg-dark-surface px-2 py-1 rounded text-surface-700 dark:text-dark-text">municipality123</code>
                 </div>
               </div>
             </div>

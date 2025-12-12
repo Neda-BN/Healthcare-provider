@@ -28,6 +28,8 @@ import {
   Cog,
   Sun,
   Moon,
+  MapPin,
+  Stethoscope,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -40,8 +42,8 @@ interface NavItem {
   adminOnly?: boolean
 }
 
-// Improved navigation structure with logical hierarchy
-const navigation: NavItem[] = [
+// Admin navigation structure
+const adminNavigation: NavItem[] = [
   {
     name: 'Dashboard',
     href: '/dashboard',
@@ -81,6 +83,41 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Users', href: '/admin/users', icon: Users },
       { name: 'Settings', href: '/settings', icon: Settings },
+    ],
+  },
+]
+
+// Municipality navigation structure
+const municipalityNavigation: NavItem[] = [
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    name: 'Surveys',
+    icon: ClipboardList,
+    children: [
+      { name: 'Survey Builder', href: '/surveys/builder', icon: PenSquare },
+      { name: 'Send Survey', href: '/surveys/send', icon: Send },
+      { name: 'Sent Surveys', href: '/municipalities/report', icon: List },
+    ],
+  },
+  {
+    name: 'Healthcare Providers',
+    icon: Stethoscope,
+    children: [
+      { name: 'Overview', href: '/healthcare-providers', icon: FolderOpen },
+      { name: 'Agreements', href: '/healthcare-providers/agreements', icon: ScrollText },
+      { name: 'Districts', href: '/healthcare-providers/districts', icon: MapPin },
+    ],
+  },
+  {
+    name: 'Analysis',
+    icon: BarChart3,
+    children: [
+      { name: 'Reports', href: '/reports', icon: FileBarChart },
+      { name: 'Compare', href: '/analyse', icon: GitCompare },
     ],
   },
 ]
@@ -127,7 +164,7 @@ export default function Sidebar({
     
     // For dynamic routes like /municipality/[id], check if it starts with the href
     // But NOT for static routes that have siblings (like /municipalities which has /municipalities/manage)
-    const staticParentRoutes = ['/municipalities', '/surveys', '/admin', '/analysis']
+    const staticParentRoutes = ['/municipalities', '/surveys', '/admin', '/analysis', '/healthcare-providers']
     if (staticParentRoutes.includes(href)) {
       // Only exact match for these parent routes
       return pathname === href
@@ -158,7 +195,9 @@ export default function Sidebar({
       }))
   }
 
-  const filteredNavigation = filterNavItems(navigation)
+  // Select navigation based on user role
+  const baseNavigation = userRole === 'ADMIN' ? adminNavigation : municipalityNavigation
+  const filteredNavigation = filterNavItems(baseNavigation)
 
   const NavItemComponent = ({ item, depth = 0 }: { item: NavItem; depth?: number }) => {
     const filteredChildren = item.children?.filter(child => !(child.adminOnly && userRole !== 'ADMIN'))
